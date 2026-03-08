@@ -1,6 +1,6 @@
 
+
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createClient } from "@supabase/supabase-js";
@@ -13,12 +13,8 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "";
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
-
-if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.warn("Supabase credentials missing. API will fail.");
-}
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://placeholder.supabase.co";
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder-key";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
@@ -251,20 +247,25 @@ app.get("/api/test", (req, res) => {
 
 // --- VITE MIDDLEWARE ---
 async function startServer() {
-  // Only use Vite middleware in local development
-  if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  }
+  try {
+    // Only use Vite middleware in local development
+    if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
+      const { createServer: createViteServer } = await import("vite");
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    }
 
-  // Only listen if not on Vercel (Vercel handles listening)
-  if (process.env.VERCEL !== "1") {
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
+    // Only listen if not on Vercel (Vercel handles listening)
+    if (process.env.VERCEL !== "1") {
+      app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+      });
+    }
+  } catch (err) {
+    console.error("Failed to start server:", err);
   }
 }
 
