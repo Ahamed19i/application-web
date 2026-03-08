@@ -54,7 +54,7 @@ export const Hero: React.FC = () => {
           
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
-            <span className="block text-accent-primary text-[0.45em] font-medium tracking-[0.1em] uppercase mt-2">Ingénieur Systèmes, Réseaux & Cloud</span>
+            <span className="block text-accent-primary text-[0.38em] font-medium tracking-[0.12em] uppercase mt-3 opacity-90">Ingénieur Systèmes, Réseaux & Cloud</span>
           </h1>
           
           <div className="h-6 mb-6">
@@ -111,14 +111,14 @@ export const Hero: React.FC = () => {
           transition={{ duration: 1, delay: 0.2 }}
           className="relative flex justify-center items-center"
         >
-          <div className="relative w-[340px] h-[420px] md:w-[400px] md:h-[480px]">
-            <div className="absolute -inset-8 border border-dashed border-accent-primary/15 rounded-full animate-spin-slow">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-accent-primary rounded-full shadow-[0_0_15px_rgba(0,180,255,1)]"></div>
+          <div className="relative w-[280px] h-[340px] md:w-[320px] md:h-[400px]">
+            <div className="absolute -inset-10 border border-dashed border-accent-primary/20 rounded-full animate-spin-slow">
+              <div className="absolute top-1/4 right-0 w-3 h-3 bg-accent-primary rounded-full shadow-[0_0_15px_rgba(0,180,255,1)]"></div>
             </div>
             
             <div className="absolute inset-0 bg-gradient-to-br from-accent-secondary to-accent-primary opacity-10 animate-morph"></div>
             
-            <div className="absolute inset-8 bg-bg-secondary border border-white/10 animate-morph overflow-hidden shadow-2xl">
+            <div className="absolute inset-4 bg-bg-secondary border border-white/10 animate-morph overflow-hidden shadow-2xl">
               <img
                 src="/images/profile.jpg"
                 alt="Ahamed Hassani M'homa"
