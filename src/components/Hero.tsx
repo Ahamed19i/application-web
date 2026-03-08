@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Server } from 'lucide-react';
@@ -37,59 +38,60 @@ export const Hero: React.FC = () => {
   }, [text, isDeleting, roleIndex]);
 
   return (
-    <section className="min-h-screen flex items-center pt-20 px-6">
+    <section className="min-h-screen flex items-center pt-20 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
+          className="z-10"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs font-mono mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-[10px] font-mono mb-6 tracking-widest uppercase">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-primary"></span>
             </span>
-            DISPONIBLE POUR NOUVELLES OPPORTUNITÉS
+            Disponible pour nouvelles opportunités
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight tracking-tight">
             Ahamed Hassani <br />
             <span className="text-gradient">M'homa</span>
           </h1>
           
-          <div className="h-8 mb-8">
-            <p className="text-xl md:text-2xl font-mono text-white/70">
+          <div className="h-8 mb-6">
+            <p className="text-lg md:text-xl font-mono text-white/70">
               &gt; <span className="typing-cursor">{text}</span>
             </p>
           </div>
 
-          <p className="text-lg text-white/60 mb-10 max-w-lg leading-relaxed">
+          <p className="text-base text-white/60 mb-8 max-w-lg leading-relaxed">
             Étudiant en Master 2 Systèmes, Réseaux & Télécommunications à Dakar. 
             Passionné par l'automatisation, la sécurité des infrastructures et le Cloud.
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Link to="/projects" className="px-8 py-4 bg-accent-primary text-bg font-bold rounded-lg hover:glow-primary transition-all flex items-center gap-2 group">
+            <Link to="/projects" className="px-6 py-3 bg-accent-primary text-bg font-bold rounded-full hover:glow-primary transition-all flex items-center gap-2 group text-sm">
               Voir mes projets
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
             </Link>
-            <Link to="/contact" className="px-8 py-4 glass font-bold rounded-lg hover:bg-white/5 transition-all">
+            <Link to="/contact" className="px-6 py-3 glass font-bold rounded-full hover:bg-white/5 transition-all text-sm">
               Me contacter
             </Link>
           </div>
 
-          <div className="mt-16 grid grid-cols-3 gap-8 border-t border-white/10 pt-8">
+          <div className="mt-12 grid grid-cols-3 gap-6 border-t border-white/5 pt-8">
             <div>
-              <p className="text-3xl font-mono font-bold text-accent-primary">15+</p>
-              <p className="text-xs text-white/40 uppercase tracking-widest">Projets</p>
+              <p className="text-2xl font-mono font-bold text-accent-primary">15+</p>
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.2em]">Projets</p>
             </div>
             <div>
-              <p className="text-3xl font-mono font-bold text-accent-secondary">5+</p>
-              <p className="text-xs text-white/40 uppercase tracking-widest">Certifications</p>
+              <p className="text-2xl font-mono font-bold text-accent-secondary">5+</p>
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.2em]">Certifications</p>
             </div>
             <div>
-              <p className="text-3xl font-mono font-bold text-white">20+</p>
-              <p className="text-xs text-white/40 uppercase tracking-widest">Technologies</p>
+              <p className="text-2xl font-mono font-bold text-white/80">20+</p>
+              <p className="text-[10px] text-white/30 uppercase tracking-[0.2em]">Technologies</p>
             </div>
           </div>
         </motion.div>
@@ -98,50 +100,75 @@ export const Hero: React.FC = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="relative hidden md:block"
+          className="relative flex justify-center items-center"
         >
-          <div className="relative z-10 glass p-8 rounded-2xl border-accent-primary/20 glow-primary">
-            <div className="flex items-center gap-2 mb-6 border-b border-white/10 pb-4">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+          {/* Circular Rotating Text Effect */}
+          <div className="relative w-64 h-64 md:w-96 md:h-96 flex items-center justify-center">
+            {/* Rotating Text SVG */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <svg viewBox="0 0 300 300" className="w-full h-full">
+                <defs>
+                  <path
+                    id="circlePath"
+                    d="M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0"
+                  />
+                </defs>
+                <text className="fill-accent-primary/40 font-mono text-[14px] uppercase tracking-[0.3em]">
+                  <textPath xlinkHref="#circlePath">
+                    Ingénieur Systèmes & Réseaux • Cloud Engineer • DevOps Enthusiast • Cybersecurity Student •
+                  </textPath>
+                </text>
+              </svg>
+            </motion.div>
+
+            {/* Profile Image Container */}
+            <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-accent-primary/20 p-2 glass">
+              <div className="w-full h-full rounded-full overflow-hidden relative group">
+                <img
+                  src="/images/propose.jpg"
+                  alt="Ahamed Hassani M'homa"
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://picsum.photos/seed/ahamed/400/400";
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-accent-primary/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
-              <span className="text-xs font-mono text-white/40 ml-2">ahamed@portfolio: ~</span>
             </div>
-            
-            <div className="space-y-4 font-mono text-sm">
-              <div className="flex gap-3">
-                <Terminal className="text-accent-primary shrink-0" size={18} />
-                <p><span className="text-accent-primary">root@dakar:</span><span className="text-accent-secondary">~#</span> neofetch</p>
-              </div>
-              <div className="pl-7 space-y-1 text-white/80">
-                <p><span className="text-accent-primary">OS:</span> Ubuntu 22.04 LTS x86_64</p>
-                <p><span className="text-accent-primary">Host:</span> Master 2 SRT Student</p>
-                <p><span className="text-accent-primary">Kernel:</span> 5.15.0-generic</p>
-                <p><span className="text-accent-primary">Shell:</span> zsh 5.8.1</p>
-                <p><span className="text-accent-primary">Location:</span> Dakar, Senegal</p>
-                <p><span className="text-accent-primary">Focus:</span> Cloud, DevOps, CyberSec</p>
-              </div>
-              
-              <div className="flex gap-3 pt-4">
-                <Shield className="text-accent-secondary shrink-0" size={18} />
-                <p><span className="text-accent-secondary">Sec:</span> Kali Linux, Wireshark, pfSense</p>
-              </div>
-              <div className="flex gap-3">
-                <Cloud className="text-accent-primary shrink-0" size={18} />
-                <p><span className="text-accent-primary">Cloud:</span> AWS, Docker, Kubernetes</p>
-              </div>
-              <div className="flex gap-3">
-                <Server className="text-white shrink-0" size={18} />
-                <p><span className="text-white">Net:</span> Cisco IOS, GNS3, Ansible</p>
-              </div>
-            </div>
+
+            {/* Floating Icons */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-4 right-10 p-3 glass rounded-xl border-accent-primary/30"
+            >
+              <Cloud className="text-accent-primary" size={24} />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute bottom-10 -left-4 p-3 glass rounded-xl border-accent-secondary/30"
+            >
+              <Shield className="text-accent-secondary" size={24} />
+            </motion.div>
+            <motion.div
+              animate={{ x: [0, 10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute bottom-20 -right-4 p-3 glass rounded-xl border-white/20"
+            >
+              <Terminal className="text-white" size={24} />
+            </motion.div>
           </div>
           
           {/* Decorative elements */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-accent-primary/10 blur-3xl rounded-full"></div>
-          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent-secondary/10 blur-3xl rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-accent-primary/5 blur-[100px] rounded-full -z-10"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent-secondary/5 blur-[80px] rounded-full -z-10"></div>
         </motion.div>
       </div>
     </section>
