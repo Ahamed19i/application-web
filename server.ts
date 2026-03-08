@@ -71,7 +71,7 @@ app.get("/api/projects", async (req, res) => {
   const { data, error } = await supabase
     .from("projects")
     .select("*")
-    .eq("published", 1);
+    .order("id", { ascending: false });
   
   if (error) return res.status(500).json(error);
   res.json(data);
@@ -124,7 +124,6 @@ app.get("/api/posts", async (req, res) => {
   const { data, error } = await supabase
     .from("posts")
     .select("*")
-    .eq("published", 1)
     .order("created_at", { ascending: false });
   
   if (error) return res.status(500).json(error);
@@ -240,21 +239,28 @@ app.get("/api/admin/stats", authenticateToken, async (req, res) => {
   });
 });
 
+app.get("/api/test", (req, res) => {
+  res.json({ 
+    message: "API is working", 
+    env: { 
+      hasUrl: !!process.env.SUPABASE_URL,
+      hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY 
+    }
+  });
+});
+
 // --- VITE MIDDLEWARE ---
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  // Only use Vite middleware in local development
+  if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.join(__dirname, "dist")));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "dist", "index.html"));
-    });
   }
 
+  // Only listen if not on Vercel (Vercel handles listening)
   if (process.env.VERCEL !== "1") {
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on http://localhost:${PORT}`);

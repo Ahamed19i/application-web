@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Github, ExternalLink, Filter, X } from 'lucide-react';
@@ -11,12 +12,18 @@ export const Projects: React.FC = () => {
 
   useEffect(() => {
     fetch('/api/projects')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Erreur serveur');
+        return res.json();
+      })
       .then(data => {
         setProjects(data);
         setLoading(false);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   const categories = ['Tous', 'Réseau', 'Cloud/DevOps', 'Cybersécurité', 'Automatisation'];
@@ -58,6 +65,10 @@ export const Projects: React.FC = () => {
             {[1, 2, 3].map(i => (
               <div key={i} className="glass h-80 rounded-2xl animate-pulse"></div>
             ))}
+          </div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="text-center py-20 glass rounded-3xl border-dashed border-white/10">
+            <p className="text-white/40 font-mono">Aucun projet trouvé dans cette catégorie.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

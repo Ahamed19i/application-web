@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Search, Clock, ChevronRight, Tag } from 'lucide-react';
@@ -12,12 +13,18 @@ export const Blog: React.FC = () => {
 
   useEffect(() => {
     fetch('/api/posts')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Erreur serveur');
+        return res.json();
+      })
       .then(data => {
         setPosts(data);
         setLoading(false);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   const filteredPosts = posts.filter(p => 
