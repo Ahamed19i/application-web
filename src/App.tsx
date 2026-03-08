@@ -1,0 +1,76 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { Terminal } from 'lucide-react';
+import { NetworkBackground } from './components/NetworkBackground.tsx';
+import { Navbar } from './components/Navbar.tsx';
+import { Hero } from './components/Hero.tsx';
+import { About } from './components/About.tsx';
+import { Projects } from './components/Projects.tsx';
+import { Blog } from './components/Blog.tsx';
+import { Contact } from './components/Contact.tsx';
+import { Footer } from './components/Footer.tsx';
+import { AdminLogin } from './components/AdminLogin.tsx';
+import { AdminDashboard } from './components/AdminDashboard.tsx';
+
+export default function App() {
+  const [sudoActive, setSudoActive] = useState(false);
+  const keysPressed = useRef<string[]>([]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keysPressed.current.push(e.key.toLowerCase());
+      if (keysPressed.current.length > 4) keysPressed.current.shift();
+      
+      if (keysPressed.current.join('') === 'sudo') {
+        setSudoActive(true);
+        setTimeout(() => setSudoActive(false), 3000);
+        keysPressed.current = [];
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  return (
+    <Router>
+      <div className="relative min-h-screen overflow-x-hidden">
+        <NetworkBackground />
+        <Navbar />
+        
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/" element={<Hero />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Routes>
+        </AnimatePresence>
+
+        <Footer />
+
+        {/* Easter Egg */}
+        <AnimatePresence>
+          {sudoActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
+            >
+              <div className="text-center">
+                <Terminal className="w-24 h-24 text-accent-primary mx-auto mb-6 animate-bounce" />
+                <h2 className="text-4xl font-mono font-bold text-accent-primary mb-2">ACCESS GRANTED</h2>
+                <p className="text-white/60 font-mono">System override initiated... Just kidding!</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </Router>
+  );
+}

@@ -75,17 +75,29 @@ pm2 start server.ts --interpreter tsx --name "portfolio"
 
 ---
 
-## ☁️ Déploiement sur Railway (Recommandé pour le Cloud)
+## ☁️ Déploiement sur Railway (Recommandé)
 
-Railway supporte très bien les serveurs Node.js avec SQLite si vous ajoutez un "Volume" pour la persistance.
+Railway est idéal car il supporte Node.js et permet de garder vos données SQLite. Ils offrent un forfait "Trial" gratuit (environ 500h/mois ou 5$ de crédit).
 
-1. Connectez votre GitHub à [Railway.app](https://railway.app).
-2. Créez un nouveau projet à partir de votre dépôt.
-3. Dans les **Variables**, ajoutez :
+### 1. Préparation
+- Assurez-vous d'avoir envoyé votre code sur **GitHub**.
+- Créez un compte sur [Railway.app](https://railway.app) avec votre GitHub.
+
+### 2. Création du Projet
+1. Cliquez sur **"New Project"** -> **"Deploy from GitHub repo"**.
+2. Sélectionnez votre dépôt `portfolio-ahamed`.
+3. Cliquez sur **"Variables"** et ajoutez :
    - `NODE_ENV=production`
-   - `JWT_SECRET=votre_secret_aleatoire`
-4. Dans **Settings**, assurez-vous que la commande de démarrage est `npm start`.
-5. **Important** : Ajoutez un "Volume" monté sur `/app/database.sqlite` pour ne pas perdre vos données à chaque redémarrage.
+   - `JWT_SECRET=votre_secret_aleatoire` (une longue phrase compliquée)
+   - `DATABASE_PATH=/app/data/database.sqlite`
+
+### 3. Persistance des Données (Très Important pour SQLite)
+Par défaut, Railway efface les fichiers à chaque mise à jour. Pour garder vos projets et articles :
+1. Allez dans l'onglet **"Settings"** de votre service sur Railway.
+2. Cherchez la section **"Volumes"**.
+3. Cliquez sur **"Add Volume"**.
+4. Nommez-le `data` et montez-le sur le chemin : `/app/data`.
+5. Railway va redéployer. Vos données seront désormais sauvegardées dans ce dossier permanent !
 
 ---
 
