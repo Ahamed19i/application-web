@@ -31,9 +31,7 @@ export const About: React.FC = () => {
   const skills = [
     { category: "Systèmes", items: ["Linux (Ubuntu/Debian/CentOS)", "Windows Server", "Active Directory"], level: 90 },
     { category: "Réseaux", items: ["Cisco IOS", "pfSense", "GNS3/Packet Tracer", "VPN/VLAN"], level: 85 },
-    { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "Ansible", "AWS", "CI/CD"], level: 75 },
-    { category: "Cybersécurité", items: ["Kali Linux", "Wireshark", "Hardening", "Nmap"], level: 70 },
-    { category: "Développement", items: ["Python", "Bash", "React", "Node.js"], level: 65 }
+    { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "Ansible", "AWS", "CI/CD"], level: 75 }
   ];
 
   const certifications = [
@@ -131,9 +129,9 @@ export const About: React.FC = () => {
             ))}
 
             <div className="pt-6">
-              <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langages</h3>
+              <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langages & Outils</h3>
               <div className="flex flex-wrap gap-2">
-                {["Python", "Bash / Shell", "Java", "SQL / MySQL", "YAML", "PowerShell"].map((lang, i) => (
+                {["Bash / Shell", "PowerShell", "YAML", "SQL / MySQL", "Python"].map((lang, i) => (
                   <span key={i} className="px-3 py-1.5 glass rounded-lg text-[11px] font-mono text-text-secondary hover:border-accent-primary/30 transition-all">
                     {lang}
                   </span>

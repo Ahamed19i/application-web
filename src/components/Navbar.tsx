@@ -7,10 +7,28 @@ import { useLocation } from 'react-router-dom';
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      
+      const sections = ['home', 'about', 'projects', 'blog', 'contact'];
+      const current = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 150 && rect.bottom >= 150;
+        }
+        return false;
+      });
+      
+      if (current) {
+        setActiveSection(current);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -64,10 +82,16 @@ export const Navbar: React.FC = () => {
               key={link.path}
               href={link.path}
               onClick={(e) => handleNavClick(e, link.path)}
-              className="font-mono text-[11px] uppercase tracking-[0.15em] transition-colors relative group/link text-text-muted hover:text-accent-primary"
+              className={`font-mono text-[11px] uppercase tracking-[0.15em] transition-colors relative group/link ${
+                activeSection === link.path.substring(1) 
+                  ? 'text-accent-primary' 
+                  : 'text-text-muted hover:text-accent-primary'
+              }`}
             >
               {link.name}
-              <span className="absolute -bottom-1 left-0 h-[1px] bg-accent-primary transition-all duration-300 w-0 group-hover/link:w-full"></span>
+              <span className={`absolute -bottom-1 left-0 h-[1px] bg-accent-primary transition-all duration-300 ${
+                activeSection === link.path.substring(1) ? 'w-full' : 'w-0 group-hover/link:w-full'
+              }`}></span>
             </a>
           ))}
           <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white/10">
@@ -98,7 +122,11 @@ export const Navbar: React.FC = () => {
                   key={link.path}
                   href={link.path}
                   onClick={(e) => handleNavClick(e, link.path)}
-                  className="font-mono text-lg uppercase tracking-widest text-white/70 hover:text-accent-primary transition-colors"
+                  className={`font-mono text-lg uppercase tracking-widest transition-colors ${
+                    activeSection === link.path.substring(1) 
+                      ? 'text-accent-primary' 
+                      : 'text-white/70 hover:text-accent-primary'
+                  }`}
                 >
                   {link.name}
                 </a>
