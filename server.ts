@@ -61,44 +61,6 @@ app.get("/api/auth/me", authenticateToken, (req: any, res) => {
   res.json(req.user);
 });
 
-// Route temporaire pour configurer l'admin
-app.get("/api/auth/setup", async (req, res) => {
-  try {
-    const hashedPassword = bcrypt.hashSync("admin123", 10);
-    
-    // On vérifie si l'admin existe
-    const { data: existingUser } = await supabase
-      .from("users")
-      .select("*")
-      .eq("username", "admin")
-      .single();
-
-    let result;
-    if (existingUser) {
-      // On met à jour
-      result = await supabase
-        .from("users")
-        .update({ password: hashedPassword })
-        .eq("username", "admin");
-    } else {
-      // On crée
-      result = await supabase
-        .from("users")
-        .insert([{ username: "admin", password: hashedPassword }]);
-    }
-
-    if (result.error) throw result.error;
-
-    res.json({ 
-      message: "Admin configuré avec succès !", 
-      username: "admin", 
-      password: "admin123 (hashé et enregistré)" 
-    });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Projects
 app.get("/api/projects", async (req, res) => {
   const { data, error } = await supabase
