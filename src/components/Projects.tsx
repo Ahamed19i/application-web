@@ -38,18 +38,18 @@ export const Projects: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-4xl font-bold mb-8 flex items-center gap-4">
+        <h2 className="text-3xl font-bold mb-8 flex items-center gap-4">
           <span className="text-accent-primary">02.</span> Projets
           <div className="h-px bg-white/10 flex-grow"></div>
         </h2>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-4 mb-12">
+        <div className="flex flex-wrap gap-3 mb-10">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-6 py-2 rounded-full font-mono text-sm transition-all border ${
+              className={`px-5 py-1.5 rounded-full font-mono text-xs transition-all border ${
                 filter === cat 
                   ? 'bg-accent-primary text-bg border-accent-primary' 
                   : 'bg-white/5 text-white/60 border-white/10 hover:border-white/30'

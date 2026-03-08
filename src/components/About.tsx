@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'motion/react';
 import { Calendar, GraduationCap, Briefcase, Award, CheckCircle2 } from 'lucide-react';
@@ -49,13 +50,13 @@ export const About: React.FC = () => {
         viewport={{ once: true }}
         className="mb-20"
       >
-        <h2 className="text-4xl font-bold mb-8 flex items-center gap-4">
+        <h2 className="text-3xl font-bold mb-8 flex items-center gap-4">
           <span className="text-accent-primary">01.</span> À Propos
           <div className="h-px bg-white/10 flex-grow"></div>
         </h2>
         
         <div className="grid md:grid-cols-3 gap-12 items-start">
-          <div className="md:col-span-2 space-y-6 text-white/70 leading-relaxed text-lg">
+          <div className="md:col-span-2 space-y-6 text-white/70 leading-relaxed text-base">
             <p>
               Je suis <span className="text-white font-bold">Ahamed Hassani M'homa</span>, un passionné d'informatique originaire des Comores et basé à Dakar. 
               Mon parcours académique et mes expériences m'ont permis de forger une expertise polyvalente allant de l'administration système à la mise en place d'architectures Cloud complexes.
