@@ -49,7 +49,7 @@ export const Hero: React.FC = () => {
         > 
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
-            <span className="block text-accent-primary text-[0.38em] font-medium tracking-[0.12em] uppercase mt-3 opacity-90">Ingénieur Systèmes, Réseaux & Cloud</span>
+            <span className="block text-accent-primary text-[0.20em] font-medium tracking-[0.9em] uppercase mt-3 opacity-90">Ingénieur Systèmes, Réseaux & Cloud</span>
           </h1>
           
           <div className="h-6 mb-6">
