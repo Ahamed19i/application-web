@@ -129,7 +129,7 @@ export const Hero: React.FC = () => {
             <div className="relative w-48 h-48 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-accent-primary/20 p-2 glass">
               <div className="w-full h-full rounded-full overflow-hidden relative group">
                 <img
-                  src="/images/propose.jpg"
+                  src="/images/propos.jpg"
                   alt="Ahamed Hassani M'homa"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
                   onError={(e) => {
