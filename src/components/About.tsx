@@ -50,140 +50,105 @@ export const About: React.FC = () => {
         viewport={{ once: true }}
         className="mb-20"
       >
-        <h2 className="text-3xl font-bold mb-8 flex items-center gap-4">
-          <span className="text-accent-primary">01.</span> À Propos
-          <div className="h-px bg-white/10 flex-grow"></div>
+        <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-4">// 01 — Profil</p>
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
+          Mon <span className="text-accent-primary">expertise</span>
         </h2>
+        <div className="w-14 h-1 bg-gradient-to-r from-accent-primary to-transparent rounded-full mb-12"></div>
         
-        <div className="grid md:grid-cols-3 gap-12 items-start">
-          <div className="md:col-span-2 space-y-6 text-white/70 leading-relaxed text-base">
+        <div className="grid md:grid-cols-2 gap-16 items-start">
+          <div className="space-y-6 text-text-secondary leading-relaxed text-base">
             <p>
-              Je suis <span className="text-white font-bold">Ahamed Hassani M'homa</span>, un passionné d'informatique originaire des Comores et basé à Dakar. 
-              Mon parcours académique et mes expériences m'ont permis de forger une expertise polyvalente allant de l'administration système à la mise en place d'architectures Cloud complexes.
+              Je suis <strong>Ahamed Hassani Mhoma</strong>, ingénieur <strong>M2 Systèmes & Réseaux</strong> spécialisé dans l'administration des infrastructures <strong>Linux/Windows Server</strong>, la virtualisation et le cloud. Mon parcours entre <strong>Tunis et Dakar</strong> m'a forgé une vision internationale solide.
             </p>
             <p>
-              Mon objectif est de devenir un expert capable de concevoir des infrastructures résilientes, automatisées et hautement sécurisées. 
-              Je crois fermement que le <span className="text-accent-primary">DevOps</span> et le <span className="text-accent-secondary">Cloud</span> sont les piliers de l'innovation technologique actuelle.
+              Ma philosophie : automatiser ce qui peut l'être, sécuriser ce qui doit l'être. Je m'oriente vers le <strong>DevOps et Cloud Engineering</strong>, avec une couche cybersécurité en développement actif.
+            </p>
+            <p>
+              Expérimenté chez <strong>Sonatel</strong> (groupe Orange, Sénégal) et <strong>Tunisie Télécom</strong>, j'ai une compréhension opérationnelle des environnements télécoms à grande échelle.
             </p>
             
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="text-accent-primary" size={18} />
-                <span>Autonome & Rigoureux</span>
+            <div className="pt-8">
+              <h3 className="text-lg font-bold mb-8 flex items-center gap-3">
+                <GraduationCap className="text-accent-primary" size={20} /> Parcours académique
+              </h3>
+              <div className="space-y-8 border-l border-white/10 ml-2 pl-6 relative">
+                {timeline.map((item, index) => (
+                  <div key={index} className="relative">
+                    <div className="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-bg border border-accent-primary shadow-[0_0_8px_rgba(0,180,255,0.5)]"></div>
+                    <span className="text-accent-primary font-mono text-[10px] tracking-wider mb-1 block uppercase">{item.year}</span>
+                    <h4 className="text-base font-bold mb-0.5">{item.title}</h4>
+                    <p className="text-text-muted text-sm">{item.institution}</p>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="text-accent-primary" size={18} />
-                <span>Esprit d'Analyse</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="text-accent-primary" size={18} />
-                <span>Veille Technologique</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="text-accent-primary" size={18} />
-                <span>Travail d'Équipe</span>
+            </div>
+
+            <div className="pt-8">
+              <h3 className="text-lg font-bold mb-8 flex items-center gap-3">
+                <Award className="text-accent-primary" size={20} /> Certifications
+              </h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {certifications.map((cert, index) => (
+                  <div key={index} className="glass p-4 rounded-xl flex items-center gap-4 hover:border-accent-primary/30 transition-all group">
+                    <div className="w-10 h-10 rounded-lg bg-accent-primary/5 flex items-center justify-center shrink-0 group-hover:bg-accent-primary/10 transition-colors">
+                      <Award className="text-accent-primary" size={18} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold mb-0.5">{cert.title}</h4>
+                      <p className="text-[10px] text-text-muted font-mono uppercase tracking-wider">{cert.issuer} · {cert.date}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
           
-          <div className="relative group">
-            <div className="absolute -inset-4 bg-gradient-to-br from-accent-primary to-accent-secondary opacity-20 blur-2xl group-hover:opacity-40 transition-opacity"></div>
-            <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-accent-primary/20">
-              <img 
-                src="https://picsum.photos/seed/ahamed/600/600" 
-                alt="Ahamed Hassani M'homa" 
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Timeline */}
-      <div className="grid md:grid-cols-2 gap-20">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-2xl font-bold mb-10 flex items-center gap-3">
-            <GraduationCap className="text-accent-primary" /> Parcours
-          </h3>
-          <div className="space-y-12 border-l-2 border-white/10 ml-4 pl-8 relative">
-            {timeline.map((item, index) => (
-              <div key={index} className="relative">
-                <div className="absolute -left-[41px] top-0 w-4 h-4 rounded-full bg-bg border-2 border-accent-primary"></div>
-                <div className="glass p-6 rounded-xl hover:border-accent-primary/30 transition-colors">
-                  <span className="text-accent-primary font-mono text-sm mb-2 block">{item.year}</span>
-                  <h4 className="text-xl font-bold mb-1">{item.title}</h4>
-                  <p className="text-accent-secondary text-sm mb-3">{item.institution}</p>
-                  <p className="text-white/60 text-sm">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Skills */}
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-2xl font-bold mb-10 flex items-center gap-3">
-            <Award className="text-accent-secondary" /> Compétences
-          </h3>
-          <div className="space-y-8">
+          <div className="space-y-10">
             {skills.map((skill, index) => (
               <div key={index}>
-                <div className="flex justify-between mb-2">
-                  <span className="font-mono font-bold">{skill.category}</span>
-                  <span className="text-white/40 text-sm">{skill.level}%</span>
-                </div>
-                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${skill.level}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.2 }}
-                    className="h-full bg-gradient-to-r from-accent-primary to-accent-secondary"
-                  ></motion.div>
-                </div>
-                <div className="flex flex-wrap gap-2 mt-3">
+                <h3 className="text-sm font-bold mb-6 text-text-primary uppercase tracking-wider font-mono">{skill.category}</h3>
+                <div className="space-y-6">
                   {skill.items.map((item, i) => (
-                    <span key={i} className="text-[10px] uppercase tracking-widest px-2 py-1 bg-white/5 rounded border border-white/10 text-white/60">
-                      {item}
-                    </span>
+                    <div key={i}>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm text-text-secondary font-mono">{item}</span>
+                        <span className="text-text-muted text-[10px] font-mono">{index === 0 ? '90%' : index === 1 ? '85%' : '75%'}</span>
+                      </div>
+                      <div className="h-[3px] bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: index === 0 ? '90%' : index === 1 ? '85%' : '75%' }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.2 }}
+                          className="h-full bg-gradient-to-r from-accent-secondary to-accent-primary"
+                        ></motion.div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
             ))}
-          </div>
-        </motion.div>
-      </div>
 
-      {/* Certifications */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mt-20"
-      >
-        <h3 className="text-2xl font-bold mb-10">Certifications</h3>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {certifications.map((cert, index) => (
-            <div key={index} className="glass p-6 rounded-xl flex items-start gap-4 hover:glow-secondary transition-all group">
-              <div className="w-12 h-12 rounded-lg bg-accent-secondary/10 flex items-center justify-center shrink-0 group-hover:bg-accent-secondary/20 transition-colors">
-                <Award className="text-accent-secondary" />
-              </div>
-              <div>
-                <h4 className="font-bold mb-1">{cert.title}</h4>
-                <p className="text-xs text-white/40 mb-2">{cert.issuer}</p>
-                <span className="text-[10px] font-mono text-accent-secondary">{cert.date}</span>
+            <div className="pt-6">
+              <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langages</h3>
+              <div className="flex flex-wrap gap-2">
+                {["Python", "Bash / Shell", "Java", "SQL / MySQL", "YAML", "PowerShell"].map((lang, i) => (
+                  <span key={i} className="px-3 py-1.5 glass rounded-lg text-[11px] font-mono text-text-secondary hover:border-accent-primary/30 transition-all">
+                    {lang}
+                  </span>
+                ))}
               </div>
             </div>
-          ))}
+
+            <div className="pt-6">
+              <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langues</h3>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1.5 rounded-lg border border-success/20 text-success bg-success/5 text-[11px] font-mono tracking-wider">🇫🇷 Français — Courant</span>
+                <span className="px-3 py-1.5 rounded-lg border border-white/10 text-text-muted bg-white/5 text-[11px] font-mono tracking-wider">🇬🇧 Anglais — Professionnel</span>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>
