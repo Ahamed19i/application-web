@@ -43,7 +43,7 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <section id="about" className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -151,6 +151,6 @@ export const About: React.FC = () => {
           </div>
         </div>
       </motion.div>
-    </div>
+    </section>
   );
 };

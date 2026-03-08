@@ -82,7 +82,7 @@ export const Blog: React.FC = () => {
   }
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <section id="blog" className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -163,6 +163,6 @@ export const Blog: React.FC = () => {
           </div>
         )}
       </motion.div>
-    </div>
+    </section>
   );
 };

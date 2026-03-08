@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -35,21 +36,23 @@ export default function App() {
 
   return (
     <Router>
-      <div className="relative min-h-screen overflow-x-hidden">
+      <div className="relative min-h-screen overflow-x-hidden bg-bg">
         <NetworkBackground />
         <Navbar />
         
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<Hero />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Routes>
-        </AnimatePresence>
+        <Routes>
+          <Route path="/" element={
+            <main>
+              <Hero />
+              <About />
+              <Projects />
+              <Blog />
+              <Contact />
+            </main>
+          } />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
 
         <Footer />
 

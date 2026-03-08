@@ -35,7 +35,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <section id="contact" className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -180,6 +180,6 @@ export const Contact: React.FC = () => {
           </div>
         </div>
       </motion.div>
-    </div>
+    </section>
   );
 };

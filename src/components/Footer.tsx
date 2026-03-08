@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Terminal, Github, Linkedin, Mail } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   return (
@@ -15,11 +14,11 @@ export const Footer: React.FC = () => {
         </p>
         
         <div className="flex justify-center gap-8 flex-wrap mb-10">
-          <Link to="/" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Accueil</Link>
-          <Link to="/about" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Profil</Link>
-          <Link to="/projects" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Projets</Link>
-          <Link to="/blog" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Blog</Link>
-          <Link to="/contact" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Contact</Link>
+          <a href="#home" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Accueil</a>
+          <a href="#about" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Profil</a>
+          <a href="#projects" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Projets</a>
+          <a href="#blog" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Blog</a>
+          <a href="#contact" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Contact</a>
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">

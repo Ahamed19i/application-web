@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Download } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 export const Hero: React.FC = () => {
   const [text, setText] = useState('');
@@ -38,7 +37,7 @@ export const Hero: React.FC = () => {
   }, [text, isDeleting, roleIndex]);
 
   return (
-    <section className="min-h-screen flex items-center pt-20 px-6 relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-center pt-20 px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_70%_30%,rgba(0,80,200,0.07)_0%,transparent_65%),radial-gradient(ellipse_60%_60%_at_10%_80%,rgba(0,180,255,0.05)_0%,transparent_55%)] -z-10"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,180,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,180,255,0.025)_1px,transparent_1px)] bg-[size:70px_70px] -z-10"></div>
       
@@ -72,15 +71,15 @@ export const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <a href="../public/images/CV_Officiel1.pdf" download className="btn-p">
+            <a href="/cv-ahamed-hassani.pdf" download className="btn-p">
               📄 Télécharger mon CV
             </a>
-            <Link to="/projects" className="btn-g">
+            <a href="#projects" className="btn-g">
               🚀 Mes projets
-            </Link>
-            <Link to="/contact" className="btn-gr">
+            </a>
+            <a href="#contact" className="btn-gr">
               ✉️ Me contacter
-            </Link>
+            </a>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-10">
@@ -123,7 +122,7 @@ export const Hero: React.FC = () => {
             
             <div className="absolute inset-6 bg-bg-secondary border border-white/10 animate-morph overflow-hidden shadow-2xl">
               <img
-                src="../public/images/propos.jpg"
+                src="/images/profile.jpg"
                 alt="Ahamed Hassani M'homa"
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                 onError={(e) => {
