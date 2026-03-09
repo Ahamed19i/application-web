@@ -115,7 +115,7 @@ export const Hero: React.FC = () => {
             
             <div className="absolute inset-4 bg-bg-secondary border border-white/10 animate-morph overflow-hidden shadow-2xl">
               <img
-                src="/images/profile.jpg"
+                src="../public/images/propos.jpg"
                 alt="Ahamed Hassani M'homa"
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                 onError={(e) => {
