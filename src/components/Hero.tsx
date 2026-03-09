@@ -65,8 +65,8 @@ export const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <a href="/cv-ahamed-hassani.pdf" download className="btn-p">
-              📄 Télécharger mon CV
+            <a href="../public/images/CV_Officiel1.pdf" download className="btn-p">
+              📄 Voir mon CV
             </a>
             <a href="#projects" className="btn-g">
               🚀 Mes projets
