@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Github, ExternalLink, Filter, X } from 'lucide-react';
+import { Github, ExternalLink, Filter, X, Share2, Check } from 'lucide-react';
 import { Project } from '../types';
 
 export const Projects: React.FC = () => {
@@ -9,6 +9,25 @@ export const Projects: React.FC = () => {
   const [filter, setFilter] = useState('Tous');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#project-')) {
+        const projectId = parseInt(hash.replace('#project-', ''));
+        const project = projects.find(p => p.id === projectId);
+        if (project) {
+          setSelectedProject(project);
+          const element = document.getElementById('projects');
+          if (element) element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [projects]);
 
   useEffect(() => {
     fetch('/api/projects')
@@ -19,12 +38,51 @@ export const Projects: React.FC = () => {
       .then(data => {
         setProjects(data);
         setLoading(false);
+        
+        // Initial check
+        const hash = window.location.hash;
+        if (hash.startsWith('#project-')) {
+          const projectId = parseInt(hash.replace('#project-', ''));
+          const project = data.find((p: Project) => p.id === projectId);
+          if (project) {
+            setSelectedProject(project);
+            setTimeout(() => {
+              const element = document.getElementById('projects');
+              if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          }
+        }
       })
       .catch(err => {
         console.error(err);
         setLoading(false);
       });
   }, []);
+
+  const closeProject = () => {
+    setSelectedProject(null);
+    if (window.location.hash.startsWith('#project-')) {
+      window.history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+  };
+
+  const handleShare = (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}${window.location.pathname}#project-${project.id}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: project.title,
+        text: project.description,
+        url: shareUrl,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
+      });
+    }
+  };
 
   const categories = ['Tous', 'Réseau', 'Cloud/DevOps', 'Cybersécurité', 'Automatisation'];
 
@@ -76,6 +134,7 @@ export const Projects: React.FC = () => {
             {filteredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
+                id={`project-${project.id}`}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -90,7 +149,14 @@ export const Projects: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    <button 
+                      onClick={(e) => handleShare(e, project)}
+                      className="p-2 bg-bg/60 backdrop-blur-md rounded-lg text-white/70 hover:text-accent-primary border border-white/10 hover:border-accent-primary/30 transition-all"
+                      title="Partager ce projet"
+                    >
+                      <Share2 size={14} />
+                    </button>
                     <span className={`text-[9px] font-mono px-2.5 py-1 rounded-md uppercase tracking-wider border ${
                       project.category === 'Cloud/DevOps' ? 'bg-warning/10 text-warning border-warning/20' :
                       project.category === 'Réseau' ? 'bg-accent-primary/10 text-accent-primary border-accent-primary/20' :
@@ -131,7 +197,7 @@ export const Projects: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-bg/90 backdrop-blur-md"
-            onClick={() => setSelectedProject(null)}
+            onClick={closeProject}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
@@ -141,7 +207,7 @@ export const Projects: React.FC = () => {
               onClick={e => e.stopPropagation()}
             >
               <button 
-                onClick={() => setSelectedProject(null)}
+                onClick={closeProject}
                 className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
               >
                 <X size={24} />
@@ -166,6 +232,12 @@ export const Projects: React.FC = () => {
                         <Github size={20} /> Code Source
                       </a>
                     )}
+                    <button 
+                      onClick={(e) => handleShare(e, selectedProject)}
+                      className="flex-grow py-3 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center gap-2 transition-all"
+                    >
+                      <Share2 size={20} /> Partager
+                    </button>
                     <button className="flex-grow py-3 bg-accent-primary text-bg font-bold rounded-xl flex items-center justify-center gap-2 hover:glow-primary transition-all">
                       <ExternalLink size={20} /> Démo Live
                     </button>
@@ -190,6 +262,19 @@ export const Projects: React.FC = () => {
                 </div>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] bg-accent-primary text-bg px-6 py-3 rounded-full font-mono text-xs font-bold flex items-center gap-2 shadow-2xl"
+          >
+            <Check size={16} /> LIEN COPIÉ DANS LE PRESSE-PAPIER
           </motion.div>
         )}
       </AnimatePresence>
