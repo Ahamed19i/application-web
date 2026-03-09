@@ -13,12 +13,12 @@ export const Footer: React.FC = () => {
           M2 Systèmes & Réseaux · DevOps · Cloud · Linux · Dakar 🇸🇳
         </p>
         
-        <div className="flex justify-center gap-8 flex-wrap mb-10">
-          <a href="#home" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Accueil</a>
-          <a href="#about" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Profil</a>
-          <a href="#projects" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Projets</a>
-          <a href="#blog" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Blog</a>
-          <a href="#contact" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Contact</a>
+        <div className="flex justify-center gap-x-8 gap-y-4 flex-wrap mb-10">
+          <a href="/#home" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Accueil</a>
+          <a href="/#about" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Profil</a>
+          <a href="/#projects" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Projets</a>
+          <a href="/#blog" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Blog</a>
+          <a href="/#contact" className="font-mono text-[11px] text-text-muted uppercase tracking-wider hover:text-accent-primary transition-colors">Contact</a>
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">

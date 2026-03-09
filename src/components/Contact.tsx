@@ -102,9 +102,9 @@ export const Contact: React.FC = () => {
 
           <div className="relative">
             <div className="absolute -inset-4 bg-accent-primary/5 blur-3xl rounded-full"></div>
-            <form onSubmit={handleSubmit} className="relative glass p-8 rounded-3xl space-y-6">
+            <form onSubmit={handleSubmit} className="relative glass p-6 md:p-8 rounded-3xl space-y-6">
               <h3 className="text-lg font-bold mb-2">Envoyer un message</h3>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-mono text-text-muted uppercase tracking-widest ml-1">Nom</label>
                   <input 

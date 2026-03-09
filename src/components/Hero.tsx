@@ -40,16 +40,21 @@ export const Hero: React.FC = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_70%_30%,rgba(0,80,200,0.07)_0%,transparent_65%),radial-gradient(ellipse_60%_60%_at_10%_80%,rgba(0,180,255,0.05)_0%,transparent_55%)] -z-10"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,180,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,180,255,0.025)_1px,transparent_1px)] bg-[size:70px_70px] -z-10"></div>
       
-      <div className="max-w-7xl mx-auto w-full grid md:grid-cols-[1fr_360px] gap-12 items-center">
+      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-[1fr_400px] gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="z-10"
-        >      
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
+          className="z-10 order-2 lg:order-1 text-center lg:text-left"
+        >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
+            Disponible — Recherche de stage / alternance
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
-            <span className="block text-accent-primary text-[0.32em] font-medium tracking-[0.15em] uppercase mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
+            <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
           </h1>
           
           <div className="h-6 mb-6">
@@ -58,25 +63,25 @@ export const Hero: React.FC = () => {
             </p>
           </div>
 
-          <p className="text-base text-text-secondary mb-10 max-w-lg leading-relaxed">
+          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
             Ingénieur en <strong>Master 2 Systèmes & Réseaux</strong> à l'AFI-Université (Dakar).
             Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
             Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
           </p>
 
-          <div className="flex flex-wrap gap-4">
-            <a href="/cv-ahamed-hassani.pdf" download className="btn-p">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+            <a href="/cv-ahamed-hassani.pdf" download className="btn-p text-sm md:text-base">
               📄 Télécharger mon CV
             </a>
-            <a href="#projects" className="btn-g">
+            <a href="#projects" className="btn-g text-sm md:text-base">
               🚀 Mes projets
             </a>
-            <a href="#contact" className="btn-gr">
+            <a href="#contact" className="btn-gr text-sm md:text-base">
               ✉️ Me contacter
             </a>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-10">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-2 mt-10">
             <span className="px-3 py-1 rounded-full border border-success/20 text-success bg-success/5 text-[11px] font-mono tracking-wider">🐧 Linux</span>
             <span className="px-3 py-1 rounded-full border border-white/10 text-text-muted bg-white/5 text-[11px] font-mono tracking-wider">🪟 Windows Server</span>
             <span className="px-3 py-1 rounded-full border border-white/10 text-text-muted bg-white/5 text-[11px] font-mono tracking-wider">☁️ Cloud / AWS</span>
@@ -84,18 +89,18 @@ export const Hero: React.FC = () => {
             <span className="px-3 py-1 rounded-full border border-white/10 text-text-muted bg-white/5 text-[11px] font-mono tracking-wider">⚙️ Ansible</span>
           </div>
 
-          <div className="mt-10 flex gap-12 pt-8 border-t border-white/10">
+          <div className="mt-10 flex justify-center lg:justify-start gap-8 md:gap-12 pt-8 border-t border-white/10">
             <div>
-              <p className="text-3xl font-bold text-accent-primary leading-none">M2</p>
-              <p className="text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">M2</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-accent-primary leading-none">2+</p>
-              <p className="text-[10px] text-text-muted uppercase tracking-widest mt-1">Expériences pro</p>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2+</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expériences pro</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-accent-primary leading-none">5+</p>
-              <p className="text-[10px] text-text-muted uppercase tracking-widest mt-1">Projets infra</p>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">5+</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Projets infra</p>
             </div>
           </div>
         </motion.div>
@@ -104,11 +109,11 @@ export const Hero: React.FC = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="relative flex justify-center items-center"
+          className="relative flex justify-center items-center order-1 lg:order-2"
         >
-          <div className="relative w-[280px] h-[340px] md:w-[320px] md:h-[400px]">
-            <div className="absolute -inset-10 border border-dashed border-accent-primary/20 rounded-full animate-spin-slow">
-              <div className="absolute top-1/4 right-0 w-3 h-3 bg-accent-primary rounded-full shadow-[0_0_15px_rgba(0,180,255,1)]"></div>
+          <div className="relative w-[220px] h-[280px] md:w-[280px] md:h-[350px] lg:w-[320px] lg:h-[400px]">
+            <div className="absolute -inset-6 md:-inset-10 border border-dashed border-accent-primary/20 rounded-full animate-spin-slow">
+              <div className="absolute top-1/4 right-0 w-2 h-2 md:w-3 md:h-3 bg-accent-primary rounded-full shadow-[0_0_15px_rgba(0,180,255,1)]"></div>
             </div>
             
             <div className="absolute inset-0 bg-gradient-to-br from-accent-secondary to-accent-primary opacity-10 animate-morph"></div>

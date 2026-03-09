@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -88,7 +86,7 @@ export const ProjectDetail: React.FC = () => {
                   {project.status}
                 </span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight tracking-tight">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-8 leading-tight tracking-tight">
                 {project.title}
               </h1>
               <p className="text-xl text-text-secondary leading-relaxed font-light italic border-l-4 border-accent-primary pl-6 py-2">

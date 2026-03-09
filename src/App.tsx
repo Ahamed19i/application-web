@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Terminal } from 'lucide-react';
 import { NetworkBackground } from './components/NetworkBackground.tsx';
@@ -15,6 +15,32 @@ import { AdminLogin } from './components/AdminLogin.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { ProjectDetail } from './components/ProjectDetail.tsx';
 import { BlogPostDetail } from './components/BlogPostDetail.tsx';
+
+const ScrollToHash = () => {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        const offset = 80;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
+
+  return null;
+};
 
 export default function App() {
   const [sudoActive, setSudoActive] = useState(false);
@@ -38,6 +64,7 @@ export default function App() {
 
   return (
     <Router>
+      <ScrollToHash />
       <div className="relative min-h-screen overflow-x-hidden bg-bg">
         <NetworkBackground />
         <Navbar />

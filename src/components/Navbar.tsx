@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Terminal, Github, Linkedin, Mail } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,6 +49,13 @@ export const Navbar: React.FC = () => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     if (path.startsWith('#')) {
       e.preventDefault();
+      
+      if (location.pathname !== '/') {
+        navigate('/' + path);
+        setIsOpen(false);
+        return;
+      }
+
       const element = document.querySelector(path);
       if (element) {
         const offset = 80;
