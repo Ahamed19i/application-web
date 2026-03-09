@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Clock, ArrowRight, Share2, Check } from 'lucide-react';
@@ -53,7 +52,7 @@ export const Blog: React.FC = () => {
   );
 
   return (
-    <section id="blog" className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <section id="blog" className="pt-20 md:pt-32 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

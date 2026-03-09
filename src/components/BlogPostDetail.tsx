@@ -76,27 +76,27 @@ export const BlogPostDetail: React.FC = () => {
         </button>
 
         <article className="space-y-12">
-          <header className="space-y-8 text-center">
+          <header className="space-y-6 md:space-y-8 text-center">
             <div className="flex justify-center gap-3">
               <span className="px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-[10px] font-mono uppercase tracking-widest border border-accent-primary/20">
                 {post.category}
               </span>
             </div>
             
-            <h1 className="text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight px-2">
               {post.title}
             </h1>
 
-            <div className="flex flex-wrap justify-center items-center gap-8 text-text-muted text-sm font-mono uppercase tracking-widest">
-              <div className="flex items-center gap-2">
+            <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-center items-center gap-4 md:gap-8 text-text-muted text-[10px] md:text-sm font-mono uppercase tracking-widest">
+              <div className="flex items-center justify-center gap-2">
                 <Calendar size={14} className="text-accent-primary" />
                 {new Date(post.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <Clock size={14} className="text-accent-primary" />
                 5 min de lecture
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <User size={14} className="text-accent-primary" />
                 Ahamed Hassani
               </div>

@@ -41,7 +41,7 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <section id="about" className="pt-20 md:pt-32 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -127,6 +127,18 @@ export const About: React.FC = () => {
                 </div>
               </div>
             ))}
+
+            <div className="pt-6">
+              <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langages & Outils</h3>
+              <div className="flex flex-wrap gap-2">
+                {["Bash / Shell", "PowerShell", "YAML", "SQL / MySQL", "Python"].map((lang, i) => (
+                  <span key={i} className="px-3 py-1.5 glass rounded-lg text-[11px] font-mono text-text-secondary hover:border-accent-primary/30 transition-all">
+                    {lang}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             <div className="pt-6">
               <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langues</h3>
               <div className="flex flex-wrap gap-2">

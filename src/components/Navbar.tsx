@@ -49,27 +49,11 @@ export const Navbar: React.FC = () => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     if (path.startsWith('#')) {
       e.preventDefault();
-      
-      if (location.pathname !== '/') {
-        navigate('/' + path);
-        setIsOpen(false);
-        return;
-      }
-
-      const element = document.querySelector(path);
-      if (element) {
-        const offset = 80;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-      }
       setIsOpen(false);
+      
+      // Always use navigate to let ScrollToHash handle the scroll
+      // This is more consistent across pages and mobile devices
+      navigate('/' + path);
     }
   };
 
@@ -110,8 +94,12 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-white p-2" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X /> : <Menu />}
+        <button 
+          className="md:hidden text-white p-2 z-50 relative" 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+        >
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 

@@ -136,8 +136,8 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute top-8 -left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10">
-              <p className="text-accent-primary text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
+            <div className="absolute -top-4 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+              <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>
         </motion.div>
