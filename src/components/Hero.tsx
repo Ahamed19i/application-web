@@ -46,10 +46,15 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="z-10"
-        > 
+        >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[11px] font-mono mb-8 tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
+            Disponible — Recherche de stage / alternance
+          </div>
+          
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
-            <span className="block text-accent-primary text-[0.20em] font-medium tracking-[0.9em] uppercase mt-3 opacity-90">Ingénieur Systèmes, Réseaux & Cloud</span>
+            <span className="block text-accent-primary text-[0.32em] font-medium tracking-[0.15em] uppercase mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
           </h1>
           
           <div className="h-6 mb-6">

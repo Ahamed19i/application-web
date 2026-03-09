@@ -13,8 +13,8 @@ export const NetworkBackground: React.FC = () => {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
-    const particleCount = 40;
-    const connectionDistance = 150;
+    const particleCount = 30;
+    const connectionDistance = 180;
 
     class Particle {
       x: number;
@@ -26,9 +26,9 @@ export const NetworkBackground: React.FC = () => {
       constructor() {
         this.x = Math.random() * (canvas?.width || 0);
         this.y = Math.random() * (canvas?.height || 0);
-        this.vx = (Math.random() - 0.5) * 0.3;
-        this.vy = (Math.random() - 0.5) * 0.3;
-        this.size = Math.random() * 1.5 + 0.5;
+        this.vx = (Math.random() - 0.5) * 0.2;
+        this.vy = (Math.random() - 0.5) * 0.2;
+        this.size = Math.random() * 1 + 0.5;
       }
 
       update() {
@@ -43,7 +43,7 @@ export const NetworkBackground: React.FC = () => {
         if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 180, 255, 0.3)';
+        ctx.fillStyle = 'rgba(0, 180, 255, 0.15)';
         ctx.fill();
       }
     }
@@ -74,7 +74,7 @@ export const NetworkBackground: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 180, 255, ${0.15 * (1 - dist / connectionDistance)})`;
+            ctx.strokeStyle = `rgba(0, 180, 255, ${0.08 * (1 - dist / connectionDistance)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -102,7 +102,7 @@ export const NetworkBackground: React.FC = () => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
       {/* Canvas Network */}
-      <canvas ref={canvasRef} className="absolute inset-0 opacity-40" />
+      <canvas ref={canvasRef} className="absolute inset-0 opacity-30" />
 
       {/* Primary Glow */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent-primary/10 blur-[120px] rounded-full animate-pulse"></div>
@@ -114,8 +114,8 @@ export const NetworkBackground: React.FC = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] h-[50%] bg-accent-primary/5 blur-[150px] rounded-full"></div>
       
       {/* Subtle Grid Overlay */}
-      <div className="absolute inset-0 opacity-[0.1]" style={{ 
-        backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0)',
+      <div className="absolute inset-0 opacity-[0.05]" style={{ 
+        backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0)',
         backgroundSize: '50px 50px'
       }}></div>
     </div>
