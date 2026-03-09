@@ -1,34 +1,17 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Clock, ArrowRight, Tag, Share2, Check } from 'lucide-react';
+import { Search, Clock, ArrowRight, Share2, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Post } from '../types';
-import Markdown from 'react-markdown';
 
 export const Blog: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [search, setSearch] = useState('');
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash.startsWith('#post-')) {
-        const postId = parseInt(hash.replace('#post-', ''));
-        const post = posts.find(p => p.id === postId);
-        if (post) {
-          setSelectedPost(post);
-          const element = document.getElementById('blog');
-          if (element) element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [posts]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/posts')
@@ -39,20 +22,6 @@ export const Blog: React.FC = () => {
       .then(data => {
         setPosts(data);
         setLoading(false);
-
-        // Initial check
-        const hash = window.location.hash;
-        if (hash.startsWith('#post-')) {
-          const postId = parseInt(hash.replace('#post-', ''));
-          const post = data.find((p: Post) => p.id === postId);
-          if (post) {
-            setSelectedPost(post);
-            setTimeout(() => {
-              const element = document.getElementById('blog');
-              if (element) element.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-          }
-        }
       })
       .catch(err => {
         console.error(err);
@@ -60,16 +29,9 @@ export const Blog: React.FC = () => {
       });
   }, []);
 
-  const closePost = () => {
-    setSelectedPost(null);
-    if (window.location.hash.startsWith('#post-')) {
-      window.history.pushState("", document.title, window.location.pathname + window.location.search);
-    }
-  };
-
   const handleShare = (e: React.MouseEvent, post: Post) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}${window.location.pathname}#post-${post.id}`;
+    const shareUrl = `${window.location.origin}/blog/${post.id}`;
     
     if (navigator.share) {
       navigator.share({
@@ -89,65 +51,6 @@ export const Blog: React.FC = () => {
     p.title.toLowerCase().includes(search.toLowerCase()) || 
     p.tags.toLowerCase().includes(search.toLowerCase())
   );
-
-  if (selectedPost) {
-    return (
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
-          <div className="flex justify-between items-start w-full md:w-auto">
-            <button 
-              onClick={closePost}
-              className="text-accent-primary font-mono text-sm mb-8 flex items-center gap-2 hover:translate-x-[-4px] transition-transform"
-            >
-              &lt; Retour aux articles
-            </button>
-            <button 
-              onClick={(e) => handleShare(e, selectedPost)}
-              className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-accent-primary border border-white/10 transition-all flex items-center gap-2 text-xs font-mono"
-            >
-              <Share2 size={16} /> PARTAGER
-            </button>
-          </div>
-        </div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <img 
-            src={selectedPost.image_url || `https://picsum.photos/seed/${selectedPost.id}/1200/600`} 
-            alt={selectedPost.title}
-            className="w-full aspect-video object-cover rounded-3xl mb-10 border border-white/10"
-            referrerPolicy="no-referrer"
-          />
-          <div className="flex items-center gap-4 mb-6">
-            <span className="px-3 py-1 bg-accent-primary/10 text-accent-primary rounded-full text-xs font-mono">
-              {selectedPost.category}
-            </span>
-            <span className="text-white/40 text-sm flex items-center gap-2">
-              <Clock size={14} /> {new Date(selectedPost.created_at).toLocaleDateString()}
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-10">{selectedPost.title}</h1>
-          
-          <div className="markdown-body prose prose-invert max-w-none text-white/80 leading-relaxed">
-            <Markdown>{selectedPost.content}</Markdown>
-          </div>
-
-          <div className="mt-16 pt-8 border-t border-white/10">
-            <h4 className="font-mono text-sm text-white/40 uppercase tracking-widest mb-4">Tags</h4>
-            <div className="flex flex-wrap gap-2">
-              {selectedPost.tags.split(',').map((tag, i) => (
-                <span key={i} className="flex items-center gap-1 text-xs text-white/60 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                  <Tag size={12} /> {tag.trim()}
-                </span>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <section id="blog" className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
@@ -191,7 +94,7 @@ export const Blog: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                onClick={() => setSelectedPost(post)}
+                onClick={() => navigate(`/blog/${post.id}`)}
                 className="group relative glass rounded-2xl overflow-hidden hover:border-accent-primary/30 transition-all cursor-pointer flex flex-col"
               >
                 <div className="aspect-[21/9] overflow-hidden bg-bg-tertiary relative">

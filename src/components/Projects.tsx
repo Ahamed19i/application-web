@@ -1,33 +1,17 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Github, ExternalLink, Filter, X, Share2, Check } from 'lucide-react';
+import { Github, ExternalLink, Filter, X, Share2, Check, ArrowUpRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Project } from '../types';
 
 export const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [filter, setFilter] = useState('Tous');
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash.startsWith('#project-')) {
-        const projectId = parseInt(hash.replace('#project-', ''));
-        const project = projects.find(p => p.id === projectId);
-        if (project) {
-          setSelectedProject(project);
-          const element = document.getElementById('projects');
-          if (element) element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [projects]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/projects')
@@ -38,20 +22,6 @@ export const Projects: React.FC = () => {
       .then(data => {
         setProjects(data);
         setLoading(false);
-        
-        // Initial check
-        const hash = window.location.hash;
-        if (hash.startsWith('#project-')) {
-          const projectId = parseInt(hash.replace('#project-', ''));
-          const project = data.find((p: Project) => p.id === projectId);
-          if (project) {
-            setSelectedProject(project);
-            setTimeout(() => {
-              const element = document.getElementById('projects');
-              if (element) element.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-          }
-        }
       })
       .catch(err => {
         console.error(err);
@@ -59,16 +29,9 @@ export const Projects: React.FC = () => {
       });
   }, []);
 
-  const closeProject = () => {
-    setSelectedProject(null);
-    if (window.location.hash.startsWith('#project-')) {
-      window.history.pushState("", document.title, window.location.pathname + window.location.search);
-    }
-  };
-
   const handleShare = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}${window.location.pathname}#project-${project.id}`;
+    const shareUrl = `${window.location.origin}/project/${project.id}`;
     
     if (navigator.share) {
       navigator.share({
@@ -140,7 +103,7 @@ export const Projects: React.FC = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 className="group relative glass rounded-2xl overflow-hidden hover:border-accent-primary/30 transition-all cursor-pointer flex flex-col"
-                onClick={() => setSelectedProject(project)}
+                onClick={() => navigate(`/project/${project.id}`)}
               >
                 <div className="aspect-[16/9] overflow-hidden bg-bg-tertiary flex items-center justify-center relative">
                   <img 
@@ -177,10 +140,11 @@ export const Projects: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="mt-auto flex gap-3">
+                  <div className="mt-auto flex justify-between items-center">
                     <div className="text-[10px] font-mono text-text-muted flex items-center gap-1.5 px-3 py-1.5 border border-white/5 rounded-lg group-hover:border-accent-primary/30 transition-all">
                       ⚡ Détails
                     </div>
+                    <ArrowUpRight size={16} className="text-accent-primary opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0" />
                   </div>
                 </div>
               </motion.div>
@@ -189,82 +153,6 @@ export const Projects: React.FC = () => {
         )}
       </motion.div>
 
-      {/* Project Modal */}
-      <AnimatePresence>
-        {selectedProject && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-bg/90 backdrop-blur-md"
-            onClick={closeProject}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="glass max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-3xl p-8 relative"
-              onClick={e => e.stopPropagation()}
-            >
-              <button 
-                onClick={closeProject}
-                className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
-              >
-                <X size={24} />
-              </button>
-
-              <div className="grid md:grid-cols-2 gap-10">
-                <div>
-                  <img 
-                    src={selectedProject.image_url || `https://picsum.photos/seed/${selectedProject.id}/800/450`} 
-                    alt={selectedProject.title}
-                    className="w-full rounded-2xl border border-white/10"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="flex gap-4 mt-6">
-                    {selectedProject.github_url && (
-                      <a 
-                        href={selectedProject.github_url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex-grow py-3 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center gap-2 transition-all"
-                      >
-                        <Github size={20} /> Code Source
-                      </a>
-                    )}
-                    <button 
-                      onClick={(e) => handleShare(e, selectedProject)}
-                      className="flex-grow py-3 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center gap-2 transition-all"
-                    >
-                      <Share2 size={20} /> Partager
-                    </button>
-                    <button className="flex-grow py-3 bg-accent-primary text-bg font-bold rounded-xl flex items-center justify-center gap-2 hover:glow-primary transition-all">
-                      <ExternalLink size={20} /> Démo Live
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-accent-primary font-mono text-sm mb-2 block">{selectedProject.category}</span>
-                  <h2 className="text-3xl font-bold mb-4">{selectedProject.title}</h2>
-                  <div className="prose prose-invert max-w-none text-white/70 mb-8">
-                    <p>{selectedProject.content || selectedProject.description}</p>
-                  </div>
-                  
-                  <h4 className="font-mono text-sm text-white/40 uppercase tracking-widest mb-4">Stack Technologique</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.stack.split(',').map((s, i) => (
-                      <span key={i} className="px-3 py-1 bg-accent-primary/10 text-accent-primary rounded-lg text-xs font-mono">
-                        {s.trim()}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
       {/* Toast Notification */}
       <AnimatePresence>
         {showToast && (

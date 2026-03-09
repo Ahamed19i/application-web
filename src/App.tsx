@@ -13,6 +13,8 @@ import { Contact } from './components/Contact.tsx';
 import { Footer } from './components/Footer.tsx';
 import { AdminLogin } from './components/AdminLogin.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
+import { ProjectDetail } from './components/ProjectDetail.tsx';
+import { BlogPostDetail } from './components/BlogPostDetail.tsx';
 
 export default function App() {
   const [sudoActive, setSudoActive] = useState(false);
@@ -50,6 +52,8 @@ export default function App() {
               <Contact />
             </main>
           } />
+          <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/blog/:id" element={<BlogPostDetail />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
