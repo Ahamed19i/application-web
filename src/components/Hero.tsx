@@ -46,12 +46,7 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="z-10"
-        >
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[11px] font-mono mb-8 tracking-widest uppercase">
-            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
-            Disponible — Recherche de stage / alternance
-          </div>
-          
+        >      
           <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
             <span className="block text-accent-primary text-[0.32em] font-medium tracking-[0.15em] uppercase mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
@@ -70,8 +65,8 @@ export const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <a href="/images/CV_Officiel1.pdf" download className="btn-p">
-              📄 Voir mon CV
+            <a href="/cv-ahamed-hassani.pdf" download className="btn-p">
+              📄 Télécharger mon CV
             </a>
             <a href="#projects" className="btn-g">
               🚀 Mes projets
@@ -122,7 +117,7 @@ export const Hero: React.FC = () => {
               <img
                 src="/images/propos.jpg"
                 alt="Ahamed Hassani M'homa"
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                className="w-full h-full object-cover transition-all duration-700"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = "https://picsum.photos/seed/ahamed/600/800";
