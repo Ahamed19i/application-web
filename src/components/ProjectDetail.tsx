@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Github, ExternalLink, Calendar, Tag, Share2, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, Calendar, Tag, Share2, CheckCircle2, FileDown } from 'lucide-react';
 import { Project } from '../types';
 import Markdown from 'react-markdown';
 
@@ -137,6 +137,21 @@ export const ProjectDetail: React.FC = () => {
                     <span className="flex items-center gap-3 text-sm font-medium">
                       <Github size={18} />
                       Code Source
+                    </span>
+                    <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                )}
+
+                {project.pdf_url && (
+                  <a 
+                    href={project.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary/5 border border-accent-primary/20 text-accent-primary hover:bg-accent-primary/10 transition-colors group"
+                  >
+                    <span className="flex items-center gap-3 text-sm font-medium">
+                      <FileDown size={18} />
+                      Documentation PDF
                     </span>
                     <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                   </a>

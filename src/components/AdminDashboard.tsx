@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -120,6 +121,7 @@ export const AdminDashboard: React.FC = () => {
           content: '',
           stack: '',
           github_url: '',
+          pdf_url: '',
           image_url: '',
           category: 'Réseau',
           status: 'En cours',
@@ -130,6 +132,7 @@ export const AdminDashboard: React.FC = () => {
           title: '',
           slug: '',
           content: '',
+          pdf_url: '',
           image_url: '',
           category: 'Cloud/DevOps',
           tags: '',
@@ -439,16 +442,27 @@ export const AdminDashboard: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">
-                      {activeTab === 'projects' ? 'Stack (séparé par des virgules)' : 'Tags (séparés par des virgules)'}
-                    </label>
+                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">URL PDF (GitHub Raw)</label>
                     <input 
                       type="text" 
-                      value={activeTab === 'projects' ? formData.stack : formData.tags || ''}
-                      onChange={e => setFormData({...formData, [activeTab === 'projects' ? 'stack' : 'tags']: e.target.value})}
+                      value={formData.pdf_url || ''}
+                      onChange={e => setFormData({...formData, pdf_url: e.target.value})}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      placeholder="https://raw.githubusercontent.com/..."
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-mono text-white/40 uppercase tracking-widest">
+                    {activeTab === 'projects' ? 'Stack (séparé par des virgules)' : 'Tags (séparés par des virgules)'}
+                  </label>
+                  <input 
+                    type="text" 
+                    value={activeTab === 'projects' ? formData.stack : formData.tags || ''}
+                    onChange={e => setFormData({...formData, [activeTab === 'projects' ? 'stack' : 'tags']: e.target.value})}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                  />
                 </div>
 
                 {activeTab === 'projects' && (

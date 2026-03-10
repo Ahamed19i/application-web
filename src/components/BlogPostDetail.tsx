@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Calendar, Tag, Share2, Clock, User, Bookmark } from 'lucide-react';
+import { ArrowLeft, Calendar, Tag, Share2, Clock, User, Bookmark, FileDown } from 'lucide-react';
 import { Post } from '../types';
 import Markdown from 'react-markdown';
 
@@ -133,6 +133,17 @@ export const BlogPostDetail: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-4">
+                {post.pdf_url && (
+                  <a 
+                    href={post.pdf_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-text-secondary hover:bg-white/10 transition-colors"
+                  >
+                    <FileDown size={18} />
+                    PDF
+                  </a>
+                )}
                 <button 
                   onClick={handleShare}
                   className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-accent-primary text-white hover:bg-accent-primary/80 transition-colors shadow-lg shadow-accent-primary/20"

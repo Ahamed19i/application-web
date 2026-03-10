@@ -83,10 +83,10 @@ app.get("/api/admin/projects", authenticateToken, async (req, res) => {
 });
 
 app.post("/api/projects", authenticateToken, async (req, res) => {
-  const { title, description, content, stack, github_url, image_url, category, status } = req.body;
+  const { title, description, content, stack, github_url, image_url, category, status, pdf_url } = req.body;
   const { data, error } = await supabase
     .from("projects")
-    .insert([{ title, description, content, stack, github_url, image_url, category, status }])
+    .insert([{ title, description, content, stack, github_url, image_url, category, status, pdf_url }])
     .select();
   
   if (error) return res.status(500).json(error);
@@ -94,10 +94,10 @@ app.post("/api/projects", authenticateToken, async (req, res) => {
 });
 
 app.put("/api/projects/:id", authenticateToken, async (req, res) => {
-  const { title, description, content, stack, github_url, image_url, category, status, published } = req.body;
+  const { title, description, content, stack, github_url, image_url, category, status, published, pdf_url } = req.body;
   const { error } = await supabase
     .from("projects")
-    .update({ title, description, content, stack, github_url, image_url, category, status, published })
+    .update({ title, description, content, stack, github_url, image_url, category, status, published, pdf_url })
     .eq("id", req.params.id);
   
   if (error) return res.status(500).json(error);
@@ -147,10 +147,10 @@ app.get("/api/admin/posts", authenticateToken, async (req, res) => {
 });
 
 app.post("/api/posts", authenticateToken, async (req, res) => {
-  const { title, slug, content, image_url, category, tags } = req.body;
+  const { title, slug, content, image_url, category, tags, pdf_url } = req.body;
   const { data, error } = await supabase
     .from("posts")
-    .insert([{ title, slug, content, image_url, category, tags }])
+    .insert([{ title, slug, content, image_url, category, tags, pdf_url }])
     .select();
   
   if (error) return res.status(500).json(error);
@@ -158,10 +158,10 @@ app.post("/api/posts", authenticateToken, async (req, res) => {
 });
 
 app.put("/api/posts/:id", authenticateToken, async (req, res) => {
-  const { title, slug, content, image_url, category, tags, published } = req.body;
+  const { title, slug, content, image_url, category, tags, published, pdf_url } = req.body;
   const { error } = await supabase
     .from("posts")
-    .update({ title, slug, content, image_url, category, tags, published })
+    .update({ title, slug, content, image_url, category, tags, published, pdf_url })
     .eq("id", req.params.id);
   
   if (error) return res.status(500).json(error);
