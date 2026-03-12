@@ -53,7 +53,7 @@ export const Projects: React.FC = () => {
     : projects.filter(p => p.category === filter);
 
   return (
-    <section id="projects" className="pt-20 md:pt-32 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
+    <section id="projects" className="pt-16 md:pt-24 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

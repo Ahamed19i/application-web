@@ -41,7 +41,7 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="pt-20 md:pt-32 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
+    <section id="about" className="pt-16 md:pt-24 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -35,7 +35,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="pt-20 md:pt-32 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
+    <section id="contact" className="pt-16 md:pt-24 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -54,48 +54,48 @@ export const Contact: React.FC = () => {
             </p>
             
             <div className="flex flex-col gap-4">
-              <a href="mailto:ahassanimhoma20@gmail.com" className="group flex items-center gap-4 p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-xl group-hover:text-accent-primary transition-colors">
+              <a href="mailto:ahassanimhoma20@gmail.com" className="group flex items-center gap-3 md:gap-4 p-3 md:p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-lg md:text-xl group-hover:text-accent-primary transition-colors">
                   📧
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Email</p>
-                  <p className="text-sm font-bold truncate">ahassanimhoma20@gmail.com</p>
+                  <p className="text-[9px] md:text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Email</p>
+                  <p className="text-xs md:text-sm font-bold truncate">ahassanimhoma20@gmail.com</p>
                 </div>
-                <ArrowRight className="text-text-muted group-hover:text-accent-primary transition-colors" size={16} />
+                <ArrowRight className="flex-shrink-0 text-text-muted group-hover:text-accent-primary transition-colors" size={14} />
               </a>
 
-              <a href="tel:+221787942729" className="group flex items-center gap-4 p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-xl group-hover:text-accent-primary transition-colors">
+              <a href="tel:+221787942729" className="group flex items-center gap-3 md:gap-4 p-3 md:p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-lg md:text-xl group-hover:text-accent-primary transition-colors">
                   📞
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Téléphone</p>
-                  <p className="text-sm font-bold truncate">+221 78 794 27 29</p>
+                  <p className="text-[9px] md:text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Téléphone</p>
+                  <p className="text-xs md:text-sm font-bold truncate">+221 78 794 27 29</p>
                 </div>
-                <ArrowRight className="text-text-muted group-hover:text-accent-primary transition-colors" size={16} />
+                <ArrowRight className="flex-shrink-0 text-text-muted group-hover:text-accent-primary transition-colors" size={14} />
               </a>
 
-              <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" className="group flex items-center gap-4 p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-xl group-hover:text-accent-primary transition-colors">
+              <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" className="group flex items-center gap-3 md:gap-4 p-3 md:p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-lg md:text-xl group-hover:text-accent-primary transition-colors">
                   💻
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">GitHub</p>
-                  <p className="text-sm font-bold truncate">github.com/ahamed19i</p>
+                  <p className="text-[9px] md:text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">GitHub</p>
+                  <p className="text-xs md:text-sm font-bold truncate">github.com/ahamed19i</p>
                 </div>
-                <ArrowRight className="text-text-muted group-hover:text-accent-primary transition-colors" size={16} />
+                <ArrowRight className="flex-shrink-0 text-text-muted group-hover:text-accent-primary transition-colors" size={14} />
               </a>
 
-              <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" className="group flex items-center gap-4 p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
-                <div className="w-12 h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-xl group-hover:text-accent-primary transition-colors">
+              <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" className="group flex items-center gap-3 md:gap-4 p-3 md:p-4 glass rounded-2xl border-white/10 hover:border-accent-primary/30 transition-all">
+                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-bg-tertiary border border-white/10 flex items-center justify-center text-lg md:text-xl group-hover:text-accent-primary transition-colors">
                   💼
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">LinkedIn</p>
-                  <p className="text-sm font-bold truncate">Ahamed Hassani Mhoma</p>
+                  <p className="text-[9px] md:text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">LinkedIn</p>
+                  <p className="text-xs md:text-sm font-bold truncate">Ahamed Hassani Mhoma</p>
                 </div>
-                <ArrowRight className="text-text-muted group-hover:text-accent-primary transition-colors" size={16} />
+                <ArrowRight className="flex-shrink-0 text-text-muted group-hover:text-accent-primary transition-colors" size={14} />
               </a>
             </div>
           </div>
