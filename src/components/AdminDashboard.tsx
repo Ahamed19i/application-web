@@ -163,7 +163,9 @@ export const AdminDashboard: React.FC = () => {
         setIsModalOpen(false);
         fetchData();
       } else {
-        alert('Erreur lors de l\'enregistrement');
+        const errorData = await res.json();
+        alert(`Erreur lors de l'enregistrement : ${errorData.message || errorData.details || 'Erreur inconnue'}`);
+        console.error('Détails de l\'erreur:', errorData);
       }
     } catch (err) {
       console.error(err);
