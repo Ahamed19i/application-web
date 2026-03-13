@@ -1,159 +1,296 @@
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Search, Clock, ArrowRight, Share2, Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { Post } from '../types';
 
-export const Blog: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [search, setSearch] = useState('');
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion, useScroll, useSpring } from 'motion/react';
+import { 
+  ArrowLeft, 
+  Github, 
+  ExternalLink, 
+  Calendar, 
+  Tag, 
+  Share2, 
+  CheckCircle2, 
+  FileDown, 
+  ChevronRight,
+  Layers,
+  Info,
+  Globe,
+  Code2
+} from 'lucide-react';
+import { Project } from '../types';
+import Markdown from 'react-markdown';
+
+export const ProjectDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
-  const navigate = useNavigate();
+
+  // Reading progress bar
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
-    fetch('/api/posts')
-      .then(res => {
-        if (!res.ok) throw new Error('Erreur serveur');
-        return res.json();
-      })
+    window.scrollTo(0, 0);
+    fetch('/api/projects')
+      .then(res => res.json())
       .then(data => {
-        setPosts(data);
+        const found = data.find((p: Project) => p.id === Number(id));
+        setProject(found || null);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [id]);
 
-  const handleShare = (e: React.MouseEvent, post: Post) => {
-    e.stopPropagation();
-    const shareUrl = `${window.location.origin}/blog/${post.id}`;
-    
+  const handleShare = () => {
+    const shareUrl = window.location.href;
     if (navigator.share) {
       navigator.share({
-        title: post.title,
-        text: post.title,
+        title: project?.title,
+        text: project?.description,
         url: shareUrl,
-      }).catch(console.error);
-    } else {
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 3000);
       });
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     }
   };
 
-  const filteredPosts = posts.filter(p => 
-    p.title.toLowerCase().includes(search.toLowerCase()) || 
-    p.tags.toLowerCase().includes(search.toLowerCase())
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg">
+        <div className="w-12 h-12 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-bg px-6">
+        <h1 className="text-4xl font-bold mb-4">Projet introuvable</h1>
+        <button onClick={() => navigate('/')} className="btn-p">Retour à l'accueil</button>
+      </div>
+    );
+  }
 
   return (
-    <section id="blog" className="pt-16 md:pt-24 pb-16 md:pb-20 px-6 max-w-7xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-bg pb-20"
+    >
+      {/* Reading Progress Bar */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
-          <div>
-            <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-4">// 03 — Blog</p>
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-              Derniers <span className="text-accent-primary">articles</span>
-            </h2>
-            <div className="w-14 h-1 bg-gradient-to-r from-accent-primary to-transparent rounded-full"></div>
+        className="fixed top-0 left-0 right-0 h-1 bg-accent-primary z-[100] origin-left"
+        style={{ scaleX }}
+      />
+
+      <div className="max-w-[1400px] mx-auto px-6 pt-32">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
+          <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
+          <ChevronRight size={12} />
+          <Link to="/#projects" className="hover:text-accent-primary transition-colors">Projets</Link>
+          <ChevronRight size={12} />
+          <span className="text-accent-primary truncate max-w-[200px]">{project.title}</span>
+        </nav>
+
+        <div className="grid lg:grid-cols-[1fr_380px] gap-12 xl:gap-16">
+          {/* Main Content Area */}
+          <div className="min-w-0">
+            <header className="mb-12">
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <span className="px-3 py-1 rounded-md bg-accent-primary/10 text-accent-primary text-[10px] font-mono uppercase tracking-widest border border-accent-primary/20">
+                  {project.category}
+                </span>
+                <span className={`px-3 py-1 rounded-md text-[10px] font-mono uppercase tracking-widest border ${
+                  project.status === 'Terminé' 
+                    ? 'bg-green-500/10 text-green-500 border-green-500/20' 
+                    : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                }`}>
+                  {project.status}
+                </span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-8">
+                {project.title}
+              </h1>
+
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
+                {project.description}
+              </div>
+            </header>
+
+            <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-16 group">
+              <img 
+                src={project.image_url} 
+                alt={project.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = "https://picsum.photos/seed/project/1200/800";
+                }}
+              />
+            </div>
+
+            {/* Technical Overview Section */}
+            <div className="mb-16">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
+                <Terminal className="text-accent-primary" size={24} />
+                Vue d'ensemble technique
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="glass p-6 rounded-2xl border-white/10">
+                  <h3 className="text-accent-primary font-mono text-xs uppercase tracking-widest mb-3">Objectif du projet</h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">
+                    Ce projet a été conçu pour répondre à des problématiques réelles d'automatisation et d'optimisation d'infrastructure, en utilisant les meilleures pratiques du marché.
+                  </p>
+                </div>
+                <div className="glass p-6 rounded-2xl border-white/10">
+                  <h3 className="text-accent-primary font-mono text-xs uppercase tracking-widest mb-3">Défis relevés</h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">
+                    L'un des principaux défis a été l'intégration continue et le déploiement fluide tout en garantissant une sécurité maximale des données et des accès.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Markdown Content */}
+            <div className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10">
+              <div className="markdown-body">
+                <Markdown>{project.content}</Markdown>
+              </div>
+            </div>
           </div>
 
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-            <input 
-              type="text"
-              placeholder="Rechercher..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full bg-bg-tertiary border border-white/10 rounded-xl pl-12 pr-6 py-3 focus:border-accent-primary outline-none transition-colors text-sm font-mono"
-            />
+          {/* Sidebar */}
+          <aside>
+            <div className="sticky top-32 space-y-8">
+              {/* Project Info Card */}
+              <div className="glass p-8 rounded-3xl border-white/10 space-y-8 shadow-xl">
+                <div>
+                  <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-6 flex items-center gap-2">
+                    <div className="w-4 h-[1px] bg-accent-primary"></div>
+                    Spécifications
+                  </h3>
+                  <div className="space-y-5">
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center shrink-0">
+                        <Layers size={16} className="text-accent-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Stack Technique</p>
+                        <p className="text-sm font-medium text-text-primary">{project.stack}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+                        <CheckCircle2 size={16} className="text-green-500" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Statut</p>
+                        <p className="text-sm font-medium text-text-primary">{project.status}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8 border-t border-white/10 space-y-4">
+                  {project.github_url && (
+                    <a 
+                      href={project.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group"
+                    >
+                      <span className="flex items-center gap-3 text-sm font-bold">
+                        <Github size={18} className="text-accent-primary" />
+                        Code Source
+                      </span>
+                      <ChevronRight size={16} className="text-text-muted group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  )}
+
+                  {project.pdf_url && (
+                    <a 
+                      href={project.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary/5 border border-accent-primary/20 text-accent-primary hover:bg-accent-primary/10 transition-all group"
+                    >
+                      <span className="flex items-center gap-3 text-sm font-bold">
+                        <FileDown size={18} />
+                        Documentation PDF
+                      </span>
+                      <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  )}
+                  
+                  <button 
+                    onClick={handleShare}
+                    className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary text-bg font-bold hover:glow-primary transition-all group"
+                  >
+                    <span className="flex items-center gap-3 text-sm">
+                      <Share2 size={18} />
+                      Partager le projet
+                    </span>
+                    <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Key Features Card */}
+              <div className="glass p-6 rounded-2xl border-white/10 space-y-4">
+                <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted flex items-center gap-2">
+                  <Info size={14} className="text-accent-primary" />
+                  Points clés
+                </h4>
+                <ul className="space-y-3">
+                  {['Architecture Scalable', 'Automatisation CI/CD', 'Sécurité renforcée', 'Optimisation des coûts'].map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-xs text-text-secondary">
+                      <div className="w-1 h-1 rounded-full bg-accent-primary"></div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Quick Links */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Ressources externes</h4>
+                <div className="space-y-3">
+                  <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">
+                    <Globe size={14} /> Démo Live (Bientôt disponible)
+                  </a>
+                  <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">
+                    <Code2 size={14} /> Documentation technique complète
+                  </a>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200]">
+          <div className="glass px-6 py-3 rounded-full border-accent-primary/30 flex items-center gap-3 shadow-2xl animate-bounce">
+            <div className="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></div>
+            <span className="text-xs font-mono tracking-widest text-accent-primary">LIEN COPIÉ</span>
           </div>
         </div>
-
-        {loading ? (
-          <div className="grid md:grid-cols-2 gap-6">
-            {[1, 2].map(i => (
-              <div key={i} className="glass h-64 rounded-2xl animate-pulse"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-8">
-            {filteredPosts.map((post, index) => (
-              <motion.div
-                key={post.id}
-                id={`post-${post.id}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                onClick={() => navigate(`/blog/${post.id}`)}
-                className="group relative glass rounded-2xl overflow-hidden hover:border-accent-primary/30 transition-all cursor-pointer flex flex-col"
-              >
-                <div className="aspect-[21/9] overflow-hidden bg-bg-tertiary relative">
-                  <img 
-                    src={post.image_url || `https://picsum.photos/seed/${post.id}/800/400`} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="text-[9px] font-mono px-2.5 py-1 rounded-md uppercase tracking-wider bg-accent-primary/10 text-accent-primary border border-accent-primary/20 backdrop-blur-md">
-                      {post.category}
-                    </span>
-                    <button 
-                      onClick={(e) => handleShare(e, post)}
-                      className="p-1.5 bg-bg/60 backdrop-blur-md rounded-lg text-white/70 hover:text-accent-primary border border-white/10 hover:border-accent-primary/30 transition-all"
-                      title="Partager cet article"
-                    >
-                      <Share2 size={12} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-[10px] text-text-muted flex items-center gap-1.5 font-mono uppercase tracking-widest">
-                      <Clock size={12} /> {new Date(post.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 group-hover:text-accent-primary transition-colors leading-tight">{post.title}</h3>
-                  <p className="text-text-secondary text-sm line-clamp-2 mb-6 leading-relaxed">
-                    {post.content.substring(0, 150).replace(/[#*`]/g, '')}...
-                  </p>
-                  <div className="flex items-center gap-2 text-accent-primary text-[11px] font-mono uppercase tracking-widest group-hover:gap-4 transition-all">
-                    Lire la suite <ArrowRight size={14} />
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-            
-            {filteredPosts.length === 0 && (
-              <div className="col-span-full text-center py-20 glass rounded-3xl border-dashed border-white/10">
-                <p className="text-text-muted font-mono text-sm">Aucun article trouvé pour "{search}"</p>
-              </div>
-            )}
-          </div>
-        )}
-      </motion.div>
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] bg-accent-primary text-bg px-6 py-3 rounded-full font-mono text-xs font-bold flex items-center gap-2 shadow-2xl"
-          >
-            <Check size={16} /> LIEN COPIÉ DANS LE PRESSE-PAPIER
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
+      )}
+    </motion.div>
   );
 };
