@@ -13,7 +13,13 @@ import {
   FileDown, 
   ChevronRight,
   MessageCircle,
-  Hash
+  Hash,
+  Terminal,
+  Info,
+  Code2,
+  Layers,
+  CheckCircle2,
+  Globe
 } from 'lucide-react';
 import { Post } from '../types';
 import Markdown from 'react-markdown';
@@ -92,7 +98,7 @@ export const BlogPostDetail: React.FC = () => {
         style={{ scaleX }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 pt-32">
+      <div className="max-w-[1400px] mx-auto px-6 pt-32">
         {/* Breadcrumbs - MDN Style */}
         <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
@@ -102,7 +108,7 @@ export const BlogPostDetail: React.FC = () => {
           <span className="text-accent-primary truncate max-w-[200px]">{post.title}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-[1fr_300px] gap-12 xl:gap-20">
+        <div className="grid lg:grid-cols-[1fr_380px] gap-12 xl:gap-16">
           {/* Main Content Area */}
           <article className="min-w-0">
             <header className="mb-12">
@@ -115,7 +121,7 @@ export const BlogPostDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-8">
                 {post.title}
               </h1>
 
@@ -130,7 +136,7 @@ export const BlogPostDetail: React.FC = () => {
               </div>
             </header>
 
-            <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12 group">
+            <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-16 group">
               <img 
                 src={post.image_url} 
                 alt={post.title}
@@ -142,14 +148,63 @@ export const BlogPostDetail: React.FC = () => {
               />
             </div>
 
+            {/* Article Overview Section */}
+            <div className="mb-16">
+              <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
+                <Terminal className="text-accent-primary" size={24} />
+                Points clés de l'article
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="glass p-8 rounded-2xl border-white/10 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-accent-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-accent-primary/10 transition-colors"></div>
+                  <h3 className="text-accent-primary font-mono text-[10px] uppercase tracking-[0.2em] mb-4">01. Objectif Pédagogique</h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">
+                    Cet article vise à démystifier les concepts complexes du Cloud et du DevOps, en fournissant des exemples concrets et des bonnes pratiques directement applicables.
+                  </p>
+                </div>
+                <div className="glass p-8 rounded-2xl border-white/10 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-accent-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-accent-primary/10 transition-colors"></div>
+                  <h3 className="text-accent-primary font-mono text-[10px] uppercase tracking-[0.2em] mb-4">02. Expertise Technique</h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">
+                    Basé sur des années d'expérience terrain, le contenu explore les architectures modernes et les outils de pointe pour optimiser vos workflows de développement.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Markdown Content with MDN-like styling */}
-            <div className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10">
+            <div className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10 mb-16">
               <div className="markdown-body">
                 <Markdown>{post.content}</Markdown>
               </div>
             </div>
 
-            <footer className="mt-20 pt-10 border-t border-white/10">
+            {/* Conclusion Section */}
+            <div className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent mb-16">
+              <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                <CheckCircle2 className="text-accent-primary" size={24} />
+                Conclusion & Prochaines étapes
+              </h2>
+              <p className="text-text-secondary leading-relaxed mb-8">
+                La maîtrise de ces outils est un voyage continu. J'espère que cet article vous a donné les bases nécessaires pour explorer davantage ces technologies fascinantes.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                  <p className="text-xl font-bold text-accent-primary mb-1">1</p>
+                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Expérimenter</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                  <p className="text-xl font-bold text-accent-primary mb-1">2</p>
+                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Approfondir</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                  <p className="text-xl font-bold text-accent-primary mb-1">3</p>
+                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Partager</p>
+                </div>
+              </div>
+            </div>
+
+            <footer className="pt-10 border-t border-white/10">
               <div className="flex flex-wrap gap-2 mb-10">
                 {post.tags.split(',').map((tag, i) => (
                   <span key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-text-secondary hover:border-accent-primary/30 transition-colors cursor-default">
@@ -206,36 +261,58 @@ export const BlogPostDetail: React.FC = () => {
               </div>
 
               {/* Quick Metadata */}
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-6">
-                <div className="flex items-center gap-3 text-text-secondary">
-                  <Clock size={16} className="text-accent-primary" />
-                  <span className="text-xs font-mono uppercase tracking-wider">5 min de lecture</span>
+              <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-6 shadow-xl">
+                <div className="flex items-center gap-4 text-text-secondary">
+                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
+                    <Clock size={18} className="text-accent-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Temps de lecture</p>
+                    <p className="text-sm font-bold">~5 min</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-text-secondary">
-                  <MessageCircle size={16} className="text-accent-primary" />
-                  <span className="text-xs font-mono uppercase tracking-wider">Commentaires (0)</span>
+                <div className="flex items-center gap-4 text-text-secondary">
+                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
+                    <MessageCircle size={18} className="text-accent-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Commentaires</p>
+                    <p className="text-sm font-bold">0</p>
+                  </div>
                 </div>
-                <button className="w-full py-3 rounded-xl border border-white/10 text-xs font-mono uppercase tracking-widest hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
-                  <Bookmark size={14} />
-                  Sauvegarder
+                <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-2 group">
+                  <Bookmark size={14} className="group-hover:text-accent-primary transition-colors" />
+                  Sauvegarder l'article
                 </button>
               </div>
 
-              {/* Related Links / Resources */}
-              <div>
-                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-4">Ressources</h3>
+              {/* Key Insights Card */}
+              <div className="glass p-6 rounded-2xl border-white/10 space-y-4">
+                <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted flex items-center gap-2">
+                  <Info size={14} className="text-accent-primary" />
+                  Points à retenir
+                </h4>
                 <ul className="space-y-3">
-                  <li>
-                    <a href="https://developer.mozilla.org" target="_blank" className="text-xs text-text-muted hover:text-accent-primary transition-colors flex items-center gap-2">
-                      <ChevronRight size={12} /> Documentation MDN
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://github.com" target="_blank" className="text-xs text-text-muted hover:text-accent-primary transition-colors flex items-center gap-2">
-                      <ChevronRight size={12} /> Dépôt GitHub
-                    </a>
-                  </li>
+                  {['Bonnes pratiques DevOps', 'Sécurité par défaut', 'Optimisation Cloud', 'Automatisation'].map((insight, i) => (
+                    <li key={i} className="flex items-center gap-2 text-xs text-text-secondary">
+                      <div className="w-1 h-1 rounded-full bg-accent-primary"></div>
+                      {insight}
+                    </li>
+                  ))}
                 </ul>
+              </div>
+
+              {/* Related Links / Resources */}
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Ressources utiles</h4>
+                <div className="space-y-3">
+                  <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">
+                    <Globe size={14} /> Documentation officielle
+                  </a>
+                  <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">
+                    <Code2 size={14} /> Exemples de code (GitHub)
+                  </a>
+                </div>
               </div>
             </div>
           </aside>
