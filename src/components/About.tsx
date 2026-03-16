@@ -129,6 +129,7 @@ export const About: React.FC = () => {
               </div>
             ))}
 
+            
             <div className="pt-6">
               <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langues</h3>
               <div className="flex flex-wrap gap-2">

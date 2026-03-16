@@ -35,6 +35,65 @@ export const Hero: React.FC = () => {
     return () => clearTimeout(timer);
   }, [text, isDeleting, roleIndex]);
 
+  const [stats, setStats] = useState({ projects: 0, posts: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [projectsRes, postsRes] = await Promise.all([
+          fetch('/api/projects'),
+          fetch('/api/posts')
+        ]);
+        const projects = await projectsRes.json();
+        const posts = await postsRes.json();
+        setStats({
+          projects: Array.isArray(projects) ? projects.length : 0,
+          posts: Array.isArray(posts) ? posts.length : 0
+        });
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const Counter = ({ value, label }: { value: number; label: string }) => {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      let start = 0;
+      const end = value;
+      if (start === end) {
+        setCount(end);
+        return;
+      }
+      
+      const duration = 2000;
+      const increment = end / (duration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= end) {
+          setCount(end);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+
+      return () => clearInterval(timer);
+    }, [value]);
+
+    return (
+      <div>
+        <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">
+          {count}{value > 0 ? '+' : ''}
+        </p>
+        <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">{label}</p>
+      </div>
+    );
+  };
+
   return (
     <section id="home" className="min-h-screen flex items-center pt-20 px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_70%_30%,rgba(0,80,200,0.07)_0%,transparent_65%),radial-gradient(ellipse_60%_60%_at_10%_80%,rgba(0,180,255,0.05)_0%,transparent_55%)] -z-10"></div>
@@ -47,7 +106,7 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
         >
-                   
+          
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
             <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
@@ -90,14 +149,8 @@ export const Hero: React.FC = () => {
               <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">M2</p>
               <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
             </div>
-            <div>
-              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2+</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expériences pro</p>
-            </div>
-            <div>
-              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">5+</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Projets infra</p>
-            </div>
+            <Counter value={stats.projects} label="Projets infra" />
+            <Counter value={stats.posts} label="Articles publiés" />
           </div>
         </motion.div>
 
@@ -132,7 +185,7 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute -top-4 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+            <div className="absolute -top-10 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
               <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>
