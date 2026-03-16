@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Terminal } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { NetworkBackground } from './components/NetworkBackground.tsx';
 import { Navbar } from './components/Navbar.tsx';
 import { Hero } from './components/Hero.tsx';
@@ -65,6 +66,7 @@ export default function App() {
   return (
     <Router>
       <ScrollToHash />
+      <SpeedInsights />
       <div className="relative min-h-screen overflow-x-hidden bg-bg">
         <NetworkBackground />
         <Navbar />
