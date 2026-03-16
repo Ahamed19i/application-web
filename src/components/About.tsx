@@ -13,31 +13,32 @@ export const About: React.FC = () => {
       type: "education"
     },
     {
-      year: "2023",
-      title: "Stage Ingénieur Réseaux",
+      year: "2024",
+      title: "Stage Administrateur Systèmes & Réseaux",
       institution: "Tunisie Telecom",
       description: "Maintenance des infrastructures réseaux, configuration de routeurs Cisco et supervision.",
       type: "experience"
     },
     {
-      year: "2020 - 2023",
+      year: "2021 - 2024",
       title: "Licence SRT",
       institution: "Université Centrale de Tunis",
-      description: "Bases solides en administration systèmes (Linux/Windows) et réseaux (CCNA).",
+      description: "Bases solides en administration systèmes (Linux/Windows) et réseaux (CCNA)/Huawei.",
       type: "education"
     }
   ];
 
   const skills = [
-    { category: "Systèmes", items: ["Linux (Ubuntu/Debian/CentOS)", "Windows Server", "Active Directory"], level: 90 },
-    { category: "Réseaux", items: ["Cisco IOS", "pfSense", "GNS3/Packet Tracer", "VPN/VLAN"], level: 85 },
-    { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "Ansible", "AWS", "CI/CD"], level: 75 }
+    { category: "Systèmes", items: ["Linux (Ubuntu/Debian)", "Windows Server", "Active Directory"], level: 90 },
+    { category: "Réseaux", items: ["Cisco IOS", "pfSense", "EVE-NG", "VPN/VLAN"], level: 85 },
+    { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "Ansible", "AWS", "CI/CD"], level: 65 }
   ];
 
   const certifications = [
     { title: "Cisco Networking Basics", issuer: "Cisco Networking Academy", date: "2023" },
     { title: "Introduction to Cybersecurity", issuer: "Cisco Networking Academy", date: "2023" },
-    { title: "CCNA (En cours)", issuer: "Cisco", date: "2024" }
+    { title: "CCNA (En cours)", issuer: "Cisco", date: "2026" },
+    { title: "DevOps (En cours)", issuer: "Coursera", date: "2026" }
   ];
 
   return (
@@ -57,13 +58,13 @@ export const About: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-16 items-start">
           <div className="space-y-6 text-text-secondary leading-relaxed text-base">
             <p>
-              Je suis <strong>Ahamed Hassani Mhoma</strong>, ingénieur <strong>M2 Systèmes & Réseaux</strong> spécialisé dans l'administration des infrastructures <strong>Linux/Windows Server</strong>, la virtualisation et le cloud. Mon parcours entre <strong>Tunis et Dakar</strong> m'a forgé une vision internationale solide.
+              Je suis <strong>Ahamed Hassani Mhoma</strong>, étudiant en ingénieur <strong>Systèmes & Réseaux Télécom</strong> spécialisé dans l'administration des infrastructures <strong>Linux/Windows Server</strong>, la virtualisation et le cloud. Mon parcours entre <strong>Tunis et Dakar</strong> m'a forgé une vision internationale solide.
             </p>
             <p>
               Ma philosophie : automatiser ce qui peut l'être, sécuriser ce qui doit l'être. Je m'oriente vers le <strong>DevOps et Cloud Engineering</strong>, avec une couche cybersécurité en développement actif.
             </p>
             <p>
-              Expérimenté chez <strong>Sonatel</strong> (groupe Orange, Sénégal) et <strong>Tunisie Télécom</strong>, j'ai une compréhension opérationnelle des environnements télécoms à grande échelle.
+              Expérimenté chez <strong>Tunisie Télécom</strong>, j'ai une compréhension opérationnelle des environnements télécoms à grande échelle.
             </p>
             
             <div className="pt-8">
@@ -127,17 +128,6 @@ export const About: React.FC = () => {
                 </div>
               </div>
             ))}
-
-            <div className="pt-6">
-              <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langages & Outils</h3>
-              <div className="flex flex-wrap gap-2">
-                {["Bash / Shell", "PowerShell", "YAML", "SQL / MySQL", "Python"].map((lang, i) => (
-                  <span key={i} className="px-3 py-1.5 glass rounded-lg text-[11px] font-mono text-text-secondary hover:border-accent-primary/30 transition-all">
-                    {lang}
-                  </span>
-                ))}
-              </div>
-            </div>
 
             <div className="pt-6">
               <h3 className="text-sm font-bold mb-4 text-text-primary uppercase tracking-wider font-mono">Langues</h3>
