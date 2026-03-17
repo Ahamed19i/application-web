@@ -9,8 +9,10 @@ export const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const roles = [
     "Ingénieur Systèmes & Réseaux",
-    "Cloud Engineer",
-    "DevOps Enthusiast"
+    "Cloud & DevOps Engineer",
+    "DevOps Enthusiast",
+    "virtualisation & automatisation",
+    "AFI-Université (Dakar)"
   ];
   const speed = isDeleting ? 50 : 100;
 
@@ -119,7 +121,7 @@ export const Hero: React.FC = () => {
           </div>
 
           <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-            Ingénieur en <strong>Master 2 Systèmes & Réseaux</strong> à l'AFI-Université (Dakar).
+            Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
             Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
             Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
           </p>
@@ -185,7 +187,7 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute -top-10 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+            <div className="absolute top-4 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
               <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>
