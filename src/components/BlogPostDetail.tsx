@@ -98,9 +98,9 @@ export const BlogPostDetail: React.FC = () => {
         style={{ scaleX }}
       />
 
-      <div className="max-w-[1600px] mx-auto px-6 pt-32">
+      <div className="max-w-[1400px] mx-auto px-6 pt-32">
         {/* Breadcrumbs - MDN Style */}
-        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-12 overflow-x-auto whitespace-nowrap pb-2">
+        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
           <ChevronRight size={12} />
           <Link to="/#blog" className="hover:text-accent-primary transition-colors">Blog</Link>
@@ -108,52 +108,10 @@ export const BlogPostDetail: React.FC = () => {
           <span className="text-accent-primary truncate max-w-[200px]">{post.title}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-[250px_1fr_300px] gap-12 xl:gap-20">
-          {/* Left Sidebar - Reading Progress & Quick Stats */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-32 space-y-12">
-              <div>
-                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-6 flex items-center gap-2">
-                  <div className="w-4 h-[1px] bg-accent-primary"></div>
-                  Progression
-                </h3>
-                <div className="relative h-[300px] w-1 bg-white/5 rounded-full overflow-hidden">
-                  <motion.div 
-                    className="absolute top-0 left-0 right-0 bg-accent-primary origin-top shadow-[0_0_15px_rgba(0,255,255,0.5)]"
-                    style={{ scaleY: scrollYProgress, height: '100%' }}
-                  />
-                </div>
-                <motion.p className="mt-4 text-[10px] font-mono text-accent-primary font-bold">
-                  {Math.round(scrollYProgress.get() * 100)}% LU
-                </motion.p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="flex items-center gap-4 text-text-secondary">
-                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
-                    <Clock size={18} className="text-accent-primary" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Lecture</p>
-                    <p className="text-sm font-bold">~5 min</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 text-text-secondary">
-                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
-                    <User size={18} className="text-accent-primary" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Auteur</p>
-                    <p className="text-sm font-bold">Ahamed H.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
-
+        <div className="grid lg:grid-cols-[1fr_380px] gap-12 xl:gap-16">
           {/* Main Content Area */}
           <article className="min-w-0">
-            <header className="mb-16">
+            <header id="introduction" className="mb-12 scroll-mt-32">
               <div className="flex items-center gap-3 mb-6">
                 <span className="px-3 py-1 rounded-md bg-accent-primary/10 text-accent-primary text-[10px] font-mono uppercase tracking-widest border border-accent-primary/20">
                   {post.category}
@@ -163,7 +121,7 @@ export const BlogPostDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-12">
+              <h1 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
                 {post.title}
               </h1>
 
@@ -178,39 +136,15 @@ export const BlogPostDetail: React.FC = () => {
               </div>
             </header>
 
-            {/* Article Overview Section */}
-            <div className="mb-16">
-              <h2 className="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
-                <Terminal className="text-accent-primary" size={24} />
-                Points clés de l'article
-              </h2>
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="glass p-8 rounded-2xl border-white/10 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-accent-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-accent-primary/10 transition-colors"></div>
-                  <h3 className="text-accent-primary font-mono text-[10px] uppercase tracking-[0.2em] mb-4">01. Objectif Pédagogique</h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">
-                    Cet article vise à démystifier les concepts complexes du Cloud et du DevOps, en fournissant des exemples concrets et des bonnes pratiques directement applicables.
-                  </p>
-                </div>
-                <div className="glass p-8 rounded-2xl border-white/10 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-accent-primary/5 rounded-bl-full -mr-12 -mt-12 group-hover:bg-accent-primary/10 transition-colors"></div>
-                  <h3 className="text-accent-primary font-mono text-[10px] uppercase tracking-[0.2em] mb-4">02. Expertise Technique</h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">
-                    Basé sur des années d'expérience terrain, le contenu explore les architectures modernes et les outils de pointe pour optimiser vos workflows de développement.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {/* Markdown Content with MDN-like styling */}
-            <div className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10 mb-16">
+            <div id="concepts" className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10 mb-16 scroll-mt-32">
               <div className="markdown-body">
                 <Markdown>{post.content}</Markdown>
               </div>
             </div>
 
             {/* Conclusion Section */}
-            <div className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent mb-16">
+            <div id="conclusion" className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent mb-16 scroll-mt-32">
               <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                 <CheckCircle2 className="text-accent-primary" size={24} />
                 Conclusion & Prochaines étapes
@@ -283,10 +217,10 @@ export const BlogPostDetail: React.FC = () => {
                   Dans cet article
                 </h3>
                 <nav className="space-y-4 border-l border-white/10 ml-2">
-                  <a href="#" className="block pl-4 text-sm text-accent-primary border-l-2 border-accent-primary -ml-[1px] font-medium">Introduction</a>
-                  <a href="#" className="block pl-4 text-sm text-text-muted hover:text-white transition-colors">Concepts Clés</a>
-                  <a href="#" className="block pl-4 text-sm text-text-muted hover:text-white transition-colors">Mise en œuvre</a>
-                  <a href="#" className="block pl-4 text-sm text-text-muted hover:text-white transition-colors">Conclusion</a>
+                  <a href="#introduction" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Introduction</a>
+                  <a href="#concepts" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Concepts Clés</a>
+                  <a href="#concepts" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Mise en œuvre</a>
+                  <a href="#conclusion" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Conclusion</a>
                 </nav>
               </div>
 
@@ -314,22 +248,6 @@ export const BlogPostDetail: React.FC = () => {
                   <Bookmark size={14} className="group-hover:text-accent-primary transition-colors" />
                   Sauvegarder l'article
                 </button>
-              </div>
-
-              {/* Key Insights Card */}
-              <div className="glass p-6 rounded-2xl border-white/10 space-y-4">
-                <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted flex items-center gap-2">
-                  <Info size={14} className="text-accent-primary" />
-                  Points à retenir
-                </h4>
-                <ul className="space-y-3">
-                  {['Bonnes pratiques DevOps', 'Sécurité par défaut', 'Optimisation Cloud', 'Automatisation'].map((insight, i) => (
-                    <li key={i} className="flex items-center gap-2 text-xs text-text-secondary">
-                      <div className="w-1 h-1 rounded-full bg-accent-primary"></div>
-                      {insight}
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               {/* Related Links / Resources */}

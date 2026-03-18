@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Download } from 'lucide-react';
@@ -9,10 +10,8 @@ export const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const roles = [
     "Ingénieur Systèmes & Réseaux",
-    "Cloud & DevOps Engineer",
-    "DevOps Enthusiast",
-    "virtualisation & automatisation",
-    "AFI-Université (Dakar)"
+    "Cloud Engineer",
+    "DevOps Enthusiast"
   ];
   const speed = isDeleting ? 50 : 100;
 
@@ -89,7 +88,7 @@ export const Hero: React.FC = () => {
     return (
       <div>
         <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">
-          {count}{value > 0 ? '+' : ''}
+          {count}+
         </p>
         <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">{label}</p>
       </div>
@@ -120,7 +119,7 @@ export const Hero: React.FC = () => {
             </p>
           </div>
 
-          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
             Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
             Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
             Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
@@ -187,7 +186,7 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute top-4 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+            <div className="absolute top-0 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
               <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>
