@@ -112,7 +112,7 @@ export const Hero: React.FC = () => {
   }, []);
 
   return (
-    <section id="home" className="min-h-[70vh] md:min-h-screen flex items-center pt-24 md:pt-20 px-6 relative overflow-hidden">
+    <section id="home" className="min-h-[70vh] md:min-h-screen flex items-start md:items-center pt-32 md:pt-20 px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_70%_30%,rgba(0,80,200,0.07)_0%,transparent_65%),radial-gradient(ellipse_60%_60%_at_10%_80%,rgba(0,180,255,0.05)_0%,transparent_55%)] -z-10"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,180,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,180,255,0.025)_1px,transparent_1px)] bg-[size:70px_70px] -z-10"></div>
       
@@ -122,7 +122,8 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
-        >          
+        >
+          
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
             <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
@@ -141,7 +142,7 @@ export const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-            <a href="https://drive.google.com/file/d/1mtB7ncVhsMseOmFTp-uf2TL4L-AAinBG/view?usp=sharing" download className="btn-p text-sm md:text-base">
+            <a href="/cv-ahamed-hassani.pdf" download className="btn-p text-sm md:text-base">
               📄 Télécharger mon CV
             </a>
             <a href="#projects" className="btn-g text-sm md:text-base">
@@ -178,7 +179,7 @@ export const Hero: React.FC = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="relative flex justify-center items-center order-1 lg:order-2"
+          className="relative flex justify-center items-center order-1 lg:order-2 mt-12 lg:mt-0"
         >
           <div className="relative w-[220px] h-[280px] md:w-[280px] md:h-[350px] lg:w-[320px] lg:h-[400px]">
             <div className="absolute -inset-6 md:-inset-10 border border-dashed border-accent-primary/20 rounded-full animate-spin-slow">
@@ -205,7 +206,7 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute top-4 md:top-8 -left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+            <div className="absolute bottom-4 md:top-8 left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
               <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>

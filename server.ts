@@ -267,6 +267,18 @@ app.get("/api/admin/analytics", authenticateToken, async (req, res) => {
       supabase.from("visits").select("created_at").gte("created_at", thirtyDaysAgo)
     ]);
 
+    // Handle potential errors (e.g. table doesn't exist yet)
+    if (today.error || last7.error || last30.error || allVisits.error) {
+      console.warn("Analytics table might be missing or inaccessible:", today.error || last7.error || last30.error || allVisits.error);
+      return res.json({
+        today: 0,
+        last7Days: 0,
+        last30Days: 0,
+        chartData: [],
+        error: "La table 'visits' n'existe pas encore. Veuillez l'ajouter dans Supabase."
+      });
+    }
+
     // Group by day for the chart
     const dailyStats: { [key: string]: number } = {};
     for (let i = 29; i >= 0; i--) {

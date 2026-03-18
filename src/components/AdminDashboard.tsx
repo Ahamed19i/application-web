@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -85,7 +86,11 @@ export const AdminDashboard: React.FC = () => {
       setPosts(await postsRes.json());
       setMessages(await messagesRes.json());
       if (analyticsRes.ok) {
-        setAnalytics(await analyticsRes.json());
+        const data = await analyticsRes.json();
+        console.log("Analytics data fetched:", data);
+        setAnalytics(data);
+      } else {
+        console.error("Analytics fetch failed with status:", analyticsRes.status);
       }
     } catch (err) {
       console.error(err);
@@ -379,6 +384,11 @@ export const AdminDashboard: React.FC = () => {
 
             {activeTab === 'analytics' && (
               <div className="space-y-8">
+                {analytics?.error && (
+                  <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-500 text-sm">
+                    ⚠️ {analytics.error}
+                  </div>
+                )}
                 <div className="grid grid-cols-3 gap-8">
                   <div className="glass p-8 rounded-3xl">
                     <Clock className="text-accent-primary mb-4" size={32} />

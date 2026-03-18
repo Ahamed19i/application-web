@@ -121,9 +121,9 @@ export const BlogPostDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
+              <h3 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
                 {post.title}
-              </h1>
+              </h3>
 
               <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 w-fit">
                 <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center border border-accent-primary/30 overflow-hidden">

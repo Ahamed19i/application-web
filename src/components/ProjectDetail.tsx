@@ -122,9 +122,9 @@ export const ProjectDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h2 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
+              <h3 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
                 {project.title}
-              </h2>
+              </h3>
 
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
                 {project.description}
