@@ -1,8 +1,44 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Download } from 'lucide-react';
+
+const Counter = ({ value, label }: { value: number; label: string }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = value;
+    if (end === 0) {
+      setCount(0);
+      return;
+    }
+    
+    const duration = 2000;
+    const increment = end / (duration / 16);
+    
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return (
+    <div>
+      <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">
+        {count}+
+      </p>
+      <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">{label}</p>
+    </div>
+  );
+};
 
 export const Hero: React.FC = () => {
   const [text, setText] = useState('');
@@ -41,18 +77,29 @@ export const Hero: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        // Ajout d'un timestamp pour éviter le cache
         const [projectsRes, postsRes] = await Promise.all([
-          fetch('/api/projects'),
-          fetch('/api/posts')
+          fetch(`/api/projects?t=${Date.now()}`),
+          fetch(`/api/posts?t=${Date.now()}`)
         ]);
+        
+        if (!projectsRes.ok || !postsRes.ok) throw new Error('API Error');
         
         const projects = await projectsRes.json();
         const posts = await postsRes.json();
         
-        const projectCount = Array.isArray(projects) ? projects.length : 0;
-        const postCount = Array.isArray(posts) ? posts.length : 0;
+        // On compte tout ce qui est publié (flexible sur le type de 'published')
+        const projectCount = Array.isArray(projects) 
+          ? projects.filter(p => p.published == true || p.published == 1 || p.published === 'true').length 
+          : 0;
+        const postCount = Array.isArray(posts) 
+          ? posts.filter(p => p.published == true || p.published == 1 || p.published === 'true').length 
+          : 0;
+
+        console.log('Stats fetched:', { projectCount, postCount });
 
         setStats({
+          // Valeurs de secours si 0 pour ne pas afficher 0 au début
           projects: projectCount > 0 ? projectCount : 5, 
           posts: postCount > 0 ? postCount : 3
         });
@@ -63,40 +110,6 @@ export const Hero: React.FC = () => {
     };
     fetchStats();
   }, []);
-
-  const Counter = ({ value, label }: { value: number; label: string }) => {
-    const [count, setCount] = React.useState(0);
-
-    React.useEffect(() => {
-      let start = 0;
-      const end = value;
-      if (end === 0) return;
-      
-      const duration = 2000;
-      const increment = end / (duration / 16);
-      
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(timer);
-        } else {
-          setCount(Math.floor(start));
-        }
-      }, 16);
-
-      return () => clearInterval(timer);
-    }, [value]);
-
-    return (
-      <div>
-        <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">
-          {count}+
-        </p>
-        <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">{label}</p>
-      </div>
-    );
-  };
 
   return (
     <section id="home" className="min-h-screen flex items-center pt-20 px-6 relative overflow-hidden">
@@ -109,7 +122,12 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
-        >          
+        >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
+            Disponible — Recherche de stage / alternance
+          </div>
+          
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
             <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
