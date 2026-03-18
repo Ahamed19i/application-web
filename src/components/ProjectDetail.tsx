@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'motion/react';
@@ -139,28 +138,60 @@ export const ProjectDetail: React.FC = () => {
               </div>
             </div>
 
-            {/* Results Section */}
-            <div className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent">
-              <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-                <CheckCircle2 className="text-accent-primary" size={24} />
-                Résultats & Impacts
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-accent-primary mb-1">100%</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Automatisé</p>
+            {/* Reports & Documentation Section (Main) */}
+            <div className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent mb-16">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2 flex items-center gap-3">
+                    <FileDown className="text-accent-primary" size={24} />
+                    Rapports & Documentation
+                  </h2>
+                  <p className="text-text-muted text-sm">Accédez aux documents détaillés et aux rapports de performance de ce projet.</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-accent-primary mb-1">-40%</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Temps de déploiement</p>
+                <div className="flex flex-wrap gap-4">
+                  {project.pdf_url ? (
+                    <a 
+                      href={project.pdf_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent-primary text-bg font-bold hover:glow-primary transition-all text-sm"
+                    >
+                      <ExternalLink size={18} />
+                      Voir le Rapport
+                    </a>
+                  ) : (
+                    <span className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-text-muted font-bold text-sm cursor-not-allowed">
+                      <FileDown size={18} />
+                      Rapport non disponible
+                    </span>
+                  )}
+                  <button 
+                    onClick={handleShare}
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-text-primary font-bold hover:bg-white/10 transition-all text-sm"
+                  >
+                    <Share2 size={18} />
+                    Partager
+                  </button>
                 </div>
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-accent-primary mb-1">99.9%</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Disponibilité</p>
+              </div>
+            </div>
+
+            {/* Bottom Section - CTA */}
+            <div className="pt-16 border-t border-white/10">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-12 rounded-[2rem] bg-accent-primary/5 border border-accent-primary/10 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 blur-[100px] -z-10 group-hover:bg-accent-primary/20 transition-colors"></div>
+                <div className="text-center md:text-left">
+                  <h3 className="text-3xl font-bold mb-4">Intéressé par ce projet ?</h3>
+                  <p className="text-text-secondary max-w-md">Discutons de la manière dont je peux apporter une expertise similaire à votre infrastructure.</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-accent-primary mb-1">Sec</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Sécurité renforcée</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to="/#contact" className="btn-p px-8 py-4 text-center">
+                    Me contacter
+                  </Link>
+                  <button onClick={handleShare} className="btn-gr px-8 py-4 flex items-center justify-center gap-2">
+                    <Share2 size={18} />
+                    Partager ce projet
+                  </button>
                 </div>
               </div>
             </div>
@@ -208,6 +239,21 @@ export const ProjectDetail: React.FC = () => {
                 </div>
 
                 <div className="pt-8 border-t border-white/10 space-y-4">
+                  {project.pdf_url && (
+                    <a 
+                      href={project.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary/5 border border-accent-primary/20 text-accent-primary hover:bg-accent-primary/10 transition-all group"
+                    >
+                      <span className="flex items-center gap-3 text-sm font-bold">
+                        <FileDown size={18} />
+                        Rapport Technique (PDF)
+                      </span>
+                      <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  )}
+
                   {project.github_url && (
                     <a 
                       href={project.github_url}
@@ -220,21 +266,6 @@ export const ProjectDetail: React.FC = () => {
                         Code Source
                       </span>
                       <ChevronRight size={16} className="text-text-muted group-hover:translate-x-1 transition-transform" />
-                    </a>
-                  )}
-
-                  {project.pdf_url && (
-                    <a 
-                      href={project.pdf_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary/5 border border-accent-primary/20 text-accent-primary hover:bg-accent-primary/10 transition-all group"
-                    >
-                      <span className="flex items-center gap-3 text-sm font-bold">
-                        <FileDown size={18} />
-                        Documentation PDF
-                      </span>
-                      <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </a>
                   )}
                   

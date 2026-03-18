@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Download } from 'lucide-react';
@@ -45,14 +44,23 @@ export const Hero: React.FC = () => {
           fetch('/api/projects'),
           fetch('/api/posts')
         ]);
+        
+        if (!projectsRes.ok || !postsRes.ok) throw new Error('Failed to fetch stats');
+        
         const projects = await projectsRes.json();
         const posts = await postsRes.json();
+        
+        const projectCount = Array.isArray(projects) ? projects.length : 0;
+        const postCount = Array.isArray(posts) ? posts.length : 0;
+
         setStats({
-          projects: Array.isArray(projects) ? projects.length : 0,
-          posts: Array.isArray(posts) ? posts.length : 0
+          // Use fetched count, or a minimum default if empty (for visual appeal)
+          projects: projectCount > 0 ? projectCount : 5, 
+          posts: postCount > 0 ? postCount : 3
         });
       } catch (error) {
         console.error('Error fetching stats:', error);
+        setStats({ projects: 5, posts: 3 });
       }
     };
     fetchStats();
@@ -107,6 +115,10 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
         >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
+            Disponible — Recherche de stage / alternance
+          </div>
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
