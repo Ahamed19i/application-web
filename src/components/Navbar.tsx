@@ -63,7 +63,7 @@ export const Navbar: React.FC = () => {
         <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="flex items-center gap-2 group">
           <div className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
           <span className="font-display font-bold text-lg tracking-wider text-accent-primary uppercase">
-            Ahamed19i 
+            Ahamed19i🐧
           </span>
         </a>
 

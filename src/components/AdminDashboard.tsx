@@ -16,13 +16,30 @@ import {
   CheckCircle,
   Clock,
   X,
-  Save
+  Save,
+  FileDown,
+  BarChart3,
+  TrendingUp,
+  Users
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
+import { generateProjectReport } from '../utils/reportGenerator';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  AreaChart,
+  Area
+} from 'recharts';
 
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'messages'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'messages' | 'analytics'>('stats');
   const [stats, setStats] = useState({ projects: 0, posts: 0, unreadMessages: 0 });
+  const [analytics, setAnalytics] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -49,11 +66,12 @@ export const AdminDashboard: React.FC = () => {
     try {
       const headers = { 'Authorization': `Bearer ${token}` };
       
-      const [statsRes, projectsRes, postsRes, messagesRes] = await Promise.all([
+      const [statsRes, projectsRes, postsRes, messagesRes, analyticsRes] = await Promise.all([
         fetch('/api/admin/stats', { headers }),
         fetch('/api/admin/projects', { headers }),
         fetch('/api/admin/posts', { headers }),
-        fetch('/api/messages', { headers })
+        fetch('/api/messages', { headers }),
+        fetch('/api/admin/analytics', { headers })
       ]);
 
       if (statsRes.status === 401) {
@@ -66,6 +84,9 @@ export const AdminDashboard: React.FC = () => {
       setProjects(await projectsRes.json());
       setPosts(await postsRes.json());
       setMessages(await messagesRes.json());
+      if (analyticsRes.ok) {
+        setAnalytics(await analyticsRes.json());
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -189,6 +210,7 @@ export const AdminDashboard: React.FC = () => {
         <nav className="flex-grow p-4 space-y-2">
           {[
             { id: 'stats', label: 'Dashboard', icon: LayoutDashboard },
+            { id: 'analytics', label: 'Analytiques', icon: BarChart3 },
             { id: 'projects', label: 'Projets', icon: FolderKanban },
             { id: 'posts', label: 'Blog', icon: FileText },
             { id: 'messages', label: 'Messages', icon: MessageSquare, badge: stats.unreadMessages },
@@ -249,21 +271,189 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {activeTab === 'stats' && (
-              <div className="grid grid-cols-3 gap-8">
-                <div className="glass p-8 rounded-3xl">
-                  <FolderKanban className="text-accent-primary mb-4" size={32} />
-                  <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Projets</p>
-                  <p className="text-4xl font-mono font-bold">{stats.projects}</p>
+              <div className="space-y-8">
+                <div className="grid grid-cols-4 gap-8">
+                  <div className="glass p-8 rounded-3xl">
+                    <Users className="text-accent-primary mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Visiteurs (30j)</p>
+                    <p className="text-4xl font-mono font-bold">{analytics?.last30Days || 0}</p>
+                  </div>
+                  <div className="glass p-8 rounded-3xl">
+                    <FolderKanban className="text-accent-primary mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Projets</p>
+                    <p className="text-4xl font-mono font-bold">{stats.projects}</p>
+                  </div>
+                  <div className="glass p-8 rounded-3xl">
+                    <FileText className="text-accent-secondary mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Articles</p>
+                    <p className="text-4xl font-mono font-bold">{stats.posts}</p>
+                  </div>
+                  <div className="glass p-8 rounded-3xl">
+                    <MessageSquare className="text-white mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Messages</p>
+                    <p className="text-4xl font-mono font-bold">{stats.unreadMessages}</p>
+                  </div>
                 </div>
-                <div className="glass p-8 rounded-3xl">
-                  <FileText className="text-accent-secondary mb-4" size={32} />
-                  <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Articles</p>
-                  <p className="text-4xl font-mono font-bold">{stats.posts}</p>
+
+                {analytics && (
+                  <div className="glass p-8 rounded-3xl">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-xl font-bold flex items-center gap-3">
+                        <TrendingUp className="text-accent-primary" />
+                        Aperçu des Visites
+                      </h3>
+                      <button 
+                        onClick={() => setActiveTab('analytics')}
+                        className="text-xs font-mono text-accent-primary uppercase tracking-widest hover:underline"
+                      >
+                        Voir détails
+                      </button>
+                    </div>
+                    <div className="h-[300px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={analytics.chartData}>
+                          <defs>
+                            <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#00f2ff" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#00f2ff" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                          <XAxis 
+                            dataKey="date" 
+                            stroke="rgba(255,255,255,0.3)" 
+                            fontSize={10} 
+                            tickLine={false}
+                            axisLine={false}
+                            interval={4}
+                          />
+                          <YAxis 
+                            stroke="rgba(255,255,255,0.3)" 
+                            fontSize={10} 
+                            tickLine={false}
+                            axisLine={false}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'rgba(10, 10, 20, 0.9)', 
+                              border: '1px solid rgba(255,255,255,0.1)',
+                              borderRadius: '12px',
+                              fontSize: '12px'
+                            }}
+                            itemStyle={{ color: '#00f2ff' }}
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="visits" 
+                            stroke="#00f2ff" 
+                            fillOpacity={1} 
+                            fill="url(#colorVisits)" 
+                            strokeWidth={3}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                <div className="glass p-10 rounded-3xl border-accent-primary/20 bg-gradient-to-br from-accent-primary/5 to-transparent flex flex-col md:flex-row items-center justify-between gap-8">
+                  <div className="max-w-xl">
+                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                      <FileDown className="text-accent-primary" />
+                      Rapport de Projet DevOps
+                    </h3>
+                    <p className="text-white/60 leading-relaxed">
+                      Générez un rapport professionnel au format Word (.docx) détaillant l'architecture de l'application, la stratégie de déploiement (Netlify vs Vercel) et le pipeline CI/CD. Idéal pour vos dossiers académiques ou présentations techniques.
+                    </p>
+                  </div>
+                  <button 
+                    onClick={generateProjectReport}
+                    className="px-8 py-4 bg-accent-primary text-bg font-bold rounded-2xl flex items-center gap-3 hover:glow-primary transition-all whitespace-nowrap"
+                  >
+                    <FileDown size={20} />
+                    Télécharger le Rapport
+                  </button>
                 </div>
-                <div className="glass p-8 rounded-3xl">
-                  <MessageSquare className="text-white mb-4" size={32} />
-                  <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Messages non-lus</p>
-                  <p className="text-4xl font-mono font-bold">{stats.unreadMessages}</p>
+              </div>
+            )}
+
+            {activeTab === 'analytics' && (
+              <div className="space-y-8">
+                <div className="grid grid-cols-3 gap-8">
+                  <div className="glass p-8 rounded-3xl">
+                    <Clock className="text-accent-primary mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Aujourd'hui</p>
+                    <p className="text-4xl font-mono font-bold">{analytics?.today || 0}</p>
+                  </div>
+                  <div className="glass p-8 rounded-3xl">
+                    <TrendingUp className="text-accent-secondary mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">7 derniers jours</p>
+                    <p className="text-4xl font-mono font-bold">{analytics?.last7Days || 0}</p>
+                  </div>
+                  <div className="glass p-8 rounded-3xl">
+                    <Users className="text-white mb-4" size={32} />
+                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">30 derniers jours</p>
+                    <p className="text-4xl font-mono font-bold">{analytics?.last30Days || 0}</p>
+                  </div>
+                </div>
+
+                <div className="glass p-10 rounded-3xl">
+                  <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                    <BarChart3 className="text-accent-primary" />
+                    Évolution du Trafic (30 jours)
+                  </h3>
+                  <div className="h-[400px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={analytics?.chartData}>
+                        <defs>
+                          <linearGradient id="colorVisitsFull" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#00f2ff" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#00f2ff" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                        <XAxis 
+                          dataKey="date" 
+                          stroke="rgba(255,255,255,0.3)" 
+                          fontSize={12} 
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis 
+                          stroke="rgba(255,255,255,0.3)" 
+                          fontSize={12} 
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'rgba(10, 10, 20, 0.9)', 
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '12px'
+                          }}
+                          itemStyle={{ color: '#00f2ff' }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="visits" 
+                          stroke="#00f2ff" 
+                          fillOpacity={1} 
+                          fill="url(#colorVisitsFull)" 
+                          strokeWidth={4}
+                          animationDuration={1500}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="glass p-8 rounded-3xl border-white/5">
+                  <h4 className="text-lg font-bold mb-4">Pourquoi ces données sont importantes ?</h4>
+                  <p className="text-white/60 leading-relaxed text-sm">
+                    Le suivi du trafic vous permet de mesurer l'impact de vos publications sur le blog et de vos nouveaux projets. 
+                    Une augmentation soudaine peut indiquer qu'un de vos articles a été partagé ou que votre SEO s'améliore. 
+                    Utilisez ces informations pour décider quels sujets intéressent le plus votre audience.
+                  </p>
                 </div>
               </div>
             )}

@@ -168,7 +168,7 @@ export const Hero: React.FC = () => {
             </div>
             <div>
               <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expérience stagiaire</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stages</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />

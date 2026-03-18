@@ -58,6 +58,28 @@ const ScrollToHash = () => {
   return null;
 };
 
+const VisitTracker = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Only track once per session to avoid spamming
+    const sessionTracked = sessionStorage.getItem('tracked');
+    if (!sessionTracked) {
+      fetch('/api/track-visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          path: location.pathname,
+          userAgent: navigator.userAgent
+        })
+      }).catch(err => console.error('Visit tracking failed:', err));
+      sessionStorage.setItem('tracked', 'true');
+    }
+  }, []); // Only on mount
+
+  return null;
+};
+
 export default function App() {
   const [sudoActive, setSudoActive] = useState(false);
   const keysPressed = useRef<string[]>([]);
@@ -82,6 +104,7 @@ export default function App() {
     <Router>
       <GlobalScrollProgress />
       <ScrollToHash />
+      <VisitTracker />
       <div className="relative min-h-screen overflow-x-hidden bg-bg">
         <NetworkBackground />
         <Navbar />

@@ -189,6 +189,25 @@ app.post("/api/contact", async (req, res) => {
   res.json({ success: true });
 });
 
+// Visit Tracking
+app.post("/api/track-visit", async (req, res) => {
+  const { path, userAgent } = req.body;
+  try {
+    const { error } = await supabase
+      .from("visits")
+      .insert([{ path, user_agent: userAgent }]);
+    
+    if (error) {
+      console.error("Error tracking visit:", error);
+      return res.status(500).json(error);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Visit tracking failed:", err);
+    res.status(500).json({ message: "Visit tracking failed" });
+  }
+});
+
 app.get("/api/messages", authenticateToken, async (req, res) => {
   const { data, error } = await supabase
     .from("messages")
@@ -232,6 +251,55 @@ app.get("/api/admin/stats", authenticateToken, async (req, res) => {
     posts: posts.count || 0,
     unreadMessages: messages.count || 0
   });
+});
+
+app.get("/api/admin/analytics", authenticateToken, async (req, res) => {
+  try {
+    const now = new Date();
+    const todayStart = new Date(now.setHours(0, 0, 0, 0)).toISOString();
+    const sevenDaysAgo = new Date(new Date().setDate(now.getDate() - 7)).toISOString();
+    const thirtyDaysAgo = new Date(new Date().setDate(now.getDate() - 30)).toISOString();
+
+    const [today, last7, last30, allVisits] = await Promise.all([
+      supabase.from("visits").select("*", { count: 'exact', head: true }).gte("created_at", todayStart),
+      supabase.from("visits").select("*", { count: 'exact', head: true }).gte("created_at", sevenDaysAgo),
+      supabase.from("visits").select("*", { count: 'exact', head: true }).gte("created_at", thirtyDaysAgo),
+      supabase.from("visits").select("created_at").gte("created_at", thirtyDaysAgo)
+    ]);
+
+    // Group by day for the chart
+    const dailyStats: { [key: string]: number } = {};
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      dailyStats[dateStr] = 0;
+    }
+
+    if (allVisits.data) {
+      allVisits.data.forEach((v: any) => {
+        const dateStr = v.created_at.split('T')[0];
+        if (dailyStats[dateStr] !== undefined) {
+          dailyStats[dateStr]++;
+        }
+      });
+    }
+
+    const chartData = Object.keys(dailyStats).map(date => ({
+      date: date.split('-').slice(1).reverse().join('/'), // Format DD/MM
+      visits: dailyStats[date]
+    }));
+
+    res.json({
+      today: today.count || 0,
+      last7Days: last7.count || 0,
+      last30Days: last30.count || 0,
+      chartData
+    });
+  } catch (err) {
+    console.error("Analytics fetch failed:", err);
+    res.status(500).json({ message: "Analytics fetch failed" });
+  }
 });
 
 app.get("/api/test", (req, res) => {
