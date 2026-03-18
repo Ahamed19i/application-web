@@ -98,9 +98,9 @@ export const BlogPostDetail: React.FC = () => {
         style={{ scaleX }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 pt-32">
+      <div className="max-w-[1600px] mx-auto px-6 pt-32">
         {/* Breadcrumbs - MDN Style */}
-        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
+        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-12 overflow-x-auto whitespace-nowrap pb-2">
           <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
           <ChevronRight size={12} />
           <Link to="/#blog" className="hover:text-accent-primary transition-colors">Blog</Link>
@@ -108,10 +108,52 @@ export const BlogPostDetail: React.FC = () => {
           <span className="text-accent-primary truncate max-w-[200px]">{post.title}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-[1fr_380px] gap-12 xl:gap-16">
+        <div className="grid lg:grid-cols-[250px_1fr_300px] gap-12 xl:gap-20">
+          {/* Left Sidebar - Reading Progress & Quick Stats */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-32 space-y-12">
+              <div>
+                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-6 flex items-center gap-2">
+                  <div className="w-4 h-[1px] bg-accent-primary"></div>
+                  Progression
+                </h3>
+                <div className="relative h-[300px] w-1 bg-white/5 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="absolute top-0 left-0 right-0 bg-accent-primary origin-top shadow-[0_0_15px_rgba(0,255,255,0.5)]"
+                    style={{ scaleY: scrollYProgress, height: '100%' }}
+                  />
+                </div>
+                <motion.p className="mt-4 text-[10px] font-mono text-accent-primary font-bold">
+                  {Math.round(scrollYProgress.get() * 100)}% LU
+                </motion.p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 text-text-secondary">
+                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
+                    <Clock size={18} className="text-accent-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Lecture</p>
+                    <p className="text-sm font-bold">~5 min</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 text-text-secondary">
+                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
+                    <User size={18} className="text-accent-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Auteur</p>
+                    <p className="text-sm font-bold">Ahamed H.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
           {/* Main Content Area */}
           <article className="min-w-0">
-            <header className="mb-12">
+            <header className="mb-16">
               <div className="flex items-center gap-3 mb-6">
                 <span className="px-3 py-1 rounded-md bg-accent-primary/10 text-accent-primary text-[10px] font-mono uppercase tracking-widest border border-accent-primary/20">
                   {post.category}
@@ -121,7 +163,7 @@ export const BlogPostDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-8">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-12">
                 {post.title}
               </h1>
 
@@ -135,18 +177,6 @@ export const BlogPostDetail: React.FC = () => {
                 </div>
               </div>
             </header>
-
-            <div className="aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-16 group">
-              <img 
-                src={post.image_url} 
-                alt={post.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "https://picsum.photos/seed/blog/1200/800";
-                }}
-              />
-            </div>
 
             {/* Article Overview Section */}
             <div className="mb-16">

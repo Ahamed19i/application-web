@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Terminal } from 'lucide-react';
 import { NetworkBackground } from './components/NetworkBackground.tsx';
 import { Navbar } from './components/Navbar.tsx';
@@ -15,6 +15,22 @@ import { AdminLogin } from './components/AdminLogin.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { ProjectDetail } from './components/ProjectDetail.tsx';
 import { BlogPostDetail } from './components/BlogPostDetail.tsx';
+
+const GlobalScrollProgress = () => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-1 bg-accent-primary z-[1000] origin-left shadow-[0_0_10px_rgba(0,255,255,0.5)]"
+      style={{ scaleX }}
+    />
+  );
+};
 
 const ScrollToHash = () => {
   const { pathname, hash } = useLocation();
@@ -64,6 +80,7 @@ export default function App() {
 
   return (
     <Router>
+      <GlobalScrollProgress />
       <ScrollToHash />
       <div className="relative min-h-screen overflow-x-hidden bg-bg">
         <NetworkBackground />
