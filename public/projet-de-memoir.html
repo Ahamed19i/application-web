@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Mémoire Master 2 — Plateforme DevOps CI/CD — Ahamed HASSANI MHOMA — AFI-Université">
+<title>Mémoire M2 DevOps — Ahamed HASSANI MHOMA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09100d;
+  --card:#111a15;
+  --border:#1a2e20;
+  --border2:#243828;
+  --green:#3db86a;
+  --orange:#e05c1a;
+  --blue:#4a8fd4;
+  --gold:#c8961a;
+  --muted:#4a6e52;
+  --text:#c8dece;
+  --bright:#eaf4ec;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Mulish',sans-serif;
+  font-weight:300;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 32px,rgba(61,184,106,0.02) 32px,rgba(61,184,106,0.02) 33px);
+  pointer-events:none;z-index:0;
+}
+.glow{position:fixed;top:-150px;right:-150px;width:500px;height:500px;background:radial-gradient(circle,rgba(61,184,106,0.05) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+/* ── LAYOUT ── */
+.page{max-width:860px;margin:0 auto;padding:56px 32px 80px;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+header{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:32px;
+  align-items:start;
+  padding-bottom:40px;
+  border-bottom:1px solid var(--border2);
+  margin-bottom:48px;
+  animation:up .8s ease both;
+}
+.h-left{}
+.h-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.h-eyebrow::before{content:'';width:24px;height:1px;background:var(--muted);}
+h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.5rem,3.5vw,2.4rem);
+  font-weight:900;line-height:1.2;
+  color:var(--bright);margin-bottom:20px;
+}
+h1 em{font-style:normal;color:var(--green);}
+.author-pill{
+  display:inline-flex;flex-direction:column;gap:4px;
+  background:var(--card);border:1px solid var(--border2);
+  border-left:3px solid var(--green);
+  padding:14px 18px;
+}
+.a-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--bright);}
+.a-name span{color:var(--green);}
+.a-meta{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+.h-right{flex-shrink:0;}
+.school-box{
+  background:var(--card);border:1px solid var(--border2);
+  padding:16px 20px;text-align:center;
+}
+.s-init{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--green);line-height:1;}
+.s-name{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--bright);margin-top:4px;}
+.s-sub{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.s-year{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);margin-top:8px;letter-spacing:1px;}
+
+/* ── STATS ── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);border:1px solid var(--border);
+  margin-bottom:48px;animation:up .7s .05s ease both;
+}
+.stat{background:var(--card);padding:22px 16px;text-align:center;}
+.stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--bright);line-height:1;margin-bottom:6px;}
+.stat-n span{font-size:1.1rem;color:var(--green);}
+.stat-l{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:48px;animation:up .7s ease both;}
+.section:nth-child(3){animation-delay:.08s}
+.section:nth-child(4){animation-delay:.12s}
+.section:nth-child(5){animation-delay:.16s}
+.section:nth-child(6){animation-delay:.20s}
+.section:nth-child(7){animation-delay:.24s}
+.section:nth-child(8){animation-delay:.28s}
+
+.sec-head{
+  display:flex;align-items:baseline;gap:12px;
+  margin-bottom:22px;padding-bottom:12px;
+  border-bottom:1px solid var(--border2);
+}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;flex-shrink:0;}
+.sec-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--bright);}
+
+/* ── CALLOUT ── */
+.box{
+  background:var(--card);border:1px solid var(--border2);
+  border-left:3px solid var(--green);
+  padding:18px 22px;margin-bottom:18px;
+}
+.box.ora{border-left-color:var(--orange);}
+.box.blu{border-left-color:var(--blue);}
+.box.gld{border-left-color:var(--gold);}
+.box-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.box p{font-size:13.5px;line-height:1.85;color:var(--text);}
+.box strong{font-weight:700;color:var(--bright);}
+
+/* ── PIPELINE ── */
+.pipeline{
+  display:flex;align-items:center;flex-wrap:wrap;
+  gap:0;margin-bottom:18px;
+  border:1px solid var(--border2);overflow:hidden;
+}
+.pipe-step{
+  flex:1;min-width:100px;
+  padding:16px 12px;text-align:center;
+  border-right:1px solid var(--border2);
+  background:var(--card);
+  position:relative;
+}
+.pipe-step:last-child{border-right:none;}
+.pipe-icon{font-size:18px;margin-bottom:6px;display:block;}
+.pipe-name{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--bright);margin-bottom:3px;}
+.pipe-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.pipe-step::after{
+  content:'▸';
+  position:absolute;right:-8px;top:50%;transform:translateY(-50%);
+  color:var(--border2);font-size:12px;z-index:1;
+}
+.pipe-step:last-child::after{display:none;}
+
+/* ── TECH TABLE ── */
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.tech-col{}
+.tech-group-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+  margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.tech-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid rgba(26,46,32,.5);gap:8px;font-size:12.5px;
+}
+.tech-row:last-child{border-bottom:none;}
+.tn{font-weight:600;color:var(--bright);}
+.tt{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:1px;text-transform:uppercase;padding:2px 7px;
+}
+.tg{background:rgba(61,184,106,.1);color:var(--green);border:1px solid rgba(61,184,106,.2);}
+.to{background:rgba(224,92,26,.1);color:var(--orange);border:1px solid rgba(224,92,26,.2);}
+.tb{background:rgba(74,143,212,.1);color:var(--blue);border:1px solid rgba(74,143,212,.2);}
+.tgd{background:rgba(200,150,26,.1);color:var(--gold);border:1px solid rgba(200,150,26,.2);}
+
+/* ── PLAN TABLE ── */
+.plan-tbl{width:100%;border-collapse:collapse;margin-bottom:18px;}
+.plan-tbl th{
+  text-align:left;padding:9px 12px;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--border2);font-weight:400;
+}
+.plan-tbl td{padding:14px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+.plan-tbl tr:hover td{background:rgba(61,184,106,.02);}
+.cn{font-family:'Playfair Display',serif;font-size:24px;color:var(--border2);font-weight:900;line-height:1;width:36px;}
+.ct{font-weight:700;font-size:13.5px;color:var(--bright);margin-bottom:2px;}
+.cs{font-size:12px;color:var(--muted);}
+.cp{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:24px;margin-bottom:18px;}
+.tl::before{content:'';position:absolute;left:0;top:6px;width:1px;height:calc(100% - 12px);background:var(--border2);}
+.tl-item{position:relative;margin-bottom:24px;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-item::before{content:'';position:absolute;left:-28px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--green);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--green);}
+.tl-m{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+.tl-t{font-weight:700;font-size:13.5px;color:var(--bright);margin-bottom:3px;}
+.tl-d{font-size:12.5px;color:var(--muted);line-height:1.7;}
+
+/* ── CAREERS ── */
+.careers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.career{
+  background:var(--card);border:1px solid var(--border2);
+  padding:16px;transition:border-color .3s,transform .3s;
+}
+.career:hover{border-color:var(--green);transform:translateY(-2px);}
+.cr{font-weight:700;font-size:12.5px;color:var(--bright);margin-bottom:4px;}
+.cs2{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--green);margin-bottom:4px;}
+.cw{font-size:11.5px;color:var(--muted);}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border2);
+  padding-top:24px;margin-top:48px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  flex-wrap:wrap;gap:16px;
+}
+.ft{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--bright);margin-bottom:3px;}
+.fa{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1px;margin-bottom:2px;}
+.fs{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;}
+.fr{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);line-height:1.9;}
+
+/* ── ANIMS ── */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:640px){
+  header{grid-template-columns:1fr;}
+  .h-right{display:none;}
+  .stats,.tech-grid,.careers{grid-template-columns:1fr 1fr;}
+  .pipeline{flex-direction:column;}
+  .pipe-step{border-right:none;border-bottom:1px solid var(--border2);}
+  .pipe-step::after{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="page">
+
+<!-- HEADER -->
+<header>
+  <div class="h-left">
+    <div class="h-eyebrow">Mémoire de fin d'études — Master 2</div>
+    <h1>Conception d'une plateforme <em>DevOps complète</em> : automatisation CI/CD, orchestration Kubernetes et supervision en environnement de production</h1>
+    <div class="author-pill">
+      <div class="a-name">Ahamed <span>HASSANI MHOMA</span></div>
+      <div class="a-meta">Master 2 Systèmes & Réseaux · AFI-Université · 2025–2026</div>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="school-box">
+      <div class="s-init">AFI</div>
+      <div class="s-name">AFI-Université</div>
+      <div class="s-sub">de l'entreprise</div>
+      <div class="s-year">2025 — 2026</div>
+    </div>
+  </div>
+</header>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">A<span>→Z</span></div><div class="stat-l">Du code au prod</div></div>
+  <div class="stat"><div class="stat-n">5</div><div class="stat-l">Chapitres</div></div>
+  <div class="stat"><div class="stat-n">4<span>+</span></div><div class="stat-l">Technologies clés</div></div>
+  <div class="stat"><div class="stat-n">~95</div><div class="stat-l">Pages mémoire</div></div>
+</div>
+
+<!-- 01 CONTEXTE -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">01 —</span><span class="sec-title">Contexte & Motivation</span></div>
+  <div class="box">
+    <div class="box-lbl">Problématique centrale</div>
+    <p><strong>Comment automatiser entièrement le cycle de vie d'une application web — du commit Git au déploiement en production sur Kubernetes — de façon fiable, sécurisée et observable, sans intervention humaine ?</strong></p>
+  </div>
+  <p style="font-size:13.5px;color:var(--muted);line-height:1.9;">Mon parcours double — Licence Génie Logiciel puis Master 2 Systèmes & Réseaux — m'a placé naturellement à l'intersection du développement et de l'infrastructure. Ce mémoire est la synthèse de ces deux formations : je construis le pont entre le code que les développeurs écrivent et l'infrastructure qui le fait tourner en production.</p>
+</div>
+
+<!-- 02 PIPELINE -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">02 —</span><span class="sec-title">Le Pipeline CI/CD — De A à Z</span></div>
+  <div class="pipeline">
+    <div class="pipe-step">
+      <span class="pipe-icon">📝</span>
+      <div class="pipe-name">Code</div>
+      <div class="pipe-desc">Dev fait git push sur GitLab</div>
+    </div>
+    <div class="pipe-step">
+      <span class="pipe-icon">🧪</span>
+      <div class="pipe-name">Test</div>
+      <div class="pipe-desc">Tests unitaires automatiques</div>
+    </div>
+    <div class="pipe-step">
+      <span class="pipe-icon">🐳</span>
+      <div class="pipe-name">Build</div>
+      <div class="pipe-desc">Image Docker construite</div>
+    </div>
+    <div class="pipe-step">
+      <span class="pipe-icon">🔍</span>
+      <div class="pipe-name">Scan</div>
+      <div class="pipe-desc">Trivy — failles détectées</div>
+    </div>
+    <div class="pipe-step">
+      <span class="pipe-icon">🚀</span>
+      <div class="pipe-name">Deploy</div>
+      <div class="pipe-desc">ArgoCD → Kubernetes</div>
+    </div>
+    <div class="pipe-step">
+      <span class="pipe-icon">📊</span>
+      <div class="pipe-name">Monitor</div>
+      <div class="pipe-desc">Prometheus + Grafana</div>
+    </div>
+  </div>
+  <div class="box ora">
+    <div class="box-lbl">Ce que ça résout en entreprise</div>
+    <p>Un déploiement manuel prend <strong>2 à 4 heures</strong>, mobilise plusieurs personnes et est source d'erreurs. Avec ce pipeline, un développeur fait un <strong>git push</strong> et en 10 minutes son application est testée, sécurisée et déployée — sans intervention humaine.</p>
+  </div>
+</div>
+
+<!-- 03 STACK -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">03 —</span><span class="sec-title">Stack Technologique</span></div>
+  <div class="tech-grid">
+    <div class="tech-col">
+      <div class="tech-group-lbl">Intégration Continue</div>
+      <div class="tech-row"><span class="tn">GitLab CE</span><span class="tt tg">CI/CD</span></div>
+      <div class="tech-row"><span class="tn">GitLab Runner</span><span class="tt tg">Exécution</span></div>
+      <div class="tech-row"><span class="tn">Trivy</span><span class="tt tg">Sécurité</span></div>
+      <div class="tech-group-lbl" style="margin-top:16px">Conteneurisation</div>
+      <div class="tech-row"><span class="tn">Docker</span><span class="tt tb">Build</span></div>
+      <div class="tech-row"><span class="tn">Docker Compose</span><span class="tt tb">Dev local</span></div>
+      <div class="tech-row"><span class="tn">Harbor / Registry</span><span class="tt tb">Stockage</span></div>
+    </div>
+    <div class="tech-col">
+      <div class="tech-group-lbl">Orchestration</div>
+      <div class="tech-row"><span class="tn">K3s (Kubernetes)</span><span class="tt to">Cluster</span></div>
+      <div class="tech-row"><span class="tn">ArgoCD</span><span class="tt to">GitOps</span></div>
+      <div class="tech-row"><span class="tn">Helm Charts</span><span class="tt to">Déploiement</span></div>
+      <div class="tech-group-lbl" style="margin-top:16px">Supervision</div>
+      <div class="tech-row"><span class="tn">Prometheus</span><span class="tt tgd">Métriques</span></div>
+      <div class="tech-row"><span class="tn">Grafana</span><span class="tt tgd">Dashboards</span></div>
+      <div class="tech-row"><span class="tn">Alertmanager</span><span class="tt tgd">Alertes</span></div>
+    </div>
+  </div>
+  <div class="box gld">
+    <div class="box-lbl">Pourquoi K3s et pas Kubernetes complet</div>
+    <p>K3s est la distribution officielle légère de Kubernetes — <strong>mêmes concepts, mêmes fichiers YAML, même kubectl</strong> — mais installable en une commande sur une seule machine. Idéal pour un labo M2 avec des ressources limitées, sans compromis sur la démonstration des concepts.</p>
+  </div>
+</div>
+
+<!-- 06 DÉBOUCHÉS -->
+<div class="section">
+  <div class="sec-head"><span class="sec-num">06 —</span><span class="sec-title">Débouchés Visés</span></div>
+  <div class="careers">
+    <div class="career"><div class="cr">DevOps Engineer</div><div class="cs2">€42–65k FR</div><div class="cw">Profil le + demandé 2025</div></div>
+    <div class="career"><div class="cr">Cloud Engineer</div><div class="cs2">$70–95k CA</div><div class="cw">Canada, Suisse, Belgique</div></div>
+    <div class="career"><div class="cr">Platform Engineer</div><div class="cs2">€45–70k</div><div class="cw">Startups, Scale-ups, Tech</div></div>
+    <div class="career"><div class="cr">SRE Junior</div><div class="cs2">€48–72k</div><div class="cw">Big Tech, Fintech</div></div>
+    <div class="career"><div class="cr">Infra Consultant</div><div class="cs2">TJM €450–700</div><div class="cw">Freelance, ESN premium</div></div>
+    <div class="career"><div class="cr">Cloud Architect</div><div class="cs2">€70–110k+</div><div class="cw">Évolution 3–5 ans</div></div>
+  </div>
+  <div class="box blu">
+    <div class="box-lbl">Mon avantage différenciant</div>
+    <p>Mon double parcours <strong>Génie Logiciel + Systèmes & Réseaux</strong> me permet de comprendre et d'expliquer chaque couche du pipeline — du code applicatif jusqu'à l'infrastructure. C'est exactement le profil rare que les équipes DevOps recherchent.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="ft">Plateforme DevOps Complète — CI/CD & Kubernetes</div>
+    <div class="fa">Ahamed HASSANI MHOMA</div>
+    <div class="fs">AFI-Université de l'entreprise · Master 2 Systèmes & Réseaux · 2025–2026</div>
+  </div>
+  <div class="fr">
+    GitLab CI · Docker · K3s · ArgoCD<br>
+    Prometheus · Grafana · Trivy<br>
+    <span style="color:var(--green)">En cours · 2025–2026</span>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
