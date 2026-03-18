@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Download } from 'lucide-react';
@@ -45,8 +46,6 @@ export const Hero: React.FC = () => {
           fetch('/api/posts')
         ]);
         
-        if (!projectsRes.ok || !postsRes.ok) throw new Error('Failed to fetch stats');
-        
         const projects = await projectsRes.json();
         const posts = await postsRes.json();
         
@@ -54,7 +53,6 @@ export const Hero: React.FC = () => {
         const postCount = Array.isArray(posts) ? posts.length : 0;
 
         setStats({
-          // Use fetched count, or a minimum default if empty (for visual appeal)
           projects: projectCount > 0 ? projectCount : 5, 
           posts: postCount > 0 ? postCount : 3
         });
@@ -67,15 +65,12 @@ export const Hero: React.FC = () => {
   }, []);
 
   const Counter = ({ value, label }: { value: number; label: string }) => {
-    const [count, setCount] = useState(0);
+    const [count, setCount] = React.useState(0);
 
-    useEffect(() => {
+    React.useEffect(() => {
       let start = 0;
       const end = value;
-      if (start === end) {
-        setCount(end);
-        return;
-      }
+      if (end === 0) return;
       
       const duration = 2000;
       const increment = end / (duration / 16);
@@ -114,12 +109,7 @@ export const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
-        >
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
-            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
-            Disponible — Recherche de stage / alternance
-          </div>
-          
+        >          
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
             <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
@@ -157,10 +147,14 @@ export const Hero: React.FC = () => {
             <span className="px-3 py-1 rounded-full border border-white/10 text-text-muted bg-white/5 text-[11px] font-mono tracking-wider">⚙️ Ansible</span>
           </div>
 
-          <div className="mt-10 flex justify-center lg:justify-start gap-8 md:gap-12 pt-8 border-t border-white/10">
+          <div className="mt-10 flex flex-wrap justify-center lg:justify-start gap-6 md:gap-10 pt-8 border-t border-white/10">
             <div>
               <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">M2</p>
               <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
+            </div>
+            <div>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expérience Pro</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />
