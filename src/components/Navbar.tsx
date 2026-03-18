@@ -87,7 +87,7 @@ export const Navbar: React.FC = () => {
             </a>
           ))}
           <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white/10">
-            <a href="/cv-ahamed-hassani.pdf" download className="text-[11px] font-mono px-4 py-1.5 rounded-lg bg-accent-primary/10 border border-accent-primary/25 text-accent-primary hover:bg-accent-primary/20 transition-all tracking-wider">
+            <a href="https://drive.google.com/file/d/1mtB7ncVhsMseOmFTp-uf2TL4L-AAinBG/view?usp=sharing" download className="text-[11px] font-mono px-4 py-1.5 rounded-lg bg-accent-primary/10 border border-accent-primary/25 text-accent-primary hover:bg-accent-primary/20 transition-all tracking-wider">
               ↓ CV
             </a>
           </div>
