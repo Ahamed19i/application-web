@@ -123,6 +123,10 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
         >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
+            Disponible — Recherche de stage / alternance
+          </div>
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
@@ -206,7 +210,7 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute bottom-4 md:top-8 left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+            <div className="absolute -bottom-6 md:top-8 left-4 md:-left-8 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
               <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>

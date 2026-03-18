@@ -87,7 +87,7 @@ export const AdminDashboard: React.FC = () => {
       setMessages(await messagesRes.json());
       if (analyticsRes.ok) {
         const data = await analyticsRes.json();
-        console.log("Analytics data fetched:", data);
+        console.log("Analytics data fetched (v1.1):", data);
         setAnalytics(data);
       } else {
         console.error("Analytics fetch failed with status:", analyticsRes.status);
