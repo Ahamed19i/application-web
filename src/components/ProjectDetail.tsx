@@ -122,9 +122,9 @@ export const ProjectDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
+              <h2 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
                 {project.title}
-              </h1>
+              </h2>
 
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
                 {project.description}
@@ -165,13 +165,7 @@ export const ProjectDetail: React.FC = () => {
                       Rapport non disponible
                     </span>
                   )}
-                  <button 
-                    onClick={handleShare}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-text-primary font-bold hover:bg-white/10 transition-all text-sm"
-                  >
-                    <Share2 size={18} />
-                    Partager
-                  </button>
+                 
                 </div>
               </div>
             </div>
@@ -232,7 +226,7 @@ export const ProjectDetail: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Date de réalisation</p>
-                        <p className="text-sm font-medium text-text-primary">Mars 2024</p>
+                        <p className="text-sm font-medium text-text-primary">Mars 2026</p>
                       </div>
                     </div>
                   </div>

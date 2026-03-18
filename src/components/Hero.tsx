@@ -77,7 +77,6 @@ export const Hero: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Ajout d'un timestamp pour éviter le cache
         const [projectsRes, postsRes] = await Promise.all([
           fetch(`/api/projects?t=${Date.now()}`),
           fetch(`/api/posts?t=${Date.now()}`)
@@ -88,31 +87,32 @@ export const Hero: React.FC = () => {
         const projects = await projectsRes.json();
         const posts = await postsRes.json();
         
-        // On compte tout ce qui est publié (flexible sur le type de 'published')
+        // On compte tout ce qui est publié
+        // On est très large sur la vérification du statut publié
         const projectCount = Array.isArray(projects) 
-          ? projects.filter(p => p.published == true || p.published == 1 || p.published === 'true').length 
+          ? projects.filter(p => p.published == true || p.published == 1 || p.published === 'true' || p.status === 'published').length 
           : 0;
         const postCount = Array.isArray(posts) 
-          ? posts.filter(p => p.published == true || p.published == 1 || p.published === 'true').length 
+          ? posts.filter(p => p.published == true || p.published == 1 || p.published === 'true' || p.status === 'published').length 
           : 0;
 
-        console.log('Stats fetched:', { projectCount, postCount });
+        console.log('Real stats:', { projectCount, postCount });
 
         setStats({
-          // Valeurs de secours si 0 pour ne pas afficher 0 au début
-          projects: projectCount > 0 ? projectCount : 5, 
-          posts: postCount > 0 ? postCount : 3
+          projects: projectCount, 
+          posts: postCount
         });
       } catch (error) {
         console.error('Error fetching stats:', error);
-        setStats({ projects: 5, posts: 3 });
+        // En cas d'erreur, on met des valeurs par défaut pour ne pas rester à 0
+        setStats({ projects: 1, posts: 1 });
       }
     };
     fetchStats();
   }, []);
 
   return (
-    <section id="home" className="min-h-screen flex items-center pt-20 px-6 relative overflow-hidden">
+    <section id="home" className="min-h-[70vh] md:min-h-screen flex items-center pt-8 md:pt-20 px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_70%_30%,rgba(0,80,200,0.07)_0%,transparent_65%),radial-gradient(ellipse_60%_60%_at_10%_80%,rgba(0,180,255,0.05)_0%,transparent_55%)] -z-10"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,180,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(0,180,255,0.025)_1px,transparent_1px)] bg-[size:70px_70px] -z-10"></div>
       
@@ -123,10 +123,6 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
         >
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
-            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
-            Disponible — Recherche de stage / alternance
-          </div>
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
@@ -172,7 +168,7 @@ export const Hero: React.FC = () => {
             </div>
             <div>
               <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expérience Pro</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expérience stagiaire</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />
