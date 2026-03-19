@@ -67,8 +67,10 @@ export const AdminDashboard: React.FC = () => {
   
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  console.log("AdminDashboard rendering, token present:", !!token);
 
   useEffect(() => {
+    console.log("AdminDashboard useEffect triggered, token:", !!token);
     if (!token) {
       navigate('/admin/login');
       return;
@@ -77,10 +79,11 @@ export const AdminDashboard: React.FC = () => {
   }, [token]);
 
   const fetchData = async () => {
+    console.log("fetchData started");
     setLoading(true);
     try {
       const headers = { 'Authorization': `Bearer ${token}` };
-      
+      console.log("Fetching stats...");
       const [statsRes, projectsRes, postsRes, messagesRes, analyticsRes] = await Promise.all([
         fetch('/api/admin/stats', { headers }),
         fetch('/api/admin/projects', { headers }),
@@ -88,6 +91,7 @@ export const AdminDashboard: React.FC = () => {
         fetch('/api/messages', { headers }),
         fetch('/api/admin/analytics', { headers })
       ]);
+      console.log("Fetch responses received");
 
       if (statsRes.status === 401) {
         localStorage.removeItem('token');
@@ -95,19 +99,46 @@ export const AdminDashboard: React.FC = () => {
         return;
       }
 
-      setStats(await statsRes.json());
-      setProjects(await projectsRes.json());
-      setPosts(await postsRes.json());
-      setMessages(await messagesRes.json());
+      if (statsRes.ok) {
+        const data = await statsRes.json();
+        setStats(data);
+      }
+
+      if (projectsRes.ok) {
+        const data = await projectsRes.json();
+        setProjects(Array.isArray(data) ? data : []);
+      } else {
+        setProjects([]);
+      }
+
+      if (postsRes.ok) {
+        const data = await postsRes.json();
+        setPosts(Array.isArray(data) ? data : []);
+      } else {
+        setPosts([]);
+      }
+
+      if (messagesRes.ok) {
+        const data = await messagesRes.json();
+        setMessages(Array.isArray(data) ? data : []);
+      } else {
+        setMessages([]);
+      }
+
       if (analyticsRes.ok) {
         const data = await analyticsRes.json();
-        console.log("Analytics data fetched (v1.2):", data);
+        console.log("Analytics data fetched (v1.3):", data);
         setAnalytics(data);
       } else {
         console.error("Analytics fetch failed with status:", analyticsRes.status);
+        setAnalytics({ today: 0, last7Days: 0, last30Days: 0, chartData: [] });
       }
     } catch (err) {
-      console.error(err);
+      console.error("Fetch data error:", err);
+      // Ensure we don't have nulls that could crash the render
+      setProjects([]);
+      setPosts([]);
+      setMessages([]);
     } finally {
       setLoading(false);
     }
