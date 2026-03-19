@@ -168,7 +168,7 @@ export const Hero: React.FC = () => {
             </div>
             <div>
               <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expérience Pro</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stages</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />
@@ -206,7 +206,7 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute bottom-4 left-4 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20">
+            <div className="absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20 whitespace-nowrap">
               <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>

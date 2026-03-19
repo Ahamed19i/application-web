@@ -1,12 +1,17 @@
 
-
 import React from 'react';
 import { Terminal, Github, Linkedin, Mail, Twitter, Instagram, ArrowUpRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
+  const location = useLocation();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const isAdmin = location.pathname.startsWith('/admin');
+
+  if (isAdmin) return null;
 
   return (
     <footer className="bg-bg border-t border-white/5 pt-12 md:pt-24 pb-12 px-6 mt-10 md:mt-20 relative overflow-hidden">
@@ -25,13 +30,13 @@ export const Footer: React.FC = () => {
               Ahamed19i
             </div>
             <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              Ingénieur en Systèmes & Réseaux Télécom. Passionné par le DevOps et la sécurité des infrastructures.
+              Ingénieur en Systèmes & Réseaux Télécom. Passionné par l'automatisation, le Cloud et la sécurité des infrastructures.
             </p>
             <div className="flex gap-4">
               <a href="https://github.com/ahamed19i" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all group">
                 <Github size={18} />
               </a>
-              <a href="https://linkedin.com/in/ahamed-hassani-mhoma" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
+              <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
                 <Linkedin size={18} />
               </a>
               <a href="mailto:hassanimhoma2019@gmail.com" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
