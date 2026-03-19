@@ -87,7 +87,7 @@ export const AdminDashboard: React.FC = () => {
       setMessages(await messagesRes.json());
       if (analyticsRes.ok) {
         const data = await analyticsRes.json();
-        console.log("Analytics data fetched (v1.1):", data);
+        console.log("Analytics data fetched (v1.2):", data);
         setAnalytics(data);
       } else {
         console.error("Analytics fetch failed with status:", analyticsRes.status);
@@ -215,11 +215,11 @@ export const AdminDashboard: React.FC = () => {
         <nav className="flex-grow p-4 space-y-2">
           {[
             { id: 'stats', label: 'Dashboard', icon: LayoutDashboard },
-            { id: 'analytics', label: 'Analytiques', icon: BarChart3 },
+            { id: 'analytics', label: 'Analytiques', icon: BarChart3, isNew: true },
             { id: 'projects', label: 'Projets', icon: FolderKanban },
             { id: 'posts', label: 'Blog', icon: FileText },
             { id: 'messages', label: 'Messages', icon: MessageSquare, badge: stats.unreadMessages },
-          ].map((item) => (
+          ].map((item: { id: string, label: string, icon: any, isNew?: boolean, badge?: number }) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
@@ -230,6 +230,11 @@ export const AdminDashboard: React.FC = () => {
               <div className="flex items-center gap-3">
                 <item.icon size={20} />
                 <span className="font-medium">{item.label}</span>
+                {item.isNew && (
+                  <span className="ml-2 bg-accent-primary/20 text-accent-primary text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                    NEW
+                  </span>
+                )}
               </div>
               {item.badge && item.badge > 0 && (
                 <span className="bg-accent-primary text-bg text-[10px] font-bold px-2 py-0.5 rounded-full">
