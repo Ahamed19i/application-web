@@ -51,6 +51,20 @@ export const AdminDashboard: React.FC = () => {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [formData, setFormData] = useState<any>({});
   
+  // Notification Modal state
+  const [notification, setNotification] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'alert' | 'confirm';
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'alert'
+  });
+  
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -104,18 +118,31 @@ export const AdminDashboard: React.FC = () => {
     navigate('/admin/login');
   };
 
+  const showAlert = (title: string, message: string) => {
+    setNotification({ isOpen: true, title, message, type: 'alert' });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setNotification({ isOpen: true, title, message, type: 'confirm', onConfirm });
+  };
+
   const deleteItem = async (type: 'projects' | 'posts' | 'messages', id: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) return;
-    
-    try {
-      const res = await fetch(`/api/${type}/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) fetchData();
-    } catch (err) {
-      console.error(err);
-    }
+    showConfirm(
+      'Confirmation de suppression',
+      'Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.',
+      async () => {
+        try {
+          const res = await fetch(`/api/${type}/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) fetchData();
+        } catch (err) {
+          console.error(err);
+          showAlert('Erreur', 'Impossible de supprimer l\'élément.');
+        }
+      }
+    );
   };
 
   const togglePublish = async (type: 'projects' | 'posts', item: any) => {
@@ -190,7 +217,7 @@ export const AdminDashboard: React.FC = () => {
         fetchData();
       } else {
         const errorData = await res.json();
-        alert(`Erreur lors de l'enregistrement : ${errorData.message || errorData.details || 'Erreur inconnue'}`);
+        showAlert('Erreur d\'enregistrement', errorData.message || errorData.details || 'Une erreur est survenue lors de l\'enregistrement.');
         console.error('Détails de l\'erreur:', errorData);
       }
     } catch (err) {
@@ -219,7 +246,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'projects', label: 'Projets', icon: FolderKanban },
             { id: 'posts', label: 'Blog', icon: FileText },
             { id: 'messages', label: 'Messages', icon: MessageSquare, badge: stats.unreadMessages },
-          ].map((item: { id: string, label: string, icon: any, isNew?: boolean, badge?: number }) => (
+          ].map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
@@ -714,6 +741,61 @@ export const AdminDashboard: React.FC = () => {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* Notification Modal */}
+      <AnimatePresence>
+        {notification.isOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="glass w-full max-w-md rounded-3xl p-8 border-accent-primary/20"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${
+                  notification.type === 'confirm' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500' : 'bg-accent-primary/10 border-accent-primary/20 text-accent-primary'
+                }`}>
+                  {notification.type === 'confirm' ? <Clock size={24} /> : <CheckCircle size={24} />}
+                </div>
+                <h3 className="text-xl font-bold">{notification.title}</h3>
+              </div>
+              
+              <p className="text-white/60 mb-8 leading-relaxed">
+                {notification.message}
+              </p>
+              
+              <div className="flex justify-end gap-4">
+                {notification.type === 'confirm' ? (
+                  <>
+                    <button 
+                      onClick={() => setNotification({ ...notification, isOpen: false })}
+                      className="px-6 py-2 text-white/60 hover:text-white transition-colors"
+                    >
+                      Annuler
+                    </button>
+                    <button 
+                      onClick={() => {
+                        notification.onConfirm?.();
+                        setNotification({ ...notification, isOpen: false });
+                      }}
+                      className="px-6 py-2 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-all"
+                    >
+                      Supprimer
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    onClick={() => setNotification({ ...notification, isOpen: false })}
+                    className="px-8 py-2 bg-accent-primary text-bg font-bold rounded-xl hover:glow-primary transition-all"
+                  >
+                    D'accord
+                  </button>
+                )}
+              </div>
             </motion.div>
           </div>
         )}
