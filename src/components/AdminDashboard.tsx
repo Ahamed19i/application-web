@@ -24,7 +24,7 @@ import {
   Users
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
-import { generateProjectReport } from '../utils/reportGenerator';
+import { generateProjectReport } from '../utils/reportGenerator.ts';
 import { 
   LineChart, 
   Line, 
