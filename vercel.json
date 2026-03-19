@@ -1,10 +1,8 @@
-
-
 {
   "version": 2,
   "functions": {
     "server.ts": {
-      "runtime": "vercel-node@latest"
+      "runtime": "nodejs20.x"
     }
   },
   "rewrites": [
