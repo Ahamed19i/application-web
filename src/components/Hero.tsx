@@ -136,7 +136,7 @@ export const Hero: React.FC = () => {
             </p>
           </div>
 
-          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
+          <p className="text-sm md:text-base text-text-secondary mb-11 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
             Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
             Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
             Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
