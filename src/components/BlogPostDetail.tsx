@@ -131,7 +131,7 @@ export const BlogPostDetail: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xs font-bold">Ahamed Hassani</p>
-                  <p className="text-[10px] text-text-muted font-mono uppercase tracking-wider">Expert DevOps & Cloud</p>
+                  <p className="text-[10px] text-text-muted font-mono uppercase tracking-wider">Ingénieur Systèmes/Réseaux</p>
                 </div>
               </div>
             </header>
