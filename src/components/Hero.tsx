@@ -136,10 +136,10 @@ export const Hero: React.FC = () => {
             </p>
           </div>
 
-          <p className="text-base md:text-lg text-text-secondary mb-12 max-w-xl mx-auto lg:mx-0 leading-loose tracking-wide">
-            Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar). <br /><br />
-            Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud et DevOps. <br /><br />
-            Expérience professionnelles chez <strong>Tunisie Télécom</strong>.
+          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
+            Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
+            Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
+            Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
           </p>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
