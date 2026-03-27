@@ -46,8 +46,9 @@ export const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const roles = [
     "Ingénieur Systèmes & Réseaux",
-    "Cloud Engineer",
-    "DevOps Enthusiast"
+    "Spécialiste Infrastructure IT",
+    "Cloud & DevOps Engineer",
+    "Sécurité des SI"
   ];
   const speed = isDeleting ? 50 : 100;
 
@@ -135,15 +136,15 @@ export const Hero: React.FC = () => {
             </p>
           </div>
 
-          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
-            Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
-            Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
-            Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
+          <p className="text-base md:text-lg text-text-secondary mb-12 max-w-xl mx-auto lg:mx-0 leading-loose tracking-wide">
+            Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar). <br /><br />
+            Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud et DevOps. <br /><br />
+            Expérience professionnelles chez <strong>Tunisie Télécom</strong>.
           </p>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
             <a href="/cv-ahamed-hassani.pdf" download className="btn-p text-sm md:text-base">
-              📄 Télécharger mon CV
+              📄 Download mon CV
             </a>
             <a href="#projects" className="btn-g text-sm md:text-base">
               🚀 Mes projets
@@ -167,8 +168,8 @@ export const Hero: React.FC = () => {
               <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
             </div>
             <div>
-              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stages</p>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">1</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stage</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />
@@ -207,7 +208,7 @@ export const Hero: React.FC = () => {
             </div>
 
             <div className="absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20 whitespace-nowrap">
-              <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
+              <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ Linux · DevOps · Cloud</p>
             </div>
           </div>
         </motion.div>
