@@ -29,14 +29,14 @@ export const About: React.FC = () => {
   ];
 
   const skills = [
-    { category: "Systèmes", items: ["Linux (Ubuntu/Debian)", "Windows Server", "Active Directory"], level: 90 },
+    { category: "Systèmes", items: ["Linux (Ubuntu/Debian)", "Windows Server", "Virtualisation"], level: 90 },
     { category: "Réseaux", items: ["Cisco IOS", "pfSense", "EVE-NG", "VPN/VLAN"], level: 85 },
     { category: "Cloud & DevOps", items: ["Docker", "Kubernetes", "Ansible", "AWS", "CI/CD"], level: 65 }
   ];
 
   const certifications = [
-    { title: "Cisco Networking Basics", issuer: "Cisco Networking Academy", date: "2026" },
-    { title: "Introduction to Cybersecurity", issuer: "Cisco Networking Academy", date: "2026" },
+    { title: "Cisco Networking Basics", issuer: "Cisco Networking Academy", date: "2025" },
+    { title: "Introduction to Cybersecurity", issuer: "Cisco Networking Academy", date: "2025" },
     { title: "CCNA (En cours)", issuer: "Cisco", date: "2026" },
     { title: "DevOps (En cours)", issuer: "Coursera", date: "2026" }
   ];
