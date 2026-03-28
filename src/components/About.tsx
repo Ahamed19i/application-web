@@ -8,7 +8,7 @@ export const About: React.FC = () => {
     {
       year: "2024 - Présent",
       title: "Master 2 SRT",
-      institution: "AFI-L'UE / MIT Dakar",
+      institution: "AFI-L'UE",
       description: "Spécialisation en Systèmes, Réseaux et Télécommunications. Focus sur le Cloud et la Cybersécurité.",
       type: "education"
     },
@@ -35,8 +35,8 @@ export const About: React.FC = () => {
   ];
 
   const certifications = [
-    { title: "Cisco Networking Basics", issuer: "Cisco Networking Academy", date: "2023" },
-    { title: "Introduction to Cybersecurity", issuer: "Cisco Networking Academy", date: "2023" },
+    { title: "Cisco Networking Basics", issuer: "Cisco Networking Academy", date: "2026" },
+    { title: "Introduction to Cybersecurity", issuer: "Cisco Networking Academy", date: "2026" },
     { title: "CCNA (En cours)", issuer: "Cisco", date: "2026" },
     { title: "DevOps (En cours)", issuer: "Coursera", date: "2026" }
   ];
@@ -58,7 +58,7 @@ export const About: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-16 items-start">
           <div className="space-y-6 text-text-secondary leading-relaxed text-base">
             <p>
-              Je suis <strong>Ahamed Hassani Mhoma</strong>, étudiant en ingénieur <strong>Systèmes & Réseaux Télécom</strong> spécialisé dans l'administration des infrastructures <strong>Linux/Windows Server</strong>, la virtualisation et le cloud. Mon parcours entre <strong>Tunis et Dakar</strong> m'a forgé une vision internationale solide.
+              Je suis <strong>Ahamed Hassani Mhoma</strong>, étudiant en ingénieurie <strong>Systèmes & Réseaux Télécom</strong> spécialisé dans l'administration des infrastructures <strong>Linux/Windows Server</strong>, la virtualisation et le cloud. Mon parcours entre <strong>Tunis et Dakar</strong> m'a forgé une vision internationale solide.
             </p>
             <p>
               Ma philosophie : automatiser ce qui peut l'être, sécuriser ce qui doit l'être. Je m'oriente vers le <strong>DevOps et Cloud Engineering</strong>, avec une couche cybersécurité en développement actif.

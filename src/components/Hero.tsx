@@ -127,7 +127,7 @@ export const Hero: React.FC = () => {
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
-            <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
+            <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes & Réseaux</span>
           </h1>
           
           <div className="h-6 mb-6">
@@ -138,8 +138,8 @@ export const Hero: React.FC = () => {
 
           <p className="text-sm md:text-base text-text-secondary mb-11 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
             Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
-            Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
-            Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
+            Spécialisé sur la <strong>virtualisation des infrastructures IT</strong> avec une passion pour DevOps et cloud.
+            Expériences chez <strong>Tunisie Télécom</strong>.
           </p>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
@@ -168,8 +168,8 @@ export const Hero: React.FC = () => {
               <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
             </div>
             <div>
-              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">1</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stage</p>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">3</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stages</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />
