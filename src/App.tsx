@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Terminal } from 'lucide-react';
 import { NetworkBackground } from './components/NetworkBackground.tsx';
@@ -102,54 +102,56 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <Helmet>
-        <title>Ahamed Hassani | DevOps & Cloud Engineer</title>
-        <meta name="description" content="Portfolio de Ahamed Hassani, ingénieur DevOps et Cloud spécialisé dans l'automatisation, Linux et les infrastructures cloud." />
-      </Helmet>
-      <GlobalScrollProgress />
-      <ScrollToHash />
-      <VisitTracker />
-      <div className="relative min-h-screen overflow-x-hidden bg-bg">
-        <NetworkBackground />
-        <Navbar />
-        
-        <Routes>
-          <Route path="/" element={
-            <main>
-              <Hero />
-              <About />
-              <Projects />
-              <Blog />
-              <Contact />
-            </main>
-          } />
-          <Route path="/project/:slug" element={<ProjectDetail />} />
-          <Route path="/blog/:slug" element={<BlogPostDetail />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Routes>
-
-        <Footer />
-
-        {/* Easter Egg */}
-        <AnimatePresence>
-          {sudoActive && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
-            >
-              <div className="text-center">
-                <Terminal className="w-24 h-24 text-accent-primary mx-auto mb-6 animate-bounce" />
-                <h2 className="text-4xl font-mono font-bold text-accent-primary mb-2">ACCESS GRANTED</h2>
-                <p className="text-white/60 font-mono">System override initiated... Just kidding!</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <Helmet>
+          <title>Ahamed Hassani | DevOps & Cloud Engineer</title>
+          <meta name="description" content="Portfolio de Ahamed Hassani, ingénieur DevOps et Cloud spécialisé dans l'automatisation, Linux et les infrastructures cloud." />
+        </Helmet>
+        <GlobalScrollProgress />
+        <ScrollToHash />
+        <VisitTracker />
+        <div className="relative min-h-screen overflow-x-hidden bg-bg">
+          <NetworkBackground />
+          <Navbar />
+          
+          <Routes>
+            <Route path="/" element={
+              <main>
+                <Hero />
+                <About />
+                <Projects />
+                <Blog />
+                <Contact />
+              </main>
+            } />
+            <Route path="/project/:slug" element={<ProjectDetail />} />
+            <Route path="/blog/:slug" element={<BlogPostDetail />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Routes>
+  
+          <Footer />
+  
+          {/* Easter Egg */}
+          <AnimatePresence>
+            {sudoActive && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
+              >
+                <div className="text-center">
+                  <Terminal className="w-24 h-24 text-accent-primary mx-auto mb-6 animate-bounce" />
+                  <h2 className="text-4xl font-mono font-bold text-accent-primary mb-2">ACCESS GRANTED</h2>
+                  <p className="text-white/60 font-mono">System override initiated... Just kidding!</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </Router>
+    </HelmetProvider>
   );
 }
