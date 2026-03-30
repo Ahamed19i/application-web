@@ -1,4 +1,5 @@
 
+
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -110,10 +111,10 @@ app.get("/api/admin/projects", authenticateToken, async (req, res) => {
 });
 
 app.post("/api/projects", authenticateToken, async (req, res) => {
-  const { title, slug, description, content, stack, github_url, image_url, category, status, pdf_url } = req.body;
+  const { title, slug, description, content, stack, github_url, image_url, category, status, pdf_url, published } = req.body;
   const { data, error } = await supabase
     .from("projects")
-    .insert([{ title, slug, description, content, stack, github_url, image_url, category, status, pdf_url }])
+    .insert([{ title, slug, description, content, stack, github_url, image_url, category, status, pdf_url, published: published ?? 1 }])
     .select();
   
   if (error) return res.status(500).json(error);
@@ -190,10 +191,10 @@ app.get("/api/admin/posts", authenticateToken, async (req, res) => {
 });
 
 app.post("/api/posts", authenticateToken, async (req, res) => {
-  const { title, slug, content, image_url, category, tags, pdf_url } = req.body;
+  const { title, slug, content, image_url, category, tags, pdf_url, published } = req.body;
   const { data, error } = await supabase
     .from("posts")
-    .insert([{ title, slug, content, image_url, category, tags, pdf_url }])
+    .insert([{ title, slug, content, image_url, category, tags, pdf_url, published: published ?? 1 }])
     .select();
   
   if (error) return res.status(500).json(error);
