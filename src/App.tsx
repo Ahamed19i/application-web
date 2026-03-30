@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Terminal } from 'lucide-react';
 import { NetworkBackground } from './components/NetworkBackground.tsx';
@@ -102,6 +103,10 @@ export default function App() {
 
   return (
     <Router>
+      <Helmet>
+        <title>Ahamed Hassani | DevOps & Cloud Engineer</title>
+        <meta name="description" content="Portfolio de Ahamed Hassani, ingénieur DevOps et Cloud spécialisé dans l'automatisation, Linux et les infrastructures cloud." />
+      </Helmet>
       <GlobalScrollProgress />
       <ScrollToHash />
       <VisitTracker />
@@ -119,8 +124,8 @@ export default function App() {
               <Contact />
             </main>
           } />
-          <Route path="/project/:id" element={<ProjectDetail />} />
-          <Route path="/blog/:id" element={<BlogPostDetail />} />
+          <Route path="/project/:slug" element={<ProjectDetail />} />
+          <Route path="/blog/:slug" element={<BlogPostDetail />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>

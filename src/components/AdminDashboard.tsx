@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -18,13 +17,11 @@ import {
   Clock,
   X,
   Save,
-  FileDown,
   BarChart3,
   TrendingUp,
   Users
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
-import { generateProjectReport } from '../utils/reportGenerator';
 import { 
   LineChart, 
   Line, 
@@ -201,6 +198,7 @@ export const AdminDashboard: React.FC = () => {
       if (activeTab === 'projects') {
         setFormData({
           title: '',
+          slug: '',
           description: '',
           content: '',
           stack: '',
@@ -225,6 +223,26 @@ export const AdminDashboard: React.FC = () => {
       }
     }
     setIsModalOpen(true);
+  };
+
+  const generateSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^\w ]+/g, '')
+      .replace(/ +/g, '-');
+  };
+
+  const handleTitleChange = (title: string) => {
+    const newSlug = generateSlug(title);
+    // Only auto-update slug if it was empty or matched the previous title's slug
+    const currentSlug = formData.slug || '';
+    const oldTitleSlug = editingItem ? generateSlug(editingItem.title) : '';
+    
+    if (!currentSlug || currentSlug === oldTitleSlug || currentSlug === generateSlug(formData.title || '')) {
+      setFormData({ ...formData, title, slug: newSlug });
+    } else {
+      setFormData({ ...formData, title });
+    }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -423,25 +441,6 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                 )}
-
-                <div className="glass p-10 rounded-3xl border-accent-primary/20 bg-gradient-to-br from-accent-primary/5 to-transparent flex flex-col md:flex-row items-center justify-between gap-8">
-                  <div className="max-w-xl">
-                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                      <FileDown className="text-accent-primary" />
-                      Rapport de Projet DevOps
-                    </h3>
-                    <p className="text-white/60 leading-relaxed">
-                      Générez un rapport professionnel au format Word (.docx) détaillant l'architecture de l'application, la stratégie de déploiement (Netlify vs Vercel) et le pipeline CI/CD. Idéal pour vos dossiers académiques ou présentations techniques.
-                    </p>
-                  </div>
-                  <button 
-                    onClick={generateProjectReport}
-                    className="px-8 py-4 bg-accent-primary text-bg font-bold rounded-2xl flex items-center gap-3 hover:glow-primary transition-all whitespace-nowrap"
-                  >
-                    <FileDown size={20} />
-                    Télécharger le Rapport
-                  </button>
-                </div>
               </div>
             )}
 
@@ -537,6 +536,7 @@ export const AdminDashboard: React.FC = () => {
                   <thead className="bg-white/5 border-b border-white/10">
                     <tr>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Titre</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Slug</th>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Catégorie</th>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Statut</th>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Visibilité</th>
@@ -547,6 +547,7 @@ export const AdminDashboard: React.FC = () => {
                     {projects.map((project) => (
                       <tr key={project.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-6 py-4 font-bold">{project.title}</td>
+                        <td className="px-6 py-4 text-xs font-mono text-accent-primary">{project.slug}</td>
                         <td className="px-6 py-4 text-white/60">{project.category}</td>
                         <td className="px-6 py-4">
                           <span className={`text-[10px] px-2 py-1 rounded ${
@@ -577,6 +578,7 @@ export const AdminDashboard: React.FC = () => {
                   <thead className="bg-white/5 border-b border-white/10">
                     <tr>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Titre</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Slug</th>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Date</th>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Visibilité</th>
                       <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Actions</th>
@@ -586,6 +588,7 @@ export const AdminDashboard: React.FC = () => {
                     {posts.map((post) => (
                       <tr key={post.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-6 py-4 font-bold">{post.title}</td>
+                        <td className="px-6 py-4 text-xs font-mono text-accent-primary">{post.slug}</td>
                         <td className="px-6 py-4 text-white/40 text-sm">{new Date(post.created_at).toLocaleDateString()}</td>
                         <td className="px-6 py-4">
                           <button onClick={() => togglePublish('posts', post)}>
@@ -654,19 +657,42 @@ export const AdminDashboard: React.FC = () => {
                       type="text" 
                       required
                       value={formData.title || ''}
-                      onChange={e => setFormData({...formData, title: e.target.value})}
+                      onChange={e => handleTitleChange(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Slug (URL)</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={formData.slug || ''}
+                      onChange={e => setFormData({...formData, slug: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      placeholder="mon-projet-professionnel"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Catégorie</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={formData.category || ''}
+                      onChange={e => setFormData({...formData, category: e.target.value})}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-mono text-white/40 uppercase tracking-widest">
-                      {activeTab === 'projects' ? 'Catégorie' : 'Slug'}
+                      {activeTab === 'projects' ? 'Stack (séparé par des virgules)' : 'Tags (séparés par des virgules)'}
                     </label>
                     <input 
                       type="text" 
-                      required
-                      value={activeTab === 'projects' ? formData.category : formData.slug || ''}
-                      onChange={e => setFormData({...formData, [activeTab === 'projects' ? 'category' : 'slug']: e.target.value})}
+                      value={activeTab === 'projects' ? formData.stack : formData.tags || ''}
+                      onChange={e => setFormData({...formData, [activeTab === 'projects' ? 'stack' : 'tags']: e.target.value})}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
@@ -716,18 +742,6 @@ export const AdminDashboard: React.FC = () => {
                       placeholder="https://raw.githubusercontent.com/..."
                     />
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-mono text-white/40 uppercase tracking-widest">
-                    {activeTab === 'projects' ? 'Stack (séparé par des virgules)' : 'Tags (séparés par des virgules)'}
-                  </label>
-                  <input 
-                    type="text" 
-                    value={activeTab === 'projects' ? formData.stack : formData.tags || ''}
-                    onChange={e => setFormData({...formData, [activeTab === 'projects' ? 'stack' : 'tags']: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
-                  />
                 </div>
 
                 {activeTab === 'projects' && (

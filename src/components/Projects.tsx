@@ -30,7 +30,7 @@ export const Projects: React.FC = () => {
 
   const handleShare = (e: React.MouseEvent, project: Project) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}/project/${project.id}`;
+    const shareUrl = `${window.location.origin}/project/${project.slug || project.id}`;
     
     if (navigator.share) {
       navigator.share({
@@ -102,7 +102,7 @@ export const Projects: React.FC = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 className="group relative glass rounded-2xl overflow-hidden hover:border-accent-primary/30 transition-all cursor-pointer flex flex-col"
-                onClick={() => navigate(`/project/${project.id}`)}
+                onClick={() => navigate(`/project/${project.slug || project.id}`)}
               >
                 <div className="aspect-[16/9] overflow-hidden bg-bg-tertiary flex items-center justify-center relative">
                   <img 

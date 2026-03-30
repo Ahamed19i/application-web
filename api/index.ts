@@ -1,5 +1,4 @@
 
-
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -73,6 +72,33 @@ app.get("/api/projects", async (req, res) => {
   res.json(data);
 });
 
+app.get("/api/projects/:slug", async (req, res) => {
+  const { slug } = req.params;
+  
+  // Try slug first
+  let { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+  
+  // If not found and slug is numeric, try ID as fallback
+  if (error && /^\d+$/.test(slug)) {
+    const { data: idData, error: idError } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("id", parseInt(slug))
+      .single();
+    if (!idError) {
+      data = idData;
+      error = null;
+    }
+  }
+  
+  if (error) return res.status(404).json({ message: "Projet non trouvé" });
+  res.json(data);
+});
+
 app.get("/api/admin/projects", authenticateToken, async (req, res) => {
   const { data, error } = await supabase
     .from("projects")
@@ -84,10 +110,10 @@ app.get("/api/admin/projects", authenticateToken, async (req, res) => {
 });
 
 app.post("/api/projects", authenticateToken, async (req, res) => {
-  const { title, description, content, stack, github_url, image_url, category, status, pdf_url } = req.body;
+  const { title, slug, description, content, stack, github_url, image_url, category, status, pdf_url } = req.body;
   const { data, error } = await supabase
     .from("projects")
-    .insert([{ title, description, content, stack, github_url, image_url, category, status, pdf_url }])
+    .insert([{ title, slug, description, content, stack, github_url, image_url, category, status, pdf_url }])
     .select();
   
   if (error) return res.status(500).json(error);
@@ -95,10 +121,10 @@ app.post("/api/projects", authenticateToken, async (req, res) => {
 });
 
 app.put("/api/projects/:id", authenticateToken, async (req, res) => {
-  const { title, description, content, stack, github_url, image_url, category, status, published, pdf_url } = req.body;
+  const { title, slug, description, content, stack, github_url, image_url, category, status, published, pdf_url } = req.body;
   const { error } = await supabase
     .from("projects")
-    .update({ title, description, content, stack, github_url, image_url, category, status, published, pdf_url })
+    .update({ title, slug, description, content, stack, github_url, image_url, category, status, published, pdf_url })
     .eq("id", req.params.id);
   
   if (error) return res.status(500).json(error);
@@ -127,11 +153,27 @@ app.get("/api/posts", async (req, res) => {
 });
 
 app.get("/api/posts/:slug", async (req, res) => {
-  const { data, error } = await supabase
+  const { slug } = req.params;
+  
+  // Try slug first
+  let { data, error } = await supabase
     .from("posts")
     .select("*")
-    .eq("slug", req.params.slug)
+    .eq("slug", slug)
     .single();
+  
+  // If not found and slug is numeric, try ID as fallback
+  if (error && /^\d+$/.test(slug)) {
+    const { data: idData, error: idError } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("id", parseInt(slug))
+      .single();
+    if (!idError) {
+      data = idData;
+      error = null;
+    }
+  }
   
   if (error) return res.status(404).json({ message: "Article non trouvé" });
   res.json(data);
@@ -256,6 +298,7 @@ app.get("/api/admin/stats", authenticateToken, async (req, res) => {
 
 app.get("/api/admin/analytics", authenticateToken, async (req, res) => {
   try {
+    console.log("Analytics endpoint hit (v1.2)");
     const now = new Date();
     const todayStart = new Date(now.setHours(0, 0, 0, 0)).toISOString();
     const sevenDaysAgo = new Date(new Date().setDate(now.getDate() - 7)).toISOString();

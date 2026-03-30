@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'motion/react';
@@ -22,7 +24,7 @@ import { Project } from '../types';
 import Markdown from 'react-markdown';
 
 export const ProjectDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,18 +40,22 @@ export const ProjectDetail: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch('/api/projects')
-      .then(res => res.json())
+    if (!slug) return;
+
+    fetch(`/api/projects/${slug}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Project not found');
+        return res.json();
+      })
       .then(data => {
-        const found = data.find((p: Project) => p.id === Number(id));
-        setProject(found || null);
+        setProject(data);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
         setLoading(false);
       });
-  }, [id]);
+  }, [slug]);
 
   const handleShare = () => {
     const shareUrl = window.location.href;
@@ -87,7 +93,7 @@ export const ProjectDetail: React.FC = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg pb-20"
+      className="min-h-screen bg-bg pb-12 md:pb-20"
     >
       {/* Reading Progress Bar */}
       <motion.div
@@ -95,7 +101,7 @@ export const ProjectDetail: React.FC = () => {
         style={{ scaleX }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 pt-32">
+      <div className="max-w-[1400px] mx-auto px-6 pt-20 md:pt-32">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
@@ -122,9 +128,9 @@ export const ProjectDetail: React.FC = () => {
                 </span>
               </div>
               
-              <h3 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
+              <h1 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
                 {project.title}
-              </h3>
+              </h1>
 
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
                 {project.description}
@@ -165,26 +171,12 @@ export const ProjectDetail: React.FC = () => {
                       Rapport non disponible
                     </span>
                   )}
-                 
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Section - CTA */}
-            <div className="pt-16 border-t border-white/10">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-12 rounded-[2rem] bg-accent-primary/5 border border-accent-primary/10 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 blur-[100px] -z-10 group-hover:bg-accent-primary/20 transition-colors"></div>
-                <div className="text-center md:text-left">
-                  <h3 className="text-3xl font-bold mb-4">Intéressé par ce projet ?</h3>
-                  <p className="text-text-secondary max-w-md">Discutons de la manière dont je peux apporter une expertise similaire à votre infrastructure.</p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to="/#contact" className="btn-p px-8 py-4 text-center">
-                    Me contacter
-                  </Link>
-                  <button onClick={handleShare} className="btn-gr px-8 py-4 flex items-center justify-center gap-2">
+                  <button 
+                    onClick={handleShare}
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-text-primary font-bold hover:bg-white/10 transition-all text-sm"
+                  >
                     <Share2 size={18} />
-                    Partager ce projet
+                    Partager
                   </button>
                 </div>
               </div>
@@ -226,7 +218,7 @@ export const ProjectDetail: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Date de réalisation</p>
-                        <p className="text-sm font-medium text-text-primary">Mars 2026</p>
+                        <p className="text-sm font-medium text-text-primary">Mars 2024</p>
                       </div>
                     </div>
                   </div>

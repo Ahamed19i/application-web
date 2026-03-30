@@ -25,7 +25,7 @@ import { Post } from '../types';
 import Markdown from 'react-markdown';
 
 export const BlogPostDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,18 +41,22 @@ export const BlogPostDetail: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch('/api/posts')
-      .then(res => res.json())
+    if (!slug) return;
+
+    fetch(`/api/posts/${slug}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Post not found');
+        return res.json();
+      })
       .then(data => {
-        const found = data.find((p: Post) => p.id === Number(id));
-        setPost(found || null);
+        setPost(data);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
         setLoading(false);
       });
-  }, [id]);
+  }, [slug]);
 
   const handleShare = () => {
     const shareUrl = window.location.href;
@@ -90,7 +94,7 @@ export const BlogPostDetail: React.FC = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg pb-20"
+      className="min-h-screen bg-bg pb-12 md:pb-20"
     >
       {/* Reading Progress Bar */}
       <motion.div
@@ -98,7 +102,7 @@ export const BlogPostDetail: React.FC = () => {
         style={{ scaleX }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 pt-32">
+      <div className="max-w-[1400px] mx-auto px-6 pt-20 md:pt-32">
         {/* Breadcrumbs - MDN Style */}
         <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
@@ -131,7 +135,7 @@ export const BlogPostDetail: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xs font-bold">Ahamed Hassani</p>
-                  <p className="text-[10px] text-text-muted font-mono uppercase tracking-wider">Ingénieur Systèmes/Réseaux</p>
+                  <p className="text-[10px] text-text-muted font-mono uppercase tracking-wider">Ingenieur Système & Réseaux</p>
                 </div>
               </div>
             </header>

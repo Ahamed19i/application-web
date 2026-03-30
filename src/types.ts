@@ -1,3 +1,4 @@
+
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -8,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export interface Project {
   id: number;
   title: string;
+  slug: string;
   description: string;
   content: string;
   stack: string;
@@ -16,6 +18,7 @@ export interface Project {
   category: string;
   status: string;
   published: number;
+  pdf_url?: string;
 }
 
 export interface Post {
@@ -28,6 +31,7 @@ export interface Post {
   tags: string;
   published: number;
   created_at: string;
+  pdf_url?: string;
 }
 
 export interface Message {

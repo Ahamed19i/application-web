@@ -30,7 +30,7 @@ export const Blog: React.FC = () => {
 
   const handleShare = (e: React.MouseEvent, post: Post) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}/blog/${post.id}`;
+    const shareUrl = `${window.location.origin}/blog/${post.slug || post.id}`;
     
     if (navigator.share) {
       navigator.share({
@@ -93,7 +93,7 @@ export const Blog: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                onClick={() => navigate(`/blog/${post.id}`)}
+                onClick={() => navigate(`/blog/${post.slug || post.id}`)}
                 className="group relative glass rounded-2xl overflow-hidden hover:border-accent-primary/30 transition-all cursor-pointer flex flex-col"
               >
                 <div className="aspect-[21/9] overflow-hidden bg-bg-tertiary relative">
