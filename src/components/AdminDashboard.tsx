@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
@@ -19,7 +20,8 @@ import {
   Save,
   BarChart3,
   TrendingUp,
-  Users
+  Users,
+  RefreshCw
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
 import { 
@@ -228,21 +230,32 @@ export const AdminDashboard: React.FC = () => {
   const generateSlug = (text: string) => {
     return text
       .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
       .replace(/[^\w ]+/g, '')
-      .replace(/ +/g, '-');
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, ''); // Supprimer les tirets au début et à la fin
   };
 
   const handleTitleChange = (title: string) => {
     const newSlug = generateSlug(title);
-    // Only auto-update slug if it was empty or matched the previous title's slug
-    const currentSlug = formData.slug || '';
-    const oldTitleSlug = editingItem ? generateSlug(editingItem.title) : '';
     
-    if (!currentSlug || currentSlug === oldTitleSlug || currentSlug === generateSlug(formData.title || '')) {
-      setFormData({ ...formData, title, slug: newSlug });
-    } else {
-      setFormData({ ...formData, title });
-    }
+    setFormData(prev => {
+      // On met à jour le slug automatiquement si :
+      // 1. C'est un nouvel élément (pas de editingItem)
+      // 2. Le slug actuel est vide
+      // 3. Le slug actuel correspond au slug généré du titre précédent
+      const currentSlug = prev.slug || '';
+      const prevTitleSlug = prev.title ? generateSlug(prev.title) : '';
+      const shouldUpdateSlug = !editingItem || !currentSlug || currentSlug === prevTitleSlug;
+      
+      return {
+        ...prev,
+        title,
+        slug: shouldUpdateSlug ? newSlug : currentSlug
+      };
+    });
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -662,15 +675,26 @@ export const AdminDashboard: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Slug (URL)</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={formData.slug || ''}
-                      onChange={e => setFormData({...formData, slug: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
-                      placeholder="mon-projet-professionnel"
-                    />
+                    <div className="flex justify-between items-center">
+                      <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Slug (URL)</label>
+                      <button 
+                        type="button"
+                        onClick={() => setFormData({...formData, slug: generateSlug(formData.title || '')})}
+                        className="text-[10px] text-accent-primary hover:underline flex items-center gap-1"
+                      >
+                        <RefreshCw size={10} /> Régénérer
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input 
+                        type="text" 
+                        required
+                        value={formData.slug || ''}
+                        onChange={e => setFormData({...formData, slug: e.target.value})}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none font-mono text-sm"
+                        placeholder="mon-projet-professionnel"
+                      />
+                    </div>
                   </div>
                 </div>
 
