@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mémoire M2 — Ahamed HASSANI MHOMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d12;--surface:#14141c;--surface2:#1c1c28;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8e6f0;--muted:#7a7890;--faint:#3a3850;
+  --c1:#4f7fff;--c1b:rgba(79,127,255,0.12);
+  --c2:#2ecb82;--c2b:rgba(46,203,130,0.1);
+  --c3:#c060e8;--c3b:rgba(192,96,232,0.1);
+  --gold:#d4a843;--goldb:rgba(212,168,67,0.1);
+  --local:#f59e42;--localb:rgba(245,158,66,0.12);
+  --r:12px;--r2:8px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:16px;line-height:1.7;min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,18,0.93);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.nav-brand-text{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:var(--muted)}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{padding:8px 22px;border-radius:var(--r2);font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s ease;font-family:'Outfit',sans-serif;}
+.nav-tab:hover{color:var(--text);background:var(--surface2)}
+.nav-tab[data-s="1"].active{color:var(--c1);background:var(--surface2);box-shadow:inset 0 0 0 1px rgba(79,127,255,0.3)}
+.nav-tab[data-s="2"].active{color:var(--c2);background:var(--surface2);box-shadow:inset 0 0 0 1px rgba(46,203,130,0.3)}
+.nav-tab[data-s="3"].active{color:var(--c3);background:var(--surface2);box-shadow:inset 0 0 0 1px rgba(192,96,232,0.3)}
+.page{display:none;min-height:100vh;padding-top:64px}.page.active{display:block}
+.hero{padding:80px 60px 60px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.glow{position:absolute;top:-100px;right:-80px;width:600px;height:600px;border-radius:50%;filter:blur(130px);opacity:0.13;pointer-events:none;}
+.s1 .glow{background:var(--c1)}.s2 .glow{background:var(--c2)}.s3 .glow{background:var(--c3)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;margin-bottom:28px;}
+.s1 .badge{background:var(--c1b);color:var(--c1);border:1px solid rgba(79,127,255,0.25)}
+.s2 .badge{background:var(--c2b);color:var(--c2);border:1px solid rgba(46,203,130,0.25)}
+.s3 .badge{background:var(--c3b);color:var(--c3);border:1px solid rgba(192,96,232,0.25)}
+.hero h1{font-family:'Instrument Serif',serif;font-size:clamp(28px,4.2vw,50px);font-weight:400;line-height:1.2;max-width:840px;margin-bottom:22px;}
+.hero h1 em{font-style:italic;opacity:0.6}
+.tagline{font-size:17px;color:var(--muted);max-width:660px;line-height:1.65;margin-bottom:40px;}
+.meta{display:flex;flex-wrap:wrap;gap:24px;padding-top:30px;border-top:1px solid var(--border);}
+.mi{display:flex;flex-direction:column;gap:3px}
+.ml{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--faint)}
+.mv{font-size:14px;color:var(--muted)}
+.body{max-width:1060px;margin:0 auto;padding:60px 60px 100px}
+.sec{margin-bottom:64px}.sec:last-child{margin-bottom:0}
+.sl{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--faint);margin-bottom:20px;}
+.sl::before{content:'';display:block;width:20px;height:1px;background:var(--faint);flex-shrink:0;}
+.sec h2{font-family:'Instrument Serif',serif;font-size:clamp(22px,3vw,30px);font-weight:400;line-height:1.25;margin-bottom:20px;}
+.sec p{color:var(--muted);line-height:1.8;margin-bottom:14px;font-size:16px;}
+.sec p:last-child{margin-bottom:0}
+.sec p strong{color:var(--text);font-weight:600}
+.pbox{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:30px 34px;margin:26px 0;position:relative;overflow:hidden;}
+.pbox::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.s1 .pbox::before{background:var(--c1)}.s2 .pbox::before{background:var(--c2)}.s3 .pbox::before{background:var(--c3)}
+.pbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px;}
+.s1 .pbl{color:var(--c1)}.s2 .pbl{color:var(--c2)}.s3 .pbl{color:var(--c3)}
+.pbt{font-family:'Instrument Serif',serif;font-size:20px;line-height:1.55;font-style:italic;color:var(--text);}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:22px 0}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:22px 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;}
+.ci{width:36px;height:36px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:14px;}
+.s1 .ci{background:var(--c1b);color:var(--c1)}.s2 .ci{background:var(--c2b);color:var(--c2)}.s3 .ci{background:var(--c3b);color:var(--c3)}
+.card h4{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text)}.card p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+/* HYBRID */
+.hlay{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;margin:26px 0;}
+.hcol{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px;}
+.hcol.loc{border-color:rgba(245,158,66,0.3)}
+.s1 .hcol.rem{border-color:rgba(79,127,255,0.3)}
+.s2 .hcol.rem{border-color:rgba(46,203,130,0.3)}
+.s3 .hcol.rem{border-color:rgba(192,96,232,0.3)}
+.hbadge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:12px;}
+.hbadge.loc{background:var(--localb);color:var(--local);border:1px solid rgba(245,158,66,0.25)}
+.s1 .hbadge.rem{background:var(--c1b);color:var(--c1);border:1px solid rgba(79,127,255,0.25)}
+.s2 .hbadge.rem{background:var(--c2b);color:var(--c2);border:1px solid rgba(46,203,130,0.25)}
+.s3 .hbadge.rem{background:var(--c3b);color:var(--c3);border:1px solid rgba(192,96,232,0.25)}
+.hcol h4{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.hrole{font-size:12px;color:var(--muted);margin-bottom:16px;font-style:italic;}
+.hs{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px;}
+.hs:last-child{border-bottom:none;padding-bottom:0}
+.hsk{color:var(--muted);flex-shrink:0}.hsv{color:var(--text);font-weight:500;text-align:right;}
+.hconn{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 18px;padding-top:80px;}
+.hline{width:1px;height:50px;background:linear-gradient(to bottom,transparent,var(--faint),transparent);}
+.hpill{background:var(--surface2);border:1px solid var(--border2);border-radius:100px;padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--muted);white-space:nowrap;text-align:center;line-height:1.4;}
+/* LEGEND */
+.leg{display:flex;gap:20px;margin-bottom:18px;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
+.ld{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ld.loc{background:var(--local)}
+.s1 .ld.rem{background:var(--c1)}.s2 .ld.rem{background:var(--c2)}.s3 .ld.rem{background:var(--c3)}
+/* TUNNEL VISUAL */
+.tunnel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 30px;margin:22px 0;}
+.tunnel-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);margin-bottom:18px;}
+.trow{display:flex;align-items:center;gap:0;overflow-x:auto;}
+.tn{background:var(--surface2);border-radius:var(--r2);padding:14px 16px;min-width:130px;flex-shrink:0;}
+.tn.tloc{border:1px solid rgba(245,158,66,0.35)}
+.s1 .tn.trem{border:1px solid rgba(79,127,255,0.35)}
+.s2 .tn.trem{border:1px solid rgba(46,203,130,0.35)}
+.s3 .tn.trem{border:1px solid rgba(192,96,232,0.35)}
+.tntype{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:5px;}
+.tntype.loc{color:var(--local)}
+.s1 .tntype.rem{color:var(--c1)}.s2 .tntype.rem{color:var(--c2)}.s3 .tntype.rem{color:var(--c3)}
+.tnname{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.tnsub{font-size:11px;color:var(--muted)}
+.tconn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 10px;min-width:70px;}
+.ttrack{width:100%;height:1px;background:linear-gradient(to right,rgba(245,158,66,0.4),rgba(79,127,255,0.3));}
+.s2 .ttrack{background:linear-gradient(to right,rgba(245,158,66,0.4),rgba(46,203,130,0.3))}
+.s3 .ttrack{background:linear-gradient(to right,rgba(245,158,66,0.4),rgba(192,96,232,0.3))}
+.tlabel{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--faint);white-space:nowrap;}
+/* TOOLS */
+.tlist{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:22px 0;}
+.tr{display:grid;grid-template-columns:165px 1fr 110px;border-bottom:1px solid var(--border);transition:background .15s;}
+.tr:last-child{border-bottom:none}.tr:hover{background:var(--surface2)}
+.tr.th{background:var(--surface2);border-bottom:1px solid var(--border2);}
+.tc{padding:13px 18px;font-size:13px}
+.tr.th .tc{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--faint);}
+.tn2{font-weight:600;color:var(--text)}.td{color:var(--muted)}
+.tag{display:inline-flex;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:500;}
+.ti{background:rgba(79,127,255,0.12);color:#7ba6ff}
+.tv{background:rgba(212,168,67,0.12);color:#d4a843}
+.tm{background:rgba(46,203,130,0.1);color:#2ecb82}
+.tc2{background:rgba(192,96,232,0.1);color:#c060e8}
+.to{background:rgba(122,120,144,0.15);color:#a0a0be}
+.ts{background:rgba(255,100,100,0.1);color:#ff8080}
+.tha{background:rgba(255,160,60,0.1);color:#ffb060}
+.tn3{background:rgba(60,200,255,0.12);color:#60d0ff}
+.tl{background:rgba(245,158,66,0.12);color:#f59e42}
+/* TIMELINE */
+.tline{display:flex;flex-direction:column;gap:0;margin:22px 0}
+.ph{display:grid;grid-template-columns:105px 1fr;gap:0;border-left:1px solid var(--border);padding:0 0 0 22px;position:relative;}
+.ph::before{content:'';position:absolute;left:-5px;top:22px;width:9px;height:9px;border-radius:50%;background:var(--surface);border:2px solid;}
+.s1 .ph::before{border-color:var(--c1)}.s2 .ph::before{border-color:var(--c2)}.s3 .ph::before{border-color:var(--c3)}
+.phin{padding:15px 0 26px}
+.phnum{font-family:'JetBrains Mono',monospace;font-size:11px;padding:17px 0 0;}
+.s1 .phnum{color:var(--c1)}.s2 .phnum{color:var(--c2)}.s3 .phnum{color:var(--c3)}
+.pht{font-size:15px;font-weight:600;color:var(--text);margin-bottom:5px}
+.phd{font-size:13px;color:var(--muted);line-height:1.6}
+/* RESULTS */
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:10px;}
+.rt{font-size:14px;font-weight:600;color:var(--text)}
+.rm{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;}
+.s1 .rm{color:var(--c1)}.s2 .rm{color:var(--c2)}.s3 .rm{color:var(--c3)}
+.rd{font-size:12px;color:var(--muted);line-height:1.5}
+/* PERSP */
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;display:flex;gap:16px;}
+.pn{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:300;line-height:1;opacity:0.18;flex-shrink:0;}
+.pcont h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.pcont p{font-size:13px;color:var(--muted);line-height:1.6;margin:0}
+/* BULLETS */
+.bl{list-style:none;display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.bl li{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:var(--muted);line-height:1.6;}
+.bl li::before{content:'';display:block;width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:9px;}
+.s1 .bl li::before{background:var(--c1)}.s2 .bl li::before{background:var(--c2)}.s3 .bl li::before{background:var(--c3)}
+.bl li strong{color:var(--text);font-weight:600}
+/* HLT */
+.hlt{background:var(--surface2);border-radius:var(--r);padding:26px 30px;margin:22px 0;border:1px solid var(--border);}
+.hlt h4{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.hlt p{font-size:14px;color:var(--muted);margin:0;line-height:1.7}
+/* FREELANCE */
+.fb{background:var(--goldb);border:1px solid rgba(212,168,67,0.2);border-radius:var(--r);padding:30px;margin:22px 0;}
+.fb h3{font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;color:var(--gold);margin-bottom:14px;}
+.fb p{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:12px;}
+.fb p:last-child{margin-bottom:0}
+.div{height:1px;background:var(--border);margin:46px 0}
+.pfooter{border-top:1px solid var(--border);padding:30px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;background:var(--surface);}
+.pfl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--faint);letter-spacing:0.08em}
+.pfr{display:flex;gap:8px}
+.fd{width:6px;height:6px;border-radius:50%}
+.fd.c1{background:var(--c1)}.fd.c2{background:var(--c2)}.fd.c3{background:var(--c3)}
+@media(max-width:760px){
+  .hlay{grid-template-columns:1fr;}.hconn{flex-direction:row;padding:14px 0;padding-top:0;}
+  .hline{width:50px;height:1px;}
+}
+@media(max-width:700px){
+  nav{padding:0 18px}.nav-brand-text{display:none}
+  .nav-tab{padding:8px 12px;font-size:12px}
+  .hero{padding:40px 22px 36px}.body{padding:36px 22px 60px}
+  .tr{grid-template-columns:125px 1fr}.tr .tc:last-child{display:none}
+  .ph{grid-template-columns:70px 1fr}.pfooter{padding:22px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-brand-dot"></div>
+    <span class="nav-brand-text">M2 SRT — AFI-UE — 2025</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-s="1" onclick="show(1)">Sujet 1</button>
+    <button class="nav-tab" data-s="2" onclick="show(2)">Sujet 2</button>
+    <button class="nav-tab" data-s="3" onclick="show(3)">Sujet 3</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ SUJET 1 ═══════════════════════════════ -->
+<div class="page s1 active" id="p1">
+<div class="hero">
+  <div class="glow"></div>
+  <div class="badge">◆ Sujet 01 · Infrastructure Cloud Hybride & Kubernetes</div>
+  <h1>Infrastructure Cloud Hybride Automatisée<br><em>avec Orchestration Kubernetes et Supervision Avancée</em></h1>
+  <p class="tagline">Déployer un cluster Kubernetes hybride combinant le PC personnel comme nœud Master et deux Workers — l'un hébergé localement en VM, l'autre sur un VPS cloud — interconnectés par VPN pour démontrer une architecture Cloud Native professionnelle à coût minimal.</p>
+  <div class="meta">
+    <div class="mi"><span class="ml">Étudiant</span><span class="mv">Ahamed HASSANI MHOMA</span></div>
+    <div class="mi"><span class="ml">Niveau</span><span class="mv">Master 2</span></div>
+    <div class="mi"><span class="ml">Filière</span><span class="mv">Systèmes et Réseaux Télécom</span></div>
+    <div class="mi"><span class="ml">Établissement</span><span class="mv">AFI-UE</span></div>
+    <div class="mi"><span class="ml">Domaine</span><span class="mv">Cloud Native · Kubernetes · Hybride · Monitoring</span></div>
+  </div>
+</div>
+<div class="body">
+
+  <div class="sec">
+    <div class="sl">01 — Contexte & Problématique</div>
+    <h2>Pourquoi ce sujet ?</h2>
+    <p>Les solutions d'orchestration Cloud Native comme Kubernetes sont souvent perçues comme réservées aux grandes entreprises disposant de datacenters coûteux. Cette idée freine leur adoption, notamment dans les PME africaines où les ressources sont contraintes. Pourtant, <strong>Kubernetes peut fonctionner sur un simple PC personnel combiné à un VPS cloud</strong> — c'est précisément ce que ce mémoire prouve.</p>
+    <p>En Afrique — au Sénégal, aux Comores et ailleurs — les interruptions de service sont critiques. Ce projet démontre qu'une architecture hybride locale/distante offre résilience, disponibilité et supervision à un coût qui ne dépasse pas celui d'un abonnement internet.</p>
+    <div class="pbox">
+      <div class="pbl">Problématique centrale</div>
+      <div class="pbt">Comment concevoir et déployer un cluster Kubernetes hybride combinant ressources locales (PC personnel) et cloud distant (VPS) pour offrir haute disponibilité, scalabilité automatique et supervision temps réel à coût minimal ?</div>
+    </div>
+    <p>La <strong>valeur ajoutée de ce mémoire</strong> est précise : démontrer qu'une infrastructure de niveau professionnel n'exige pas de budget datacenter — elle exige de la maîtrise technique. Et ça, ça s'acquiert.</p>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">02 — Objectifs du Projet</div>
+    <h2>Ce que ce projet va accomplir</h2>
+    <div class="g2">
+      <div class="card"><div class="ci">☸</div><h4>Cluster Kubernetes Hybride Réel</h4><p>Un vrai cluster Kubernetes multi-nœuds réparti entre le PC local (Master + Worker 1) et un VPS cloud distant (Worker 2), fonctionnant comme une seule infrastructure cohérente.</p></div>
+      <div class="card"><div class="ci">🔗</div><h4>Interconnexion Sécurisée PC ↔ VPS</h4><p>Tunnel VPN WireGuard chiffré entre le PC local et le VPS distant pour créer un réseau privé inter-nœuds sécurisé traversant Internet.</p></div>
+      <div class="card"><div class="ci">⚡</div><h4>Haute Disponibilité & Auto-Scaling</h4><p>Redémarrage automatique des pods défaillants (self-healing), distribution de charge entre nœuds local et cloud, scalabilité horizontale via HPA selon la charge réelle.</p></div>
+      <div class="card"><div class="ci">📊</div><h4>Supervision Unifiée Temps Réel</h4><p>Dashboard Grafana unique centralisé sur le PC local supervisant simultanément les métriques du nœud local ET du nœud VPS distant en temps réel.</p></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">03 — Architecture Hybride Locale + Cloud</div>
+    <h2>Répartition des ressources : PC local et VPS distant</h2>
+    <p>L'architecture repose sur le <strong>PC personnel comme cœur du cluster</strong> : il héberge le nœud Master Kubernetes (Control Plane) et un premier nœud Worker via une VM locale. <strong>Un seul VPS cloud</strong> constitue le Worker 2 distant, apportant l'extension cloud et une IP publique pour exposer les services. Les deux environnements sont reliés par un tunnel VPN WireGuard.</p>
+
+    <div class="leg">
+      <div class="li"><div class="ld loc"></div>Environnement local (PC personnel)</div>
+      <div class="li"><div class="ld rem"></div>Environnement distant (VPS Cloud)</div>
+    </div>
+
+    <div class="hlay">
+      <div class="hcol loc">
+        <div class="hbadge loc">💻 Local — PC Personnel</div>
+        <h4>Master Node + Worker Node 1</h4>
+        <div class="hrole">Cœur du cluster — hébergé sur la machine de travail</div>
+        <div class="hs"><span class="hsk">CPU</span><span class="hsv">6–8 cœurs physiques (Intel/AMD)</span></div>
+        <div class="hs"><span class="hsk">RAM</span><span class="hsv">16–32 Go (hôte)</span></div>
+        <div class="hs"><span class="hsk">Stockage</span><span class="hsv">SSD 256 Go+ disponible</span></div>
+        <div class="hs"><span class="hsk">OS hôte</span><span class="hsv">Ubuntu 22.04 LTS (natif)</span></div>
+        <div class="hs"><span class="hsk">Hyperviseur</span><span class="hsv">VirtualBox / KVM pour la VM Worker</span></div>
+        <div class="hs"><span class="hsk">Rôle Master</span><span class="hsv">Control Plane K8s — scheduleur, API server</span></div>
+        <div class="hs"><span class="hsk">Rôle Worker 1</span><span class="hsv">VM locale — pods applicatifs internes</span></div>
+        <div class="hs"><span class="hsk">Monitoring</span><span class="hsv">Prometheus + Grafana centralisés ici</span></div>
+        <div class="hs"><span class="hsk">Réseau VPN</span><span class="hsv">WireGuard client/serveur — IP 10.0.0.1</span></div>
+      </div>
+      <div class="hconn">
+        <div class="hline"></div>
+        <div class="hpill">WireGuard VPN<br>chiffré<br>sur Internet</div>
+        <div class="hline"></div>
+      </div>
+      <div class="hcol rem">
+        <div class="hbadge rem">☁ Distant — VPS Cloud</div>
+        <h4>Worker Node 2 (Cloud)</h4>
+        <div class="hrole">Extension cloud — nœud Worker distant avec IP publique</div>
+        <div class="hs"><span class="hsk">Fournisseur</span><span class="hsv">Contabo ou OVHcloud</span></div>
+        <div class="hs"><span class="hsk">CPU</span><span class="hsv">4 vCores</span></div>
+        <div class="hs"><span class="hsk">RAM</span><span class="hsv">8 Go</span></div>
+        <div class="hs"><span class="hsk">Stockage</span><span class="hsv">100–200 Go SSD NVMe</span></div>
+        <div class="hs"><span class="hsk">OS</span><span class="hsv">Ubuntu 22.04 LTS</span></div>
+        <div class="hs"><span class="hsk">Rôle K8s</span><span class="hsv">Worker Node — pods exposés publiquement</span></div>
+        <div class="hs"><span class="hsk">IP publique</span><span class="hsv">Oui — point d'entrée Ingress externe</span></div>
+        <div class="hs"><span class="hsk">Réseau VPN</span><span class="hsv">WireGuard — IP privée 10.0.0.2</span></div>
+        <div class="hs"><span class="hsk">Coût estimé</span><span class="hsv">~6–10€ / mois</span></div>
+      </div>
+    </div>
+
+    <div class="tunnel">
+      <div class="tunnel-title">Vue réseau — Cluster Kubernetes hybride</div>
+      <div class="trow">
+        <div class="tn tloc">
+          <div class="tntype loc">Local · Master</div>
+          <div class="tnname">Control Plane</div>
+          <div class="tnsub">PC — 10.0.0.1</div>
+        </div>
+        <div class="tconn">
+          <div class="ttrack"></div>
+          <div class="tlabel">LAN interne</div>
+        </div>
+        <div class="tn tloc">
+          <div class="tntype loc">Local · Worker 1</div>
+          <div class="tnname">VM K8s locale</div>
+          <div class="tnsub">192.168.x.11</div>
+        </div>
+        <div class="tconn">
+          <div class="ttrack"></div>
+          <div class="tlabel">WireGuard VPN</div>
+        </div>
+        <div class="tn trem">
+          <div class="tntype rem">Distant · Worker 2</div>
+          <div class="tnname">VPS Cloud</div>
+          <div class="tnsub">10.0.0.2 · IP pub.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hlt">
+      <h4>Pourquoi cette architecture hybride est la plus pertinente</h4>
+      <p>Ce modèle local + VPS reproduit exactement ce que font les entreprises qui migrent progressivement vers le cloud : elles conservent une partie on-premise et étendent vers le cloud pour les services publics. C'est le cœur des stratégies IT 2024–2030. Le mémoire apporte la preuve que cette stratégie est réalisable avec un PC et un budget inférieur à 10€/mois.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">04 — Outils & Technologies</div>
+    <h2>Stack technologique complète</h2>
+    <div class="tlist">
+      <div class="tr th"><div class="tc">Outil / Tech.</div><div class="tc">Rôle dans le projet</div><div class="tc">Env.</div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Kubernetes (kubeadm)</span></div><div class="tc td">Orchestration du cluster hybride — scheduling, self-healing, HPA, services sur les 3 nœuds</div><div class="tc"><span class="tag ti">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">WireGuard VPN</span></div><div class="tc td">Tunnel chiffré PC ↔ VPS — réseau privé 10.0.0.0/24 pour la communication inter-nœuds</div><div class="tc"><span class="tag tn3">Local ↔ VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Docker / containerd</span></div><div class="tc td">Runtime de conteneurs sur tous les nœuds — exécution isolée des workloads applicatifs</div><div class="tc"><span class="tag ti">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">VirtualBox / KVM</span></div><div class="tc td">Hyperviseur local pour créer la VM Worker 1 sur le PC — simulation nœud on-premise réaliste</div><div class="tc"><span class="tag tl">Local uniquement</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Calico / Flannel</span></div><div class="tc td">Plugin réseau CNI — réseau overlay entre pods sur nœuds locaux et VPS distant</div><div class="tc"><span class="tag tn3">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Prometheus</span></div><div class="tc td">Collecte métriques du cluster entier (PC local + VPS) — node-exporter sur chaque nœud</div><div class="tc"><span class="tag tm">Local (centralisé)</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Grafana</span></div><div class="tc td">Dashboard unifié — métriques locales ET VPS visibles dans une seule interface web</div><div class="tc"><span class="tag tm">Local (centralisé)</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">NGINX Ingress</span></div><div class="tc td">Contrôleur Ingress déployé sur le Worker VPS (IP publique) — entrée publique pour les services</div><div class="tc"><span class="tag tc2">VPS uniquement</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Helm</span></div><div class="tc td">Gestionnaire de packages K8s — déploiement simplifié de Prometheus, Grafana, applications</div><div class="tc"><span class="tag ti">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Ubuntu 22.04 LTS</span></div><div class="tc td">OS base pour le PC (hôte + VM) et le VPS — pleinement supporté par Kubernetes</div><div class="tc"><span class="tag to">Local + VPS</span></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">05 — Méthodologie & Phases</div>
+    <h2>Déroulement du projet</h2>
+    <div class="tline">
+      <div class="ph"><div class="phnum">Phase 1</div><div class="phin"><div class="pht">Conception de l'architecture hybride</div><div class="phd">Plan du cluster, adressage VPN, choix du CNI, cartographie des rôles par nœud, comparatif K3s vs kubeadm pour usage hybride sur PC.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 2</div><div class="phin"><div class="pht">Préparation de l'environnement local</div><div class="phd">Installation Ubuntu 22.04 sur le PC, déploiement VirtualBox/KVM, création de la VM Worker 1, configuration réseau bridge/NAT, installation de containerd et kubeadm.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 3</div><div class="phin"><div class="pht">Provisionnement du VPS et tunnel VPN</div><div class="phd">Location VPS Ubuntu, installation WireGuard sur le PC et le VPS, création du tunnel chiffré, tests de ping et connectivité inter-nœuds via adresses IP VPN privées.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 4</div><div class="phin"><div class="pht">Déploiement du cluster Kubernetes hybride</div><div class="phd">kubeadm init sur le Master (PC), jonction du Worker 1 (VM locale) et du Worker 2 (VPS) au cluster via VPN, déploiement du CNI Calico, validation kubectl get nodes.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 5</div><div class="phin"><div class="pht">Déploiement des applications et du monitoring</div><div class="phd">Déploiement d'applications test avec répartition sur les 3 nœuds, installation Prometheus/Grafana via Helm, node-exporter sur le VPS, dashboards unifiés, AlertManager.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 6</div><div class="phin"><div class="pht">Tests de résilience et validation finale</div><div class="phd">Simulation de panne du VPS (coupure réseau), vérification du re-scheduling automatique sur nœuds locaux, tests de charge avec k6, mesure des métriques, documentation complète.</div></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">06 — Résultats Attendus</div>
+    <h2>Ce que le projet va démontrer</h2>
+    <div class="g4">
+      <div class="rc"><div class="rt">Cluster opérationnel</div><div class="rm">3 nœuds</div><div class="rd">Master local + Worker VM locale + Worker VPS cloud</div></div>
+      <div class="rc"><div class="rt">Failover automatique</div><div class="rm">&lt; 60s</div><div class="rd">Re-scheduling des pods VPS vers nœuds locaux en cas de panne</div></div>
+      <div class="rc"><div class="rt">Supervision unifiée</div><div class="rm">1 dashboard</div><div class="rd">Métriques local + VPS centralisées dans un seul Grafana</div></div>
+      <div class="rc"><div class="rt">Coût cloud mensuel</div><div class="rm">~8 €/mois</div><div class="rd">Un seul VPS — l'essentiel du cluster tourne sur le PC</div></div>
+    </div>
+    <ul class="bl">
+      <li><strong>Cluster hybride fonctionnel</strong> — les 3 nœuds (Master PC, Worker VM local, Worker VPS) visibles et actifs dans kubectl</li>
+      <li><strong>Tunnel VPN WireGuard stable</strong> — latence inter-nœuds mesurée et documentée (LAN vs WAN)</li>
+      <li><strong>Failover démontré</strong> — coupure du VPS simulée, re-scheduling automatique des pods validé</li>
+      <li><strong>Supervision unifiée</strong> — métriques CPU/RAM/réseau des 3 nœuds dans un dashboard Grafana unique</li>
+      <li><strong>Documentation reproductible</strong> — guide complet permettant à toute PME de reproduire la setup avec un PC et un VPS</li>
+    </ul>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">07 — Perspectives & Évolutions</div>
+    <h2>Ce que ce projet ouvre</h2>
+    <div class="g2">
+      <div class="pc"><div class="pn">01</div><div class="pcont"><h4>Extension multi-VPS progressive</h4><p>Ajouter des VPS supplémentaires comme Workers — architecture extensible sans refondre la base. Chaque VPS ajouté augmente la capacité et la résilience.</p></div></div>
+      <div class="pc"><div class="pn">02</div><div class="pcont"><h4>Pipeline CI/CD automatisé</h4><p>GitLab CI + ArgoCD pour déploiements continus : chaque push de code déclenche un déploiement automatique sur le cluster hybride.</p></div></div>
+      <div class="pc"><div class="pn">03</div><div class="pcont"><h4>AIOps & supervision prédictive</h4><p>Analyse ML des métriques Prometheus pour anticiper les pannes et optimiser automatiquement la distribution des pods entre PC local et cloud.</p></div></div>
+      <div class="pc"><div class="pn">04</div><div class="pcont"><h4>Modèle Edge Computing africain</h4><p>Reproduire l'approche PC local + VPS cloud pour des déploiements Edge en Afrique — nœud maître on-premise, VPS comme point d'entrée public.</p></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">08 — Objectif Professionnel & Freelance</div>
+    <h2>Ce que ce mémoire m'apporte</h2>
+    <div class="fb">
+      <h3>Maîtriser le Cloud Native sans datacenter — un atout rare</h3>
+      <p>Ce projet démontre quelque chose de très concret : je suis capable de déployer une infrastructure Kubernetes professionnelle <strong>avec mon PC et ~8€/mois de VPS</strong>. C'est exactement ce qui distingue un profil DevOps senior — savoir faire du professionnel avec peu de moyens.</p>
+      <p>En maîtrisant Kubernetes hybride, WireGuard, Prometheus et Grafana, je construis un <strong>portfolio cloud technique directement démontrable</strong> : l'infrastructure de ce mémoire est réelle, accessible et mesurable. En tant que <strong>freelance DevOps / Cloud Engineer</strong>, ces compétences permettent de cibler des missions à <strong>400€–800€/jour</strong> en Europe et d'offrir des services uniques aux PME africaines qui ne peuvent pas se permettre un datacenter. Ma capacité à construire beaucoup avec peu est précisément ce que recherchent ces PME.</p>
+    </div>
+  </div>
+
+</div>
+<div class="pfooter">
+  <div class="pfl">SUJET 01 · M2 SRT · AFI-UE · 2025 · AHAMED HASSANI MHOMA</div>
+  <div class="pfr"><div class="fd c1"></div><div class="fd c2" style="opacity:.3"></div><div class="fd c3" style="opacity:.3"></div></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ SUJET 2 ═══════════════════════════════ -->
+<div class="page s2" id="p2">
+<div class="hero">
+  <div class="glow"></div>
+  <div class="badge">◆ Sujet 02 · Stockage Distribué & Résilience des Données</div>
+  <h1>Système de Stockage Distribué Haute Disponibilité<br><em>avec Réplication et Tolérance aux Pannes</em></h1>
+  <p class="tagline">Concevoir un cluster de stockage distribué hybride hébergé principalement sur PC local via VMs, étendu par un nœud VPS distant pour la réplication géographique, prouvant qu'un système de stockage résilient de niveau professionnel est accessible à coût nul de matériel.</p>
+  <div class="meta">
+    <div class="mi"><span class="ml">Étudiant</span><span class="mv">Ahamed HASSANI MHOMA</span></div>
+    <div class="mi"><span class="ml">Niveau</span><span class="mv">Master 2</span></div>
+    <div class="mi"><span class="ml">Filière</span><span class="mv">Systèmes et Réseaux Télécom</span></div>
+    <div class="mi"><span class="ml">Établissement</span><span class="mv">AFI-UE</span></div>
+    <div class="mi"><span class="ml">Domaine</span><span class="mv">Stockage Distribué · Cluster HA · Réplication · Ceph</span></div>
+  </div>
+</div>
+<div class="body">
+
+  <div class="sec">
+    <div class="sl">01 — Contexte & Problématique</div>
+    <h2>Pourquoi ce sujet ?</h2>
+    <p>La perte de données est la catastrophe la plus redoutée par les entreprises — et la plus fréquente chez les PME africaines, qui s'appuient souvent sur un seul serveur de fichiers sans réplication. En Afrique subsaharienne, les pannes électriques fréquentes, la chaleur et la poussière augmentent considérablement le risque de défaillance matérielle.</p>
+    <p>Ce projet prouve qu'il est possible de construire un <strong>cluster de stockage distribué professionnel avec réplication géographique réelle</strong> en utilisant des VMs sur le PC local pour les nœuds principaux et un seul VPS pour la réplication offsite — sans serveurs physiques dédiés.</p>
+    <div class="pbox">
+      <div class="pbl">Problématique centrale</div>
+      <div class="pbt">Comment concevoir un cluster de stockage distribué hybride (VMs locales + VPS cloud) garantissant réplication automatique, basculement transparent et intégrité des données, déployable par une PME africaine sans infrastructure dédiée ?</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">02 — Objectifs du Projet</div>
+    <h2>Ce que le système doit garantir</h2>
+    <div class="g2">
+      <div class="card"><div class="ci">♻</div><h4>Réplication Hybride Local + Cloud</h4><p>Données répliquées entre les nœuds locaux (VMs PC) ET le nœud VPS distant — protection contre la perte du site local complet (incendie, vol, panne totale).</p></div>
+      <div class="card"><div class="ci">⚡</div><h4>Basculement Automatique</h4><p>En cas de panne d'un nœud, le cluster redirige les requêtes vers les nœuds sains — aucune intervention manuelle, aucune interruption pour l'utilisateur.</p></div>
+      <div class="card"><div class="ci">🌍</div><h4>Réplication Géographique Réelle</h4><p>Le nœud VPS distant est physiquement dans un datacenter différent du PC local — vraie réplication géographique testée avec latence réseau WAN réelle.</p></div>
+      <div class="card"><div class="ci">🔒</div><h4>Cohérence & Intégrité des Données</h4><p>Quorum Ceph, checksums et journalisation pour garantir que les données lues sont toujours cohérentes et intègres, même après une panne partielle du cluster.</p></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">03 — Architecture Hybride Locale + Cloud</div>
+    <h2>Répartition des ressources : PC local et VPS distant</h2>
+    <p>Le cluster Ceph sera composé de <strong>deux nœuds OSD hébergés en local</strong> sur le PC personnel via VirtualBox/KVM (nœuds primaires avec disques virtuels dédiés) et d'<strong>un seul nœud OSD sur VPS distant</strong> pour la réplication géographique et l'accès public aux données via Object Gateway S3-compatible.</p>
+
+    <div class="leg">
+      <div class="li"><div class="ld loc"></div>Environnement local (PC personnel)</div>
+      <div class="li"><div class="ld rem"></div>Environnement distant (VPS Cloud)</div>
+    </div>
+
+    <div class="hlay">
+      <div class="hcol loc">
+        <div class="hbadge loc">💻 Local — PC Personnel</div>
+        <h4>Nœuds Ceph Primaires (2 VMs)</h4>
+        <div class="hrole">Cluster principal — MON + OSD sur VMs hébergées sur le PC</div>
+        <div class="hs"><span class="hsk">CPU</span><span class="hsv">6–8 cœurs physiques (hôte)</span></div>
+        <div class="hs"><span class="hsk">RAM</span><span class="hsv">16–32 Go (4–8 Go alloués par VM)</span></div>
+        <div class="hs"><span class="hsk">Hyperviseur</span><span class="hsv">VirtualBox / KVM</span></div>
+        <div class="hs"><span class="hsk">VM 1 — rôle Ceph</span><span class="hsv">MON + OSD 1 — disque virtuel 100 Go</span></div>
+        <div class="hs"><span class="hsk">VM 2 — rôle Ceph</span><span class="hsv">MON + OSD 2 — disque virtuel 100 Go</span></div>
+        <div class="hs"><span class="hsk">Disques virtuels</span><span class="hsv">Fichiers .vdi/.qcow2 sur SSD PC</span></div>
+        <div class="hs"><span class="hsk">Dashboard Ceph</span><span class="hsv">Hébergé sur VM 1 (accès local)</span></div>
+        <div class="hs"><span class="hsk">Monitoring</span><span class="hsv">Prometheus + Grafana sur VM dédiée</span></div>
+        <div class="hs"><span class="hsk">Réseau VPN</span><span class="hsv">WireGuard — IP 10.10.0.11 / 10.10.0.12</span></div>
+      </div>
+      <div class="hconn">
+        <div class="hline"></div>
+        <div class="hpill">WireGuard VPN<br>+<br>Réplication Ceph<br>OSD dist.</div>
+        <div class="hline"></div>
+      </div>
+      <div class="hcol rem">
+        <div class="hbadge rem">☁ Distant — VPS Cloud</div>
+        <h4>Nœud Ceph Distant (OSD 3)</h4>
+        <div class="hrole">Réplication offsite + point d'accès public S3</div>
+        <div class="hs"><span class="hsk">Fournisseur</span><span class="hsv">Contabo / OVHcloud</span></div>
+        <div class="hs"><span class="hsk">CPU</span><span class="hsv">4 vCores</span></div>
+        <div class="hs"><span class="hsk">RAM</span><span class="hsv">8 Go</span></div>
+        <div class="hs"><span class="hsk">Disque data</span><span class="hsv">200 Go SSD NVMe dédié OSD</span></div>
+        <div class="hs"><span class="hsk">Rôle Ceph</span><span class="hsv">OSD 3 — réplication géographique</span></div>
+        <div class="hs"><span class="hsk">Object Gateway</span><span class="hsv">API S3 exposée publiquement sur IP VPS</span></div>
+        <div class="hs"><span class="hsk">Réseau VPN</span><span class="hsv">WireGuard — IP 10.10.0.20</span></div>
+        <div class="hs"><span class="hsk">Coût estimé</span><span class="hsv">~8–12€ / mois</span></div>
+      </div>
+    </div>
+
+    <div class="tunnel">
+      <div class="tunnel-title">Vue réseau — Cluster Ceph hybride local + VPS</div>
+      <div class="trow">
+        <div class="tn tloc">
+          <div class="tntype loc">Local · MON + OSD 1</div>
+          <div class="tnname">VM Ceph #1</div>
+          <div class="tnsub">10.10.0.11</div>
+        </div>
+        <div class="tconn">
+          <div class="ttrack"></div>
+          <div class="tlabel">LAN local</div>
+        </div>
+        <div class="tn tloc">
+          <div class="tntype loc">Local · MON + OSD 2</div>
+          <div class="tnname">VM Ceph #2</div>
+          <div class="tnsub">10.10.0.12</div>
+        </div>
+        <div class="tconn">
+          <div class="ttrack"></div>
+          <div class="tlabel">WireGuard VPN</div>
+        </div>
+        <div class="tn trem">
+          <div class="tntype rem">Distant · OSD 3</div>
+          <div class="tnname">VPS Cloud</div>
+          <div class="tnsub">10.10.0.20</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hlt">
+      <h4>Ce que cette architecture apporte de plus au mémoire</h4>
+      <p>En intégrant le VPS distant comme OSD Ceph, le projet teste la réplication à travers un vrai réseau WAN avec latence — une problématique concrète pour les entreprises africaines avec plusieurs sites. Les mesures comparatives <strong>débit de réplication LAN (VMs locales) vs WAN (vers VPS)</strong> constituent une contribution scientifique directe du mémoire.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">04 — Outils & Technologies</div>
+    <h2>Stack technologique complète</h2>
+    <div class="tlist">
+      <div class="tr th"><div class="tc">Outil / Tech.</div><div class="tc">Rôle dans le projet</div><div class="tc">Env.</div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Ceph (Reef / Quincy)</span></div><div class="tc td">Cluster de stockage distribué — réplication CRUSH, OSD/MON, CephFS et Object Gateway S3-compatible</div><div class="tc"><span class="tag ts">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">WireGuard VPN</span></div><div class="tc td">Tunnel chiffré reliant les VMs Ceph locales au nœud OSD VPS distant — réseau privé de réplication sécurisé</div><div class="tc"><span class="tag tn3">Local ↔ VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">VirtualBox / KVM</span></div><div class="tc td">Hyperviseur local pour les 2 VMs Ceph — disques virtuels (.vdi/.qcow2) attachés comme OSD Ceph</div><div class="tc"><span class="tag tl">Local uniquement</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">CephFS</span></div><div class="tc td">Système de fichiers distribué exposé par le cluster — montable depuis toute VM ou hôte du réseau VPN</div><div class="tc"><span class="tag ts">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Ceph Object Gateway (RGW)</span></div><div class="tc td">API S3-compatible exposée sur le VPS — accès depuis Internet au stockage objet sans exposer l'infra interne</div><div class="tc"><span class="tag tc2">VPS uniquement</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">GlusterFS</span></div><div class="tc td">Alternative comparée à Ceph — implémentation parallèle pour benchmark et analyse comparative structurée</div><div class="tc"><span class="tag tl">Local (comparatif)</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Prometheus + Grafana</span></div><div class="tc td">Supervision du cluster — métriques I/O, état des OSD, taux de réplication, alertes de désynchronisation</div><div class="tc"><span class="tag tm">Local (centralisé)</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">fio / iozone</span></div><div class="tc td">Benchmarks I/O — mesure débit et latence en lecture/écriture sur le cluster (LAN local vs WAN VPS)</div><div class="tc"><span class="tag ti">Tests</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Ubuntu Server 22.04</span></div><div class="tc td">OS base pour les VMs locales et le VPS — pleinement supporté par Ceph</div><div class="tc"><span class="tag to">Local + VPS</span></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">05 — Méthodologie & Phases</div>
+    <h2>Déroulement du projet</h2>
+    <div class="tline">
+      <div class="ph"><div class="phnum">Phase 1</div><div class="phin"><div class="pht">Étude comparative et conception de l'architecture</div><div class="phd">Analyse GlusterFS vs Ceph (performance, complexité, cas PME), choix argumenté de la solution principale, conception du schéma hybride, plan réseau VPN et facteur de réplication.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 2</div><div class="phin"><div class="pht">Préparation de l'environnement local</div><div class="phd">Création des 2 VMs Ceph sous VirtualBox/KVM, allocation des disques virtuels dédiés (200 Go chacun), réseau host-only, installation Ubuntu Server, préparation des OSD.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 3</div><div class="phin"><div class="pht">Provisionnement VPS et tunnel VPN</div><div class="phd">Location VPS avec volume de stockage additionnel (200 Go), installation WireGuard sur PC et VPS, création du réseau privé 10.10.0.0/24, tests ping et latence inter-nœuds.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 4</div><div class="phin"><div class="pht">Déploiement du cluster Ceph hybride</div><div class="phd">Bootstrap via cephadm sur la VM 1, ajout des OSD locaux (VM 1 + VM 2) puis du nœud VPS distant, activation CephFS, configuration Object Gateway sur le VPS.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 5</div><div class="phin"><div class="pht">Tests de résilience et benchmarks comparatifs</div><div class="phd">Simulation panne OSD local (arrêt VM), mesure resynchronisation, benchmarks fio sur les 3 nœuds, comparaison débit LAN vs WAN, test panne du VPS et comportement du cluster.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 6</div><div class="phin"><div class="pht">Monitoring, documentation et validation</div><div class="phd">Dashboards Grafana Ceph, alertes désynchronisation, documentation des procédures d'administration, rédaction des conclusions avec métriques comparatives, livrables du mémoire.</div></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">06 — Résultats Attendus</div>
+    <h2>Ce que le projet va démontrer</h2>
+    <div class="g4">
+      <div class="rc"><div class="rt">Tolérance aux pannes</div><div class="rm">0 donnée</div><div class="rd">Zéro perte lors de la panne simulée d'un OSD local ou du nœud VPS</div></div>
+      <div class="rc"><div class="rt">Resynchronisation</div><div class="rm">&lt; 5 min</div><div class="rd">Retour à un état sain après réintégration d'un nœud défaillant</div></div>
+      <div class="rc"><div class="rt">Réplication géo.</div><div class="rm">Local + VPS</div><div class="rd">Données copiées entre VMs locales ET nœud VPS géographiquement distant</div></div>
+      <div class="rc"><div class="rt">Coût infra cloud</div><div class="rm">~10 €/mois</div><div class="rd">Un seul VPS pour la réplication distante — nœuds principaux sur PC</div></div>
+    </div>
+    <ul class="bl">
+      <li><strong>Cluster Ceph hybride opérationnel</strong> — 3 OSD (2 VMs locales + 1 VPS) formant un cluster unifié avec quorum</li>
+      <li><strong>Réplication géographique validée</strong> — données présentes simultanément en local et sur le VPS distant</li>
+      <li><strong>Zéro perte de données</strong> lors de la simulation de panne d'un OSD local ou du nœud VPS</li>
+      <li><strong>Benchmarks comparatifs LAN vs WAN</strong> — débit de réplication mesuré en local (Gbps) vs vers le VPS (Mbps)</li>
+      <li><strong>Object Gateway S3 fonctionnel</strong> — accès aux données depuis Internet via API S3 sur le VPS</li>
+    </ul>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">07 — Perspectives & Évolutions</div>
+    <h2>Ce que ce projet ouvre</h2>
+    <div class="g2">
+      <div class="pc"><div class="pn">01</div><div class="pcont"><h4>NAS-as-a-Service pour PME africaines</h4><p>Proposer ce modèle (serveur local + réplication VPS) comme offre de stockage managé pour PME — données sécurisées localement et répliquées dans le cloud.</p></div></div>
+      <div class="pc"><div class="pn">02</div><div class="pcont"><h4>Backend de stockage pour Kubernetes</h4><p>Utiliser Ceph comme PersistentVolume provider pour le cluster K8s du Sujet 1 — combinaison naturelle des deux projets.</p></div></div>
+      <div class="pc"><div class="pn">03</div><div class="pcont"><h4>Réplication multi-sites africains</h4><p>Étendre à plusieurs VPS dans des régions africaines différentes (ex: OVH Dakar + Abidjan) — infrastructure de stockage distribuée à l'échelle régionale.</p></div></div>
+      <div class="pc"><div class="pn">04</div><div class="pcont"><h4>Sauvegarde automatisée 3-2-1</h4><p>Snapshots Ceph planifiés répliqués vers un second VPS ou stockage objet public (Backblaze B2, Wasabi) — politique de rétention complète à coût minimal.</p></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">08 — Objectif Professionnel & Freelance</div>
+    <h2>Ce que ce mémoire m'apporte</h2>
+    <div class="fb">
+      <h3>Expert stockage distribué — une niche rare et très rentable</h3>
+      <p>La maîtrise de Ceph est une compétence extrêmement rare. Ce projet me place directement dans la catégorie des profils <strong>Storage Engineer / Infrastructure Architect</strong> avec une expérience concrète sur un déploiement hybride réel. En Europe, les spécialistes Ceph facturent <strong>500€–900€/jour en freelance</strong>.</p>
+      <p>En Afrique, la problématique du stockage fiable avec réplication géographique est critique pour les banques, hôpitaux, administrations et PME gérant des données sensibles. Mon expertise me permet de proposer une <strong>solution opérationnelle à quelques euros par mois</strong> — avec un PC existant + un VPS — là où aucune expertise locale n'existe actuellement.</p>
+    </div>
+  </div>
+
+</div>
+<div class="pfooter">
+  <div class="pfl">SUJET 02 · M2 SRT · AFI-UE · 2025 · AHAMED HASSANI MHOMA</div>
+  <div class="pfr"><div class="fd c1" style="opacity:.3"></div><div class="fd c2"></div><div class="fd c3" style="opacity:.3"></div></div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ SUJET 3 ═══════════════════════════════ -->
+<div class="page s3" id="p3">
+<div class="hero">
+  <div class="glow"></div>
+  <div class="badge">◆ Sujet 03 · Mini Datacenter Virtualisé & Haute Disponibilité</div>
+  <h1>Mini Datacenter Modulaire Virtualisé pour PME<br><em>avec Haute Disponibilité et Supervision Centralisée</em></h1>
+  <p class="tagline">Installer Proxmox VE directement sur le PC personnel pour en faire le nœud Proxmox principal hébergeant toutes les VMs du mini datacenter, étendu par un VPS cloud comme nœud HA secondaire permettant la migration à chaud et le failover automatique.</p>
+  <div class="meta">
+    <div class="mi"><span class="ml">Étudiant</span><span class="mv">Ahamed HASSANI MHOMA</span></div>
+    <div class="mi"><span class="ml">Niveau</span><span class="mv">Master 2</span></div>
+    <div class="mi"><span class="ml">Filière</span><span class="mv">Systèmes et Réseaux Télécom</span></div>
+    <div class="mi"><span class="ml">Établissement</span><span class="mv">AFI-UE</span></div>
+    <div class="mi"><span class="ml">Domaine</span><span class="mv">Virtualisation · Proxmox · HA Cluster · Datacenter PME</span></div>
+  </div>
+</div>
+<div class="body">
+
+  <div class="sec">
+    <div class="sl">01 — Contexte & Problématique</div>
+    <h2>Pourquoi ce sujet ?</h2>
+    <p>Les PME africaines ont besoin d'infrastructures informatiques fiables — serveur de fichiers, messagerie, site web interne, base de données — mais n'ont ni les budgets pour louer un datacenter, ni l'expertise pour gérer des solutions d'entreprise complexes. Résultat : des serveurs physiques isolés, sous-utilisés, non supervisés et sans aucune redondance.</p>
+    <p>Proxmox VE, hyperviseur open-source de niveau entreprise, permet de <strong>transformer un simple PC en mini datacenter complet</strong> hébergeant simultanément 6 à 8 VMs isolées. Ce projet démontre qu'en combinant le PC local (nœud Proxmox principal) et un VPS cloud (nœud HA secondaire), on obtient une infrastructure avec <strong>migration à chaud et haute disponibilité réelle</strong> — à moins de 15€/mois.</p>
+    <div class="pbox">
+      <div class="pbl">Problématique centrale</div>
+      <div class="pbt">Comment transformer un PC personnel en mini datacenter virtualisé haute disponibilité, étendu par un VPS cloud comme nœud de failover, pour offrir infrastructure PME complète et supervision centralisée à coût quasi nul ?</div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">02 — Objectifs du Projet</div>
+    <h2>Ce que le datacenter doit offrir</h2>
+    <div class="g2">
+      <div class="card"><div class="ci">🖥</div><h4>PC = Mini Datacenter Complet</h4><p>Proxmox VE installé directement sur le PC (bare-metal) — 6 à 8 VMs simultanées : web, BDD, fichiers, firewall, monitoring, AD. Tout le SI d'une PME sur une seule machine.</p></div>
+      <div class="card"><div class="ci">🔄</div><h4>Migration à Chaud PC → VPS</h4><p>Une VM peut être déplacée du PC local vers le VPS distant (et inversement) sans interruption de service — maintenance zero-downtime via le stockage partagé NFS.</p></div>
+      <div class="card"><div class="ci">📊</div><h4>Supervision Centralisée Unifiée</h4><p>Interface Proxmox web + dashboards Grafana supervisant les 2 hôtes (PC + VPS) et toutes les VMs depuis une seule interface, avec alertes automatiques.</p></div>
+      <div class="card"><div class="ci">💰</div><h4>Coût Minimal</h4><p>Proxmox VE Community Edition est 100% gratuit. Seul le VPS HA secondaire représente un coût (~15€/mois). L'essentiel des VMs tourne sur le PC personnel.</p></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">03 — Architecture Hybride Locale + Cloud</div>
+    <h2>Répartition des ressources : PC local et VPS distant</h2>
+    <p>Le PC personnel reçoit <strong>Proxmox VE 8 installé en bare-metal</strong> (remplacement de l'OS, ou dual-boot). Il devient le <strong>nœud Proxmox principal</strong> hébergeant la grande majorité des VMs du mini datacenter. Le <strong>VPS cloud</strong> reçoit également Proxmox VE et constitue le second nœud du cluster, permettant la haute disponibilité et la migration à chaud via un volume NFS partagé depuis le PC local.</p>
+
+    <div class="leg">
+      <div class="li"><div class="ld loc"></div>Environnement local (PC personnel)</div>
+      <div class="li"><div class="ld rem"></div>Environnement distant (VPS Cloud)</div>
+    </div>
+
+    <div class="hlay">
+      <div class="hcol loc">
+        <div class="hbadge loc">💻 Local — PC Personnel</div>
+        <h4>Nœud Proxmox Principal (Host A)</h4>
+        <div class="hrole">Mini datacenter principal — héberge la quasi-totalité des VMs</div>
+        <div class="hs"><span class="hsk">CPU</span><span class="hsv">6–8 cœurs (VT-x / AMD-V requis)</span></div>
+        <div class="hs"><span class="hsk">RAM</span><span class="hsv">16–32 Go (2–4 Go par VM)</span></div>
+        <div class="hs"><span class="hsk">Stockage</span><span class="hsv">SSD 500 Go+ (disques VM + OS Proxmox)</span></div>
+        <div class="hs"><span class="hsk">OS</span><span class="hsv">Proxmox VE 8 (bare-metal / dual-boot)</span></div>
+        <div class="hs"><span class="hsk">VMs hébergées</span><span class="hsv">5–7 VMs actives simultanément</span></div>
+        <div class="hs"><span class="hsk">Rôle cluster</span><span class="hsv">Nœud Primaire + gestion du quorum</span></div>
+        <div class="hs"><span class="hsk">Stockage partagé</span><span class="hsv">NFS exporté depuis ce PC vers le cluster</span></div>
+        <div class="hs"><span class="hsk">Réseau VPN</span><span class="hsv">WireGuard + Corosync — IP 10.10.0.1</span></div>
+      </div>
+      <div class="hconn">
+        <div class="hline"></div>
+        <div class="hpill">WireGuard VPN<br>+<br>Corosync<br>cluster HA</div>
+        <div class="hline"></div>
+      </div>
+      <div class="hcol rem">
+        <div class="hbadge rem">☁ Distant — VPS Cloud</div>
+        <h4>Nœud Proxmox HA Secondaire (Host B)</h4>
+        <div class="hrole">Failover cloud — reçoit les VMs migrées à chaud</div>
+        <div class="hs"><span class="hsk">Fournisseur</span><span class="hsv">Contabo / OVHcloud (KVM VPS)</span></div>
+        <div class="hs"><span class="hsk">CPU</span><span class="hsv">6–8 vCores</span></div>
+        <div class="hs"><span class="hsk">RAM</span><span class="hsv">16–24 Go (accueille les VMs migrées)</span></div>
+        <div class="hs"><span class="hsk">Stockage</span><span class="hsv">200 Go SSD NVMe</span></div>
+        <div class="hs"><span class="hsk">OS</span><span class="hsv">Proxmox VE 8 installé sur le VPS</span></div>
+        <div class="hs"><span class="hsk">VMs hébergées</span><span class="hsv">1–2 VMs normalement (+ failover)</span></div>
+        <div class="hs"><span class="hsk">IP publique</span><span class="hsv">Oui — services exposés sur Internet</span></div>
+        <div class="hs"><span class="hsk">Réseau VPN</span><span class="hsv">WireGuard — IP 10.10.0.2</span></div>
+        <div class="hs"><span class="hsk">Coût estimé</span><span class="hsv">~12–18€ / mois</span></div>
+      </div>
+    </div>
+
+    <div class="tunnel">
+      <div class="tunnel-title">Vue réseau — Cluster Proxmox hybride PC + VPS</div>
+      <div class="trow">
+        <div class="tn tloc">
+          <div class="tntype loc">Local · Host A (Principal)</div>
+          <div class="tnname">Proxmox PC</div>
+          <div class="tnsub">10.10.0.1 · 5–7 VMs</div>
+        </div>
+        <div class="tconn">
+          <div class="ttrack"></div>
+          <div class="tlabel">WireGuard + Corosync</div>
+        </div>
+        <div class="tn trem">
+          <div class="tntype rem">Distant · Host B (HA)</div>
+          <div class="tnname">Proxmox VPS</div>
+          <div class="tnsub">10.10.0.2 · Failover</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hlt">
+      <h4>Services hébergés dans le mini datacenter (VMs sur le PC Proxmox)</h4>
+      <p><strong>VM 1</strong> : Serveur web Nginx + PHP · <strong>VM 2</strong> : Base de données PostgreSQL · <strong>VM 3</strong> : Serveur de fichiers Samba/NFS · <strong>VM 4</strong> : Firewall pfSense · <strong>VM 5</strong> : Stack Prometheus + Grafana · <strong>VM 6</strong> : Serveur LDAP/AD · <strong>VM 7</strong> : Proxmox Backup Server — simulation complète du SI d'une PME de 20 à 100 utilisateurs, entièrement sur le PC.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">04 — Outils & Technologies</div>
+    <h2>Stack technologique complète</h2>
+    <div class="tlist">
+      <div class="tr th"><div class="tc">Outil / Tech.</div><div class="tc">Rôle dans le projet</div><div class="tc">Env.</div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Proxmox VE 8</span></div><div class="tc td">Hyperviseur bare-metal installé sur le PC ET le VPS — interface web unifiée, gestion du cluster HA, Live Migration, snapshots VMs</div><div class="tc"><span class="tag tv">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">WireGuard VPN</span></div><div class="tc td">Tunnel chiffré reliant le PC Proxmox local au VPS Proxmox distant — réseau Corosync et Live Migration via VPN sécurisé</div><div class="tc"><span class="tag tn3">Local ↔ VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Corosync / Pacemaker</span></div><div class="tc td">Gestion du quorum du cluster Proxmox — détection de panne et déclenchement du failover automatique des VMs vers le VPS</div><div class="tc"><span class="tag tha">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">QEMU / KVM</span></div><div class="tc td">Hyperviseur sous-jacent de Proxmox — virtualisation matérielle (VT-x/AMD-V) pour performances quasi-natives des VMs sur PC</div><div class="tc"><span class="tag tv">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">NFS (stockage partagé)</span></div><div class="tc td">Export NFS depuis le PC local vers le cluster — stockage partagé permettant la Live Migration des VMs entre PC et VPS</div><div class="tc"><span class="tag tl">Local (partagé)</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">pfSense (VM)</span></div><div class="tc td">Firewall/routeur virtualisé dans une VM Proxmox — protection périmétrique et segmentation VLAN du mini datacenter</div><div class="tc"><span class="tag tl">Local uniquement</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Prometheus + Grafana</span></div><div class="tc td">Supervision externe — métriques des 2 hôtes Proxmox (PC + VPS) et de toutes les VMs dans un dashboard unifié</div><div class="tc"><span class="tag tm">Local (VM dédiée)</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Ansible</span></div><div class="tc td">Automatisation IaC — provisionnement et configuration des VMs reproductibles en quelques minutes après déploiement</div><div class="tc"><span class="tag ti">Local + VPS</span></div></div>
+      <div class="tr"><div class="tc"><span class="tn2">Proxmox Backup Server</span></div><div class="tc td">Sauvegardes automatiques des VMs avec déduplication — snapshots planifiés, restauration granulaire testée</div><div class="tc"><span class="tag tl">Local (VM dédiée)</span></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">05 — Méthodologie & Phases</div>
+    <h2>Déroulement du projet</h2>
+    <div class="tline">
+      <div class="ph"><div class="phnum">Phase 1</div><div class="phin"><div class="pht">Conception et dimensionnement du mini datacenter</div><div class="phd">Plan des VMs (services, ressources, OS), plan réseau VLANs + bridges Proxmox, stratégie de stockage NFS, règles HA par VM, choix du VPS (RAM suffisante pour accueillir des VMs migrées).</div></div></div>
+      <div class="ph"><div class="phnum">Phase 2</div><div class="phin"><div class="pht">Installation de Proxmox VE sur le PC</div><div class="phd">Installation Proxmox VE 8 bare-metal sur le PC (dual-boot ou dédiée), configuration réseau initial (bridges vmbr0/vmbr1), vérification KVM/VT-x actif, accès à l'interface web.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 3</div><div class="phin"><div class="pht">Provisionnement VPS et formation du cluster</div><div class="phd">Location VPS KVM-compatible, installation Proxmox VE, mise en place WireGuard, création du cluster Proxmox entre le PC et le VPS, vérification Corosync et quorum à 2 nœuds.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 4</div><div class="phin"><div class="pht">Déploiement des VMs et configuration NFS</div><div class="phd">Création des 6–7 VMs de services sur le nœud PC, export NFS vers le cluster, configuration du stockage partagé dans Proxmox, activation et configuration du module HA.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 5</div><div class="phin"><div class="pht">Tests de Live Migration et failover HA</div><div class="phd">Migration live d'une VM du PC vers le VPS (zero-downtime validé), simulation de panne du nœud PC, vérification du redémarrage automatique des VMs sur le VPS, mesure du RTO.</div></div></div>
+      <div class="ph"><div class="phnum">Phase 6</div><div class="phin"><div class="pht">Supervision, sauvegarde et validation finale</div><div class="phd">Dashboards Grafana pour les 2 hôtes Proxmox, configuration Proxmox Backup Server, test restauration VM depuis snapshot, documentation complète, mesure des métriques finales.</div></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">06 — Résultats Attendus</div>
+    <h2>Ce que le projet va démontrer</h2>
+    <div class="g4">
+      <div class="rc"><div class="rt">VMs simultanées</div><div class="rm">6–7 VMs</div><div class="rd">Services complets d'une PME hébergés sur le PC via Proxmox</div></div>
+      <div class="rc"><div class="rt">Live Migration</div><div class="rm">0 s d'arrêt</div><div class="rd">VM déplacée du PC vers VPS sans interruption de service mesurée</div></div>
+      <div class="rc"><div class="rt">Failover HA</div><div class="rm">&lt; 2 min</div><div class="rd">Redémarrage automatique des VMs sur le VPS lors de la panne du PC</div></div>
+      <div class="rc"><div class="rt">Coût mensuel</div><div class="rm">~15 €</div><div class="rd">VPS HA secondaire avec RAM suffisante pour accueillir les VMs migrées</div></div>
+    </div>
+    <ul class="bl">
+      <li><strong>Cluster Proxmox hybride opérationnel</strong> — PC local + VPS distant formant une infrastructure HA unifiée</li>
+      <li><strong>Live Migration validée</strong> — VM déplacée du PC vers le VPS sans interruption observable pour l'utilisateur</li>
+      <li><strong>Failover automatique démontré</strong> — simulation de panne du PC, VMs redémarrées sur le VPS en moins de 2 minutes</li>
+      <li><strong>Supervision unifiée</strong> — métriques CPU/RAM/réseau des 2 hôtes Proxmox dans un seul dashboard Grafana</li>
+      <li><strong>Sauvegarde automatisée testée</strong> — snapshots quotidiens + restauration complète d'une VM depuis Proxmox Backup Server</li>
+    </ul>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">07 — Perspectives & Évolutions</div>
+    <h2>Ce que ce projet ouvre</h2>
+    <div class="g2">
+      <div class="pc"><div class="pn">01</div><div class="pcont"><h4>Offre "Mini Datacenter Clé-en-Main" pour PME africaines</h4><p>Packager ce projet comme une offre commerciale : installation Proxmox + configuration VMs + mise en place HA + VPS + monitoring, vendu et maintenu en tant que prestataire freelance.</p></div></div>
+      <div class="pc"><div class="pn">02</div><div class="pcont"><h4>Extension multi-nœuds progressive</h4><p>Ajouter des nœuds Proxmox (PCs reconditionnés ou VPS supplémentaires) au cluster existant — montée en capacité sans refondre l'architecture initiale.</p></div></div>
+      <div class="pc"><div class="pn">03</div><div class="pcont"><h4>Infrastructure as Code complète</h4><p>Automatisation 100% via Terraform (provisionnement Proxmox API) + Ansible (configuration VMs) — infrastructure reproductible en moins d'une heure sur n'importe quel PC.</p></div></div>
+      <div class="pc"><div class="pn">04</div><div class="pcont"><h4>Cloud hybride avec AWS / GCP</h4><p>Interconnexion du cluster Proxmox via VPN site-à-site avec AWS/GCP — modèle hybride on-premise/cloud pour burst de capacité en cas de surcharge.</p></div></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sec">
+    <div class="sl">08 — Objectif Professionnel & Freelance</div>
+    <h2>Ce que ce mémoire m'apporte</h2>
+    <div class="fb">
+      <h3>Transformer mon PC en datacenter — et en offre commerciale</h3>
+      <p>Ce projet prouve quelque chose d'unique : <strong>je suis capable de déployer un mini datacenter complet, avec HA et supervision, en utilisant mon PC et 15€/mois de VPS</strong>. C'est une compétence immédiatement commercialisable — les administrateurs Proxmox facturent <strong>450€–900€/jour en freelance</strong> en Europe.</p>
+      <p>En Afrique, aucune PME ne peut se payer un VMware vSphere ou un datacenter dédié. Mais toutes ont besoin d'infrastructures fiables. Ce projet me positionne comme <strong>le référent capable de leur offrir un mini datacenter de niveau entreprise pour quelques euros par mois</strong> — en utilisant leur matériel existant. C'est un marché de niche immense, quasi vierge d'expertise locale.</p>
+      <p>Les compétences acquises (Proxmox, HA, IaC avec Ansible, supervision avancée) sont également valorisables sur des postes <strong>Infrastructure Engineer, Cloud Architect ou Datacenter Manager</strong> en Europe, au Moyen-Orient ou dans des entreprises de la diaspora africaine.</p>
+    </div>
+  </div>
+
+</div>
+<div class="pfooter">
+  <div class="pfl">SUJET 03 · M2 SRT · AFI-UE · 2025 · AHAMED HASSANI MHOMA</div>
+  <div class="pfr"><div class="fd c1" style="opacity:.3"></div><div class="fd c2" style="opacity:.3"></div><div class="fd c3"></div></div>
+</div>
+</div>
+
+<script>
+function show(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  document.querySelector('[data-s="'+n+'"]').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

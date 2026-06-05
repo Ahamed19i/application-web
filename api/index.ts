@@ -1,3 +1,5 @@
+
+
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -21,12 +23,6 @@ const PORT = 3000;
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
 
 app.use(express.json());
-
-// Request logging for debug
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
-});
 
 // Auth Middleware
 const authenticateToken = (req: any, res: any, next: any) => {
@@ -375,36 +371,25 @@ app.get("/api/test", (req, res) => {
 
 // --- VITE MIDDLEWARE ---
 async function startServer() {
-  console.log("Starting server in environment:", process.env.NODE_ENV);
   try {
-    // Vite middleware for development
+    // Only use Vite middleware in local development
     if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
-      console.log("Loading Vite in middleware mode...");
       const { createServer: createViteServer } = await import("vite");
       const vite = await createViteServer({
         server: { middlewareMode: true },
-        appType: "spa"
+        appType: "spa",
       });
       app.use(vite.middlewares);
-      console.log("Vite middleware attached.");
-    } else {
-      console.log("Production mode: Serving from /dist");
-      const distPath = path.join(process.cwd(), 'dist');
-      app.use(express.static(distPath));
-      app.get('*', (req, res) => {
-        res.sendFile(path.join(distPath, 'index.html'));
-      });
     }
 
     // Only listen if not on Vercel (Vercel handles listening)
     if (process.env.VERCEL !== "1") {
       app.listen(PORT, "0.0.0.0", () => {
         console.log(`Server running on http://localhost:${PORT}`);
-        console.log("Ready to handle requests.");
       });
     }
   } catch (err) {
-    console.error("CRITICAL: Failed to start server:", err);
+    console.error("Failed to start server:", err);
   }
 }
 

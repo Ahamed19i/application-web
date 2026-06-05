@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Terminal, Github, Linkedin, Mail, Twitter, Instagram, ArrowUpRight } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -35,10 +36,10 @@ export const Footer: React.FC = () => {
               <a href="https://github.com/ahamed19i" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all group">
                 <Github size={18} />
               </a>
-              <a href="https://linkedin.com/in/ahamed-hassani-mhoma" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
+              <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
                 <Linkedin size={18} />
               </a>
-              <a href="mailto:ahassanimhoma20@gmail.com" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
+              <a href="mailto:hassanimhoma2019@gmail.com" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
                 <Mail size={18} />
               </a>
             </div>
@@ -61,10 +62,10 @@ export const Footer: React.FC = () => {
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col items-center md:items-start gap-2">
             <p className="font-mono text-[10px] text-text-muted uppercase tracking-[0.2em]">
-              © 2026 Ahamed Hassani M'homa.
+              © 2026 Ahamed Hassani Mhoma.
             </p>
             <p className="font-mono text-[9px] text-accent-primary/60 uppercase tracking-widest">
-              Conçu avec excellence à Dakar 🇸🇳
+              Conçu à Dakar, Sénégal 🇸🇳
             </p>
           </div>
 

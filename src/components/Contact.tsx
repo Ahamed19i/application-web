@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Send, Mail, MapPin, Github, Linkedin, Terminal, ArrowRight } from 'lucide-react';
@@ -34,11 +35,11 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="pt-16 md:pt-24 pb-16 md:pb-20 px-6 sm:px-10 md:px-12 max-w-7xl mx-auto">
+    <section id="contact" className="pt-16 md:pt-24 pb-16 md:pb-20 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-6xl mx-auto"
+        className="w-full"
       >
         <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-4">// 05 — Contact</p>
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
@@ -93,7 +94,7 @@ export const Contact: React.FC = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[9px] md:text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">LinkedIn</p>
-                  <p className="text-xs md:text-sm font-bold truncate">Ahamed Hassani M'homa</p>
+                  <p className="text-xs md:text-sm font-bold truncate">Ahamed Hassani Mhoma</p>
                 </div>
                 <ArrowRight className="flex-shrink-0 text-text-muted group-hover:text-accent-primary transition-colors" size={14} />
               </a>
