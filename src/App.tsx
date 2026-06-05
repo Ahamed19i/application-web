@@ -1,9 +1,7 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
-import { Terminal } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { motion, useScroll, useSpring } from 'motion/react';
 import { NetworkBackground } from './components/NetworkBackground.tsx';
 import { Navbar } from './components/Navbar.tsx';
 import { Hero } from './components/Hero.tsx';
@@ -19,15 +17,10 @@ import { BlogPostDetail } from './components/BlogPostDetail.tsx';
 
 const GlobalScrollProgress = () => {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-accent-primary z-[1000] origin-left shadow-[0_0_10px_rgba(0,255,255,0.5)]"
+      className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-accent-secondary via-accent-primary to-accent-primary z-[1000] origin-left shadow-[0_0_12px_rgba(0,180,255,0.6)]"
       style={{ scaleX }}
     />
   );
@@ -35,123 +28,75 @@ const GlobalScrollProgress = () => {
 
 const ScrollToHash = () => {
   const { pathname, hash } = useLocation();
-
   useEffect(() => {
     if (hash) {
       const element = document.querySelector(hash);
       if (element) {
         const offset = 80;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
+        const elementPosition = element.getBoundingClientRect().top - document.body.getBoundingClientRect().top;
+        window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
       }
     } else {
       window.scrollTo(0, 0);
     }
   }, [pathname, hash]);
-
   return null;
 };
 
 const VisitTracker = () => {
   const location = useLocation();
-  
   useEffect(() => {
-    // Only track once per session to avoid spamming
-    const sessionTracked = sessionStorage.getItem('tracked');
-    if (!sessionTracked) {
+    if (!sessionStorage.getItem('tracked')) {
       fetch('/api/track-visit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          path: location.pathname,
-          userAgent: navigator.userAgent
-        })
-      }).catch(err => console.error('Visit tracking failed:', err));
+        body: JSON.stringify({ path: location.pathname, userAgent: navigator.userAgent })
+      }).catch(() => {});
       sessionStorage.setItem('tracked', 'true');
     }
-  }, []); // Only on mount
-
+  }, []);
   return null;
 };
 
+const HomePage = () => (
+  <>
+    <Helmet>
+      <title>Ahamed Hassani M'homa | Ingénieur Systèmes, Réseaux & Cloud</title>
+      <meta name="description" content="Ahamed Hassani M'homa — Ingénieur Systèmes & Réseaux, administration Linux/Windows Server, virtualisation, Cloud & DevOps. Portfolio, projets infrastructure et articles techniques." />
+      <meta property="og:title" content="Ahamed Hassani M'homa | Ingénieur Systèmes, Réseaux & Cloud" />
+      <meta property="og:description" content="Administration systèmes & réseaux, Cloud, DevOps et cybersécurité. Découvrez mes projets et réalisations." />
+      <meta property="og:type" content="website" />
+    </Helmet>
+    <Hero />
+    <About />
+    <Projects />
+    <Blog />
+    <Contact />
+  </>
+);
+
+const SiteLayout = ({ children }: { children: React.ReactNode }) => (
+  <>
+    <NetworkBackground />
+    <GlobalScrollProgress />
+    <Navbar />
+    <main>{children}</main>
+    <Footer />
+  </>
+);
+
 export default function App() {
-  const [sudoActive, setSudoActive] = useState(false);
-  const keysPressed = useRef<string[]>([]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      keysPressed.current.push(e.key.toLowerCase());
-      if (keysPressed.current.length > 4) keysPressed.current.shift();
-      
-      if (keysPressed.current.join('') === 'sudo') {
-        setSudoActive(true);
-        setTimeout(() => setSudoActive(false), 3000);
-        keysPressed.current = [];
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
-    <HelmetProvider>
-      <Router>
-        <Helmet>
-          <title>Ahamed Hassani | DevOps & Cloud Engineer</title>
-          <meta name="description" content="Portfolio de Ahamed Hassani, ingénieur DevOps et Cloud spécialisé dans l'automatisation, Linux et les infrastructures cloud." />
-        </Helmet>
-        <GlobalScrollProgress />
-        <ScrollToHash />
-        <VisitTracker />
-        <div className="relative min-h-screen overflow-x-hidden bg-bg">
-          <NetworkBackground />
-          <Navbar />
-          
-          <Routes>
-            <Route path="/" element={
-              <main>
-                <Hero />
-                <About />
-                <Projects />
-                <Blog />
-                <Contact />
-              </main>
-            } />
-            <Route path="/project/:slug" element={<ProjectDetail />} />
-            <Route path="/blog/:slug" element={<BlogPostDetail />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Routes>
-  
-          <Footer />
-  
-          {/* Easter Egg */}
-          <AnimatePresence>
-            {sudoActive && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
-              >
-                <div className="text-center">
-                  <Terminal className="w-24 h-24 text-accent-primary mx-auto mb-6 animate-bounce" />
-                  <h2 className="text-4xl font-mono font-bold text-accent-primary mb-2">ACCESS GRANTED</h2>
-                  <p className="text-white/60 font-mono">System override initiated... Just kidding!</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </Router>
-    </HelmetProvider>
+    <Router>
+      <ScrollToHash />
+      <VisitTracker />
+      <Routes>
+        <Route path="/" element={<SiteLayout><HomePage /></SiteLayout>} />
+        <Route path="/project/:slug" element={<SiteLayout><ProjectDetail /></SiteLayout>} />
+        <Route path="/blog/:slug" element={<SiteLayout><BlogPostDetail /></SiteLayout>} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      </Routes>
+    </Router>
   );
 }

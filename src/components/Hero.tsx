@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Terminal, Shield, Cloud, Download } from 'lucide-react';
@@ -46,9 +45,8 @@ export const Hero: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const roles = [
     "Ingénieur Systèmes & Réseaux",
-    "Spécialiste Infrastructure IT",
-    "Cloud & DevOps Engineer",
-    "Sécurité des SI"
+    "Cloud Engineer",
+    "DevOps Enthusiast"
   ];
   const speed = isDeleting ? 50 : 100;
 
@@ -124,10 +122,14 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.8 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
         >
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-success/5 border border-success/20 text-success text-[10px] md:text-[11px] font-mono mb-6 md:mb-8 tracking-widest uppercase">
+            <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
+            Disponible — Recherche de stage / alternance
+          </div>
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
             <span className="block">Ahamed Hassani</span>
-            <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes & Réseaux</span>
+            <span className="block text-accent-primary text-[0.35em] font-medium tracking-[0.15em] uppercase mt-3 md:mt-4 opacity-80">Ingénieur Systèmes, Réseaux & Cloud</span>
           </h1>
           
           <div className="h-6 mb-6">
@@ -136,15 +138,15 @@ export const Hero: React.FC = () => {
             </p>
           </div>
 
-          <p className="text-sm md:text-base text-text-secondary mb-11 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
+          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-extra-relaxed tracking-wide">
             Ingénieur en <strong>Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar).
-            Spécialisé sur la <strong>virtualisation des infrastructures IT</strong> avec une passion pour DevOps et cloud.
-            Expériences chez <strong>Tunisie Télécom</strong>.
+            Spécialisé en <strong>Linux / Windows Server</strong>, virtualisation, cloud DevOps.
+            Expériences chez <strong>Sonatel</strong> (Orange) et <strong>Tunisie Télécom</strong>.
           </p>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
             <a href="/cv-ahamed-hassani.pdf" download className="btn-p text-sm md:text-base">
-              📄 Download mon CV
+              📄 Télécharger mon CV
             </a>
             <a href="#projects" className="btn-g text-sm md:text-base">
               🚀 Mes projets
@@ -168,8 +170,8 @@ export const Hero: React.FC = () => {
               <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Niveau Ingénieur</p>
             </div>
             <div>
-              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">3</p>
-              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Stages</p>
+              <p className="text-2xl md:text-3xl font-bold text-accent-primary leading-none">2</p>
+              <p className="text-[9px] md:text-[10px] text-text-muted uppercase tracking-widest mt-1">Expérience Pro</p>
             </div>
             <Counter value={stats.projects} label="Projets infra" />
             <Counter value={stats.posts} label="Articles publiés" />
@@ -196,7 +198,9 @@ export const Hero: React.FC = () => {
                 className="w-full h-full object-cover transition-all duration-700"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://picsum.photos/seed/ahamed/600/800";
+                  if (!target.src.endsWith('profile-placeholder.svg')) {
+                    target.src = "/images/profile-placeholder.svg";
+                  }
                 }}
                 referrerPolicy="no-referrer"
               />
@@ -207,8 +211,8 @@ export const Hero: React.FC = () => {
               <p className="text-text-muted text-[10px] font-mono">Stage / Alternance 2026</p>
             </div>
 
-            <div className="absolute -top-10 md:-top-12 left-1/2 -translate-x-1/2 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20 whitespace-nowrap">
-              <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ Linux · DevOps · Cloud</p>
+            <div className="absolute -top-6 md:-top-8 left-1/2 -translate-x-1/2 glass px-3 py-2 rounded-xl shadow-xl border-white/10 z-20 whitespace-nowrap">
+              <p className="text-accent-primary text-[9px] md:text-[10px] font-mono">☁️ DevOps · Cloud · Linux</p>
             </div>
           </div>
         </motion.div>
