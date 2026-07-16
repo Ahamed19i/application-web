@@ -39,7 +39,7 @@ export const Footer: React.FC = () => {
               <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
                 <Linkedin size={18} />
               </a>
-              <a href="mailto:hassanimhoma2019@gmail.com" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
+              <a href="mailto:ahassanimhoma20@gmail.com" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-text-muted hover:text-accent-primary hover:border-accent-primary/50 transition-all">
                 <Mail size={18} />
               </a>
             </div>
