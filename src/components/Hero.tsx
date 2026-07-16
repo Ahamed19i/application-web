@@ -143,7 +143,7 @@ export const Hero: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
-            <a href="/cv-ahamed-hassani.pdf" download className="btn-p text-sm md:text-base">
+            <a href="images/cv-ahamed-hassani.pdf" download className="btn-p text-sm md:text-base">
               📄 Download mon CV
             </a>
             <a href="#projects" className="btn-g text-sm md:text-base">
