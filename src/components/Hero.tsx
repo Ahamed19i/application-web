@@ -70,7 +70,7 @@ export const Hero: React.FC = () => {
   }, []);
 
   return (
-    <section id="home" className="min-h-[70vh] md:min-h-screen flex items-start md:items-center pt-44 md:pt-20 px-6 relative">
+    <section id="home" className="min-h-[70vh] md:min-h-screen flex items-start md:items-center pt-24 md:pt-20 px-6 relative">
       <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-[1fr_320px] gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
