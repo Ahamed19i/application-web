@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Terminal } from 'lucide-react';
-import { NetworkBackground } from './components/NetworkBackground.tsx';
 import { Navbar } from './components/Navbar.tsx';
 import { Hero } from './components/Hero.tsx';
 import { About } from './components/About.tsx';
@@ -26,7 +25,7 @@ const GlobalScrollProgress = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-accent-primary z-[1000] origin-left shadow-[0_0_10px_rgba(0,255,255,0.5)]"
+      className="fixed top-0 left-0 right-0 h-[2px] bg-accent-primary z-[1000] origin-left"
       style={{ scaleX }}
     />
   );
@@ -104,14 +103,13 @@ export default function App() {
     <HelmetProvider>
       <Router>
         <Helmet>
-          <title>Ahamed Hassani | DevOps & Cloud Engineer</title>
-          <meta name="description" content="Portfolio de Ahamed Hassani, ingénieur DevOps et Cloud spécialisé dans l'automatisation, Linux et les infrastructures cloud." />
+          <title>Ahamed Hassani Mhoma — Ingénieur Systèmes & Réseaux · DevOps</title>
+          <meta name="description" content="Site personnel d'Ahamed Hassani Mhoma, ingénieur Systèmes & Réseaux et DevOps : travaux, expérimentations et parcours." />
         </Helmet>
         <GlobalScrollProgress />
         <ScrollToHash />
         <VisitTracker />
         <div className="relative min-h-screen overflow-x-hidden bg-bg">
-          <NetworkBackground />
           <Navbar />
           
           <Routes>

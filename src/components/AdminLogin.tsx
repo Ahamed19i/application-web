@@ -49,7 +49,7 @@ export const AdminLogin: React.FC = () => {
             <Terminal className="text-accent-primary" size={32} />
           </div>
           <h1 className="text-3xl font-bold mb-2">Administration</h1>
-          <p className="text-white/40 font-mono text-sm tracking-widest uppercase">Système de contrôle</p>
+          <p className="text-text-muted font-mono text-sm tracking-widest uppercase">Système de contrôle</p>
         </div>
 
         <form onSubmit={handleLogin} className="glass p-8 rounded-3xl space-y-6">
@@ -61,30 +61,30 @@ export const AdminLogin: React.FC = () => {
           )}
 
           <div className="space-y-2">
-            <label className="text-xs font-mono text-white/40 uppercase tracking-widest ml-1">Utilisateur</label>
+            <label className="text-xs font-mono text-text-muted uppercase tracking-widest ml-1">Utilisateur</label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
               <input 
                 type="text" 
                 required
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 focus:border-accent-primary outline-none transition-colors"
+                className="w-full bg-bg-tertiary border border-border rounded-xl pl-12 pr-4 py-3 focus:border-accent-primary outline-none transition-colors"
                 placeholder="admin"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-mono text-white/40 uppercase tracking-widest ml-1">Mot de passe</label>
+            <label className="text-xs font-mono text-text-muted uppercase tracking-widest ml-1">Mot de passe</label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
               <input 
                 type="password" 
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-12 pr-4 py-3 focus:border-accent-primary outline-none transition-colors"
+                className="w-full bg-bg-tertiary border border-border rounded-xl pl-12 pr-4 py-3 focus:border-accent-primary outline-none transition-colors"
                 placeholder="••••••••"
               />
             </div>
@@ -106,7 +106,7 @@ export const AdminLogin: React.FC = () => {
         <div className="mt-8 text-center">
           <button 
             onClick={() => navigate('/')}
-            className="text-white/40 hover:text-white text-sm transition-colors"
+            className="text-text-muted hover:text-text-primary text-sm transition-colors"
           >
             Retour au site
           </button>

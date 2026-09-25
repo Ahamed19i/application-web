@@ -132,20 +132,20 @@ export const ProjectDetail: React.FC = () => {
                 {project.title}
               </h1>
 
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
+              <div className="p-6 rounded-2xl bg-bg-tertiary border border-border italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
                 {project.description}
               </div>
             </header>
 
             {/* Markdown Content */}
-            <div className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10 mb-16">
+            <div className="prose prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-border mb-16">
               <div className="markdown-body">
                 <Markdown>{project.content}</Markdown>
               </div>
             </div>
 
             {/* Reports & Documentation Section (Main) */}
-            <div className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent mb-16">
+            <div className="glass p-10 rounded-3xl border-border bg-gradient-to-br from-accent-primary/5 to-transparent mb-16">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                   <h2 className="text-2xl font-bold mb-2 flex items-center gap-3">
@@ -166,14 +166,14 @@ export const ProjectDetail: React.FC = () => {
                       Voir le Rapport
                     </a>
                   ) : (
-                    <span className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-text-muted font-bold text-sm cursor-not-allowed">
+                    <span className="flex items-center gap-2 px-6 py-3 rounded-xl bg-bg-tertiary border border-border text-text-muted font-bold text-sm cursor-not-allowed">
                       <FileDown size={18} />
                       Rapport non disponible
                     </span>
                   )}
                   <button 
                     onClick={handleShare}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-text-primary font-bold hover:bg-white/10 transition-all text-sm"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-bg-tertiary border border-border text-text-primary font-bold hover:bg-bg-tertiary transition-all text-sm"
                   >
                     <Share2 size={18} />
                     Partager
@@ -187,7 +187,7 @@ export const ProjectDetail: React.FC = () => {
           <aside>
             <div className="sticky top-32 space-y-8">
               {/* Project Info Card */}
-              <div className="glass p-8 rounded-3xl border-white/10 space-y-8 shadow-xl">
+              <div className="glass p-8 rounded-3xl border-border space-y-8 shadow-xl">
                 <div>
                   <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-6 flex items-center gap-2">
                     <div className="w-4 h-[1px] bg-accent-primary"></div>
@@ -224,7 +224,7 @@ export const ProjectDetail: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-8 border-t border-white/10 space-y-4">
+                <div className="pt-8 border-t border-border space-y-4">
                   {project.pdf_url && (
                     <a 
                       href={project.pdf_url}
@@ -245,7 +245,7 @@ export const ProjectDetail: React.FC = () => {
                       href={project.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group"
+                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-bg-tertiary border border-border hover:bg-bg-tertiary transition-all group"
                     >
                       <span className="flex items-center gap-3 text-sm font-bold">
                         <Github size={18} className="text-accent-primary" />

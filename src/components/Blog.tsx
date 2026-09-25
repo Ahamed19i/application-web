@@ -73,7 +73,7 @@ export const Blog: React.FC = () => {
               placeholder="Rechercher..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full bg-bg-tertiary border border-white/10 rounded-xl pl-12 pr-6 py-3 focus:border-accent-primary outline-none transition-colors text-sm font-mono"
+              className="w-full bg-bg-tertiary border border-border rounded-xl pl-12 pr-6 py-3 focus:border-accent-primary outline-none transition-colors text-sm font-mono"
             />
           </div>
         </div>
@@ -109,7 +109,7 @@ export const Blog: React.FC = () => {
                     </span>
                     <button 
                       onClick={(e) => handleShare(e, post)}
-                      className="p-1.5 bg-bg/60 backdrop-blur-md rounded-lg text-white/70 hover:text-accent-primary border border-white/10 hover:border-accent-primary/30 transition-all"
+                      className="p-1.5 bg-bg/60 backdrop-blur-md rounded-lg text-text-secondary hover:text-accent-primary border border-border hover:border-accent-primary/30 transition-all"
                       title="Partager cet article"
                     >
                       <Share2 size={12} />
@@ -134,7 +134,7 @@ export const Blog: React.FC = () => {
             ))}
             
             {filteredPosts.length === 0 && (
-              <div className="col-span-full text-center py-20 glass rounded-3xl border-dashed border-white/10">
+              <div className="col-span-full text-center py-20 glass rounded-3xl border-dashed border-border">
                 <p className="text-text-muted font-mono text-sm">Aucun article trouvé pour "{search}"</p>
               </div>
             )}

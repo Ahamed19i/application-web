@@ -73,7 +73,7 @@ export const Projects: React.FC = () => {
               className={`px-5 py-2 rounded-lg font-mono text-[10px] uppercase tracking-wider transition-all border ${
                 filter === cat 
                   ? 'bg-accent-primary/10 text-accent-primary border-accent-primary/50' 
-                  : 'bg-white/5 text-text-muted border-white/10 hover:border-white/30'
+                  : 'bg-bg-tertiary text-text-muted border-border hover:border-text-muted'
               }`}
             >
               {cat}
@@ -88,7 +88,7 @@ export const Projects: React.FC = () => {
             ))}
           </div>
         ) : filteredProjects.length === 0 ? (
-          <div className="text-center py-20 glass rounded-3xl border-dashed border-white/10">
+          <div className="text-center py-20 glass rounded-3xl border-dashed border-border">
             <p className="text-text-muted font-mono text-sm">Aucun projet trouvé dans cette catégorie.</p>
           </div>
         ) : (
@@ -114,7 +114,7 @@ export const Projects: React.FC = () => {
                   <div className="absolute top-3 right-3 flex gap-2">
                     <button 
                       onClick={(e) => handleShare(e, project)}
-                      className="p-2 bg-bg/60 backdrop-blur-md rounded-lg text-white/70 hover:text-accent-primary border border-white/10 hover:border-accent-primary/30 transition-all"
+                      className="p-2 bg-bg/60 backdrop-blur-md rounded-lg text-text-secondary hover:text-accent-primary border border-border hover:border-accent-primary/30 transition-all"
                       title="Partager ce projet"
                     >
                       <Share2 size={14} />
@@ -140,8 +140,8 @@ export const Projects: React.FC = () => {
                   </div>
 
                   <div className="mt-auto flex justify-between items-center">
-                    <div className="text-[10px] font-mono text-text-muted flex items-center gap-1.5 px-3 py-1.5 border border-white/5 rounded-lg group-hover:border-accent-primary/30 transition-all">
-                      ⚡ Détails
+                    <div className="text-[10px] font-mono text-text-muted flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-lg group-hover:border-accent-primary/30 transition-all">
+                      Détails
                     </div>
                     <ArrowUpRight size={16} className="text-accent-primary opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0" />
                   </div>

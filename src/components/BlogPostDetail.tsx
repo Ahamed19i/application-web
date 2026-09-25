@@ -129,7 +129,7 @@ export const BlogPostDetail: React.FC = () => {
                 {post.title}
               </h3>
 
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 w-fit">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-bg-tertiary border border-border w-fit">
                 <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center border border-accent-primary/30 overflow-hidden">
                   <User size={20} className="text-accent-primary" />
                 </div>
@@ -141,14 +141,14 @@ export const BlogPostDetail: React.FC = () => {
             </header>
 
             {/* Markdown Content with MDN-like styling */}
-            <div id="concepts" className="prose prose-invert prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-white/10 mb-16 scroll-mt-32">
+            <div id="concepts" className="prose prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-border mb-16 scroll-mt-32">
               <div className="markdown-body">
                 <Markdown>{post.content}</Markdown>
               </div>
             </div>
 
             {/* Conclusion Section */}
-            <div id="conclusion" className="glass p-10 rounded-3xl border-white/10 bg-gradient-to-br from-accent-primary/5 to-transparent mb-16 scroll-mt-32">
+            <div id="conclusion" className="glass p-10 rounded-3xl border-border bg-gradient-to-br from-accent-primary/5 to-transparent mb-16 scroll-mt-32">
               <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                 <CheckCircle2 className="text-accent-primary" size={24} />
                 Conclusion & Prochaines étapes
@@ -157,25 +157,25 @@ export const BlogPostDetail: React.FC = () => {
                 La maîtrise de ces outils est un voyage continu. J'espère que cet article vous a donné les bases nécessaires pour explorer davantage ces technologies fascinantes.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                <div className="p-4 rounded-xl bg-bg-tertiary border border-border text-center">
                   <p className="text-xl font-bold text-accent-primary mb-1">1</p>
                   <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Expérimenter</p>
                 </div>
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                <div className="p-4 rounded-xl bg-bg-tertiary border border-border text-center">
                   <p className="text-xl font-bold text-accent-primary mb-1">2</p>
                   <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Approfondir</p>
                 </div>
-                <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                <div className="p-4 rounded-xl bg-bg-tertiary border border-border text-center">
                   <p className="text-xl font-bold text-accent-primary mb-1">3</p>
                   <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Partager</p>
                 </div>
               </div>
             </div>
 
-            <footer className="pt-10 border-t border-white/10">
+            <footer className="pt-10 border-t border-border">
               <div className="flex flex-wrap gap-2 mb-10">
                 {post.tags.split(',').map((tag, i) => (
-                  <span key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-text-secondary hover:border-accent-primary/30 transition-colors cursor-default">
+                  <span key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-tertiary border border-border text-xs text-text-secondary hover:border-accent-primary/30 transition-colors cursor-default">
                     <Hash size={12} className="text-accent-primary" />
                     {tag.trim()}
                   </span>
@@ -193,7 +193,7 @@ export const BlogPostDetail: React.FC = () => {
                       href={post.pdf_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium hover:bg-white/10 transition-colors"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-bg-tertiary border border-border text-sm font-medium hover:bg-bg-tertiary transition-colors"
                     >
                       <FileDown size={18} />
                       PDF
@@ -220,7 +220,7 @@ export const BlogPostDetail: React.FC = () => {
                   <div className="w-4 h-[1px] bg-accent-primary"></div>
                   Dans cet article
                 </h3>
-                <nav className="space-y-4 border-l border-white/10 ml-2">
+                <nav className="space-y-4 border-l border-border ml-2">
                   <a href="#introduction" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Introduction</a>
                   <a href="#concepts" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Concepts Clés</a>
                   <a href="#concepts" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Mise en œuvre</a>
@@ -229,7 +229,7 @@ export const BlogPostDetail: React.FC = () => {
               </div>
 
               {/* Quick Metadata */}
-              <div className="p-8 rounded-3xl bg-white/5 border border-white/10 space-y-6 shadow-xl">
+              <div className="p-8 rounded-3xl bg-bg-tertiary border border-border space-y-6 shadow-xl">
                 <div className="flex items-center gap-4 text-text-secondary">
                   <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
                     <Clock size={18} className="text-accent-primary" />
@@ -248,14 +248,14 @@ export const BlogPostDetail: React.FC = () => {
                     <p className="text-sm font-bold">0</p>
                   </div>
                 </div>
-                <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-2 group">
+                <button className="w-full py-4 rounded-2xl bg-bg-tertiary border border-border text-xs font-mono uppercase tracking-widest hover:bg-bg-tertiary transition-all flex items-center justify-center gap-2 group">
                   <Bookmark size={14} className="group-hover:text-accent-primary transition-colors" />
                   Sauvegarder l'article
                 </button>
               </div>
 
               {/* Related Links / Resources */}
-              <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+              <div className="p-6 rounded-2xl bg-bg-tertiary border border-border space-y-4">
                 <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Ressources utiles</h4>
                 <div className="space-y-3">
                   <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">

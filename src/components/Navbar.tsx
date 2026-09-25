@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Terminal, Github, Linkedin, Mail } from 'lucide-react';
+import { Menu, X, Github, Linkedin, Mail } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ThemeToggle } from './ThemeToggle.tsx';
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,10 +61,10 @@ export const Navbar: React.FC = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'glass-nav py-3' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="flex items-center gap-2 group">
-          <div className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(0,232,122,1)] animate-pulse"></div>
-          <span className="font-display font-bold text-lg tracking-wider text-accent-primary uppercase">
-            Ahamed19i🐧
+        <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="flex items-center gap-2.5 group">
+          <div className="w-2 h-2 rounded-full bg-accent-primary"></div>
+          <span className="font-serif font-medium text-base tracking-tight text-text-primary">
+            Ahamed Hassani Mhoma
           </span>
         </a>
 
@@ -75,8 +76,8 @@ export const Navbar: React.FC = () => {
               href={link.path}
               onClick={(e) => handleNavClick(e, link.path)}
               className={`font-mono text-[11px] uppercase tracking-[0.15em] transition-colors relative group/link ${
-                activeSection === link.path.substring(1) 
-                  ? 'text-accent-primary' 
+                activeSection === link.path.substring(1)
+                  ? 'text-accent-primary'
                   : 'text-text-muted hover:text-accent-primary'
               }`}
             >
@@ -86,21 +87,25 @@ export const Navbar: React.FC = () => {
               }`}></span>
             </a>
           ))}
-          <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white/10">
-            <a href="images/cv-ahamed-hassani.pdf" download className="text-[11px] font-mono px-4 py-1.5 rounded-lg bg-accent-primary/10 border border-accent-primary/25 text-accent-primary hover:bg-accent-primary/20 transition-all tracking-wider">
-              ↓ CV
+          <div className="flex items-center gap-4 ml-4 pl-4 border-l border-border">
+            <a href="images/cv-ahamed-hassani.pdf" download className="text-[11px] font-mono px-3 py-1.5 border border-border text-text-secondary hover:border-accent-primary hover:text-accent-primary transition-colors tracking-wider">
+              CV
             </a>
+            <ThemeToggle />
           </div>
         </div>
 
         {/* Mobile Toggle */}
-        <button 
-          className="md:hidden text-white p-2 z-50 relative" 
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        <div className="flex items-center gap-3 md:hidden">
+          <ThemeToggle />
+          <button
+            className="text-text-primary p-2 z-50 relative"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Nav */}
@@ -119,23 +124,23 @@ export const Navbar: React.FC = () => {
                   href={link.path}
                   onClick={(e) => handleNavClick(e, link.path)}
                   className={`font-mono text-lg uppercase tracking-widest transition-colors ${
-                    activeSection === link.path.substring(1) 
-                      ? 'text-accent-primary' 
-                      : 'text-white/70 hover:text-accent-primary'
+                    activeSection === link.path.substring(1)
+                      ? 'text-accent-primary'
+                      : 'text-text-secondary hover:text-accent-primary'
                   }`}
                 >
                   {link.name}
                 </a>
               ))}
-              <div className="flex gap-6 pt-6 border-t border-white/10">
-                <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" className="text-white/50 hover:text-accent-primary transition-colors">
-                  <Github size={24} />
+              <div className="flex gap-6 pt-6 border-t border-border">
+                <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" className="text-text-muted hover:text-accent-primary transition-colors">
+                  <Github size={22} />
                 </a>
-                <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" className="text-white/50 hover:text-accent-primary transition-colors">
-                  <Linkedin size={24} />
+                <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" className="text-text-muted hover:text-accent-primary transition-colors">
+                  <Linkedin size={22} />
                 </a>
-                <a href="mailto:ahassanimhoma20@gmail.com" className="text-white/50 hover:text-accent-primary transition-colors">
-                  <Mail size={24} />
+                <a href="mailto:ahassanimhoma20@gmail.com" className="text-text-muted hover:text-accent-primary transition-colors">
+                  <Mail size={22} />
                 </a>
               </div>
             </div>
