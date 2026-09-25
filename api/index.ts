@@ -18,7 +18,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 const app = express();
 const PORT = 3000;
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key";
+
+if (!process.env.JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET manquant. Définissez la variable d'environnement JWT_SECRET avant de démarrer le serveur."
+  );
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 
 app.use(express.json());
 
@@ -59,61 +65,6 @@ app.post("/api/auth/login", async (req, res) => {
     res.json({ token, user: { id: user.id, username: user.username } });
   } else {
     res.status(401).json({ message: "Identifiants invalides" });
-  }
-});
-
-// ROUTE TEMPORAIRE DE RÉINITIALISATION DE MOT DE PASSE (À SUPPRIMER APRÈS UTILISATION)
-app.get("/api/auth/reset-admin-temporary-route-2026", async (req, res) => {
-  try {
-    const { data: users, error: selectError } = await supabase
-      .from("users")
-      .select("*");
-
-    if (selectError) {
-      return res.status(500).json({ error: "Erreur lors de la lecture des utilisateurs", details: selectError });
-    }
-
-    const tempPassword = "SecureAdminMhoma2026!";
-    const passwordHash = bcrypt.hashSync(tempPassword, 10);
-
-    if (!users || users.length === 0) {
-      const { data: newUser, error: insertError } = await supabase
-        .from("users")
-        .insert([{ username: "admin", password: passwordHash }])
-        .select();
-
-      if (insertError) {
-        return res.status(500).json({ error: "Erreur lors de la création de l'admin", details: insertError });
-      }
-
-      return res.json({
-        success: true,
-        message: "Aucun utilisateur n'existait. Un compte administrateur a été créé !",
-        username: "admin",
-        password: tempPassword,
-        instruction: "Veuillez vous connecter avec ces identifiants sur /admin, puis demandez-moi de supprimer cette route de réinitialisation."
-      });
-    } else {
-      const userToUpdate = users[0];
-      const { error: updateError } = await supabase
-        .from("users")
-        .update({ password: passwordHash })
-        .eq("id", userToUpdate.id);
-
-      if (updateError) {
-        return res.status(500).json({ error: "Erreur lors de la mise à jour du mot de passe", details: updateError });
-      }
-
-      return res.json({
-        success: true,
-        message: "Le mot de passe de l'administrateur a été réinitialisé !",
-        username: userToUpdate.username,
-        password: tempPassword,
-        instruction: "Veuillez vous connecter avec ces identifiants sur /admin, puis demandez-moi de supprimer cette route de réinitialisation."
-      });
-    }
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
   }
 });
 
