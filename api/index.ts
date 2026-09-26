@@ -375,13 +375,21 @@ app.get("/api/admin/analytics", authenticateToken, async (req, res) => {
 });
 
 app.get("/api/test", (req, res) => {
-  res.json({ 
-    message: "API is working", 
-    env: { 
+  res.json({
+    message: "API is working",
+    env: {
       hasUrl: !!process.env.SUPABASE_URL,
-      hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY 
+      hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
     }
   });
+});
+
+// Toute route /api/* non reconnue ci-dessus doit renvoyer une vraie 404 JSON,
+// quelle que soit la méthode HTTP — sinon le fallback SPA plus bas la sert
+// avec un 200 (c'est ce qui masquait la suppression de l'ancienne route de
+// reset admin).
+app.all("/api/*", (req, res) => {
+  res.status(404).json({ error: "Not found" });
 });
 
 // --- VITE MIDDLEWARE ---
