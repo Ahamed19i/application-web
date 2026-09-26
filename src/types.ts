@@ -19,6 +19,8 @@ export interface Project {
   status: string;
   published: number;
   pdf_url?: string;
+  /** Optionnel : présent uniquement après la migration 001 (voir migrations/). */
+  year?: number;
 }
 
 export interface Post {

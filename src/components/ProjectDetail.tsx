@@ -1,276 +1,213 @@
 
-
-
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion, useScroll, useSpring } from 'motion/react';
-import { 
-  ArrowLeft, 
-  Github, 
-  ExternalLink, 
-  Tag,
-  Share2, 
-  CheckCircle2, 
-  FileDown, 
-  ChevronRight,
-  Layers,
-  Info,
-  Globe,
-  Code2,
-  Terminal
-} from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Github, FileDown } from 'lucide-react';
 import { Project } from '../types';
-import Markdown from 'react-markdown';
+import { PageShell } from './PageShell.tsx';
+import { MarkdownContent, extractHeadings } from './MarkdownContent.tsx';
+import { ArticleToc } from './ArticleToc.tsx';
 
 export const ProjectDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
+  const [siblings, setSiblings] = useState<{ prev: Project | null; next: Project | null }>({ prev: null, next: null });
   const [loading, setLoading] = useState(true);
-  const [showToast, setShowToast] = useState(false);
-
-  // Reading progress bar
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!slug) return;
+    setLoading(true);
 
     fetch(`/api/projects/${slug}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Project not found');
-        return res.json();
-      })
-      .then(data => {
+      .then(res => (res.ok ? res.json() : Promise.reject(new Error('not found'))))
+      .then((data: Project) => {
         setProject(data);
         setLoading(false);
+        return fetch('/api/projects');
       })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+      .then(res => (res && res.ok ? res.json() : []))
+      .then((all: Project[]) => {
+        if (!Array.isArray(all)) return;
+        const published = all.filter(p => p.published);
+        const index = published.findIndex(p => String(p.slug) === slug || String(p.id) === slug);
+        if (index === -1) return;
+        setSiblings({
+          prev: published[index - 1] ?? null,
+          next: published[index + 1] ?? null,
+        });
+      })
+      .catch(() => setLoading(false));
   }, [slug]);
 
-  const handleShare = () => {
-    const shareUrl = window.location.href;
-    if (navigator.share) {
-      navigator.share({
-        title: project?.title,
-        text: project?.description,
-        url: shareUrl,
-      });
-    } else {
-      navigator.clipboard.writeText(shareUrl);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    }
-  };
+  const headings = useMemo(() => (project ? extractHeadings(project.content || '') : []), [project]);
+  const hasToc = headings.length >= 2;
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg">
-        <div className="w-12 h-12 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <PageShell>
+        <div className="py-24 flex justify-center">
+          <div className="w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </PageShell>
     );
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-bg px-6">
-        <h1 className="text-4xl font-bold mb-4">Projet introuvable</h1>
-        <button onClick={() => navigate('/')} className="btn-p">Retour à l'accueil</button>
-      </div>
+      <PageShell>
+        <div className="py-24">
+          <h1 className="text-3xl font-bold text-text-primary mb-4">Projet introuvable</h1>
+          <p className="text-text-secondary mb-8">Ce projet n'existe pas ou n'est plus publié.</p>
+          <Link to="/travaux" className="inline-flex items-center gap-2 text-accent-primary font-semibold">
+            <ArrowLeft size={16} /> Retour aux projets
+          </Link>
+        </div>
+      </PageShell>
     );
   }
 
+  const stack = (project.stack || '').split(',').map(s => s.trim()).filter(Boolean);
+
+  const facts: { label: string; value: React.ReactNode }[] = [];
+  if (project.year) facts.push({ label: 'Année', value: String(project.year) });
+  if (project.category) facts.push({ label: 'Catégorie', value: project.category });
+  if (project.status) facts.push({ label: 'Statut', value: project.status });
+
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg pb-12 md:pb-20"
-    >
-      {/* Reading Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-accent-primary z-[100] origin-left"
-        style={{ scaleX }}
-      />
+    <PageShell>
+      <div className={hasToc ? 'xl:grid xl:grid-cols-[minmax(0,1fr)_240px] xl:gap-16' : ''}>
+        <article className={`min-w-0 max-w-[720px] ${hasToc ? '' : 'mx-auto'}`}>
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-5">
+            <span className="text-accent-primary">Projet</span>
+            {project.category && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{project.category}</span>
+              </>
+            )}
+          </p>
 
-      <div className="max-w-[1400px] mx-auto px-6 pt-20 md:pt-32">
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
-          <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
-          <ChevronRight size={12} />
-          <Link to="/travaux" className="hover:text-accent-primary transition-colors">Travaux</Link>
-          <ChevronRight size={12} />
-          <span className="text-accent-primary truncate max-w-[200px]">{project.title}</span>
-        </nav>
+          <h1 className="text-[32px] sm:text-[38px] font-bold text-text-primary tracking-tight leading-[1.15] mb-6">
+            {project.title}
+          </h1>
 
-        <div className="grid lg:grid-cols-[1fr_380px] gap-12 xl:gap-16">
-          {/* Main Content Area */}
-          <div className="min-w-0">
-            <header className="mb-12">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="px-3 py-1 rounded-md bg-accent-primary/10 text-accent-primary text-[10px] font-mono uppercase tracking-widest border border-accent-primary/20">
-                  {project.category}
-                </span>
-                <span className={`px-3 py-1 rounded-md text-[10px] font-mono uppercase tracking-widest border ${
-                  project.status === 'Terminé' 
-                    ? 'bg-green-500/10 text-green-500 border-green-500/20' 
-                    : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
-                }`}>
-                  {project.status}
-                </span>
-              </div>
-              
-              <h1 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
-                {project.title}
-              </h1>
+          {project.description && (
+            <p className="text-[17px] sm:text-[18px] text-text-secondary leading-relaxed mb-8">
+              {project.description}
+            </p>
+          )}
 
-              <div className="p-6 rounded-2xl bg-bg-tertiary border border-border italic text-text-secondary leading-relaxed border-l-4 border-l-accent-primary text-lg">
-                {project.description}
-              </div>
-            </header>
-
-            {/* Markdown Content */}
-            <div className="prose prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-border mb-16">
-              <div className="markdown-body">
-                <Markdown>{project.content}</Markdown>
-              </div>
-            </div>
-
-            {/* Reports & Documentation Section (Main) */}
-            <div className="glass p-10 rounded-3xl border-border bg-gradient-to-br from-accent-primary/5 to-transparent mb-16">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2 flex items-center gap-3">
-                    <FileDown className="text-accent-primary" size={24} />
-                    Rapports & Documentation
-                  </h2>
-                  <p className="text-text-muted text-sm">Accédez aux documents détaillés et aux rapports de performance de ce projet.</p>
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  {project.pdf_url ? (
-                    <a 
-                      href={project.pdf_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent-primary text-bg font-bold hover:glow-primary transition-all text-sm"
-                    >
-                      <ExternalLink size={18} />
-                      Voir le Rapport
-                    </a>
-                  ) : (
-                    <span className="flex items-center gap-2 px-6 py-3 rounded-xl bg-bg-tertiary border border-border text-text-muted font-bold text-sm cursor-not-allowed">
-                      <FileDown size={18} />
-                      Rapport non disponible
-                    </span>
-                  )}
-                  <button 
-                    onClick={handleShare}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-bg-tertiary border border-border text-text-primary font-bold hover:bg-bg-tertiary transition-all text-sm"
-                  >
-                    <Share2 size={18} />
-                    Partager
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <aside>
-            <div className="sticky top-32 space-y-8">
-              {/* Project Info Card */}
-              <div className="glass p-8 rounded-3xl border-border space-y-8 shadow-xl">
-                <div>
-                  <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-6 flex items-center gap-2">
-                    <div className="w-4 h-[1px] bg-accent-primary"></div>
-                    Spécifications
-                  </h3>
-                  <div className="space-y-5">
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center shrink-0">
-                        <Layers size={16} className="text-accent-primary" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Stack Technique</p>
-                        <p className="text-sm font-medium text-text-primary">{project.stack}</p>
-                      </div>
+          {(facts.length > 0 || stack.length > 0 || project.github_url || project.pdf_url) && (
+            <div className="rounded-xl border border-border p-5 mb-10 space-y-4">
+              {facts.length > 0 && (
+                <dl className="flex flex-wrap gap-x-10 gap-y-4">
+                  {facts.map(fact => (
+                    <div key={fact.label}>
+                      <dt className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-1">{fact.label}</dt>
+                      <dd className="text-[14px] font-medium text-text-primary">{fact.value}</dd>
                     </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
-                        <CheckCircle2 size={16} className="text-green-500" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Statut</p>
-                        <p className="text-sm font-medium text-text-primary">{project.status}</p>
-                      </div>
-                    </div>
+                  ))}
+                </dl>
+              )}
+
+              {stack.length > 0 && (
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-2">Technologies</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {stack.map(s => (
+                      <span key={s} className="px-2.5 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-[11px] font-medium">
+                        {s}
+                      </span>
+                    ))}
                   </div>
                 </div>
+              )}
 
-                <div className="pt-8 border-t border-border space-y-4">
-                  {project.pdf_url && (
-                    <a 
-                      href={project.pdf_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary/5 border border-accent-primary/20 text-accent-primary hover:bg-accent-primary/10 transition-all group"
-                    >
-                      <span className="flex items-center gap-3 text-sm font-bold">
-                        <FileDown size={18} />
-                        Rapport Technique (PDF)
-                      </span>
-                      <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                    </a>
-                  )}
-
+              {(project.github_url || project.pdf_url) && (
+                <div className="flex flex-wrap gap-4 pt-1">
                   {project.github_url && (
-                    <a 
+                    <a
                       href={project.github_url}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between w-full p-4 rounded-2xl bg-bg-tertiary border border-border hover:bg-bg-tertiary transition-all group"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-[14px] font-semibold text-text-primary hover:text-accent-primary transition-colors"
                     >
-                      <span className="flex items-center gap-3 text-sm font-bold">
-                        <Github size={18} className="text-accent-primary" />
-                        Code Source
-                      </span>
-                      <ChevronRight size={16} className="text-text-muted group-hover:translate-x-1 transition-transform" />
+                      <Github size={15} /> Code source <ArrowUpRight size={13} />
                     </a>
                   )}
-                  
-                  <button 
-                    onClick={handleShare}
-                    className="flex items-center justify-between w-full p-4 rounded-2xl bg-accent-primary text-bg font-bold hover:glow-primary transition-all group"
-                  >
-                    <span className="flex items-center gap-3 text-sm">
-                      <Share2 size={18} />
-                      Partager le projet
-                    </span>
-                    <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  {project.pdf_url && (
+                    <a
+                      href={project.pdf_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-[14px] font-semibold text-text-primary hover:text-accent-primary transition-colors"
+                    >
+                      <FileDown size={15} /> Rapport (PDF) <ArrowUpRight size={13} />
+                    </a>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
-          </aside>
-        </div>
-      </div>
+          )}
 
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200]">
-          <div className="glass px-6 py-3 rounded-full border-accent-primary/30 flex items-center gap-3 shadow-2xl animate-bounce">
-            <div className="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></div>
-            <span className="text-xs font-mono tracking-widest text-accent-primary">LIEN COPIÉ</span>
-          </div>
-        </div>
-      )}
-    </motion.div>
+          {project.image_url && (
+            <figure className="mb-10">
+              <img
+                src={project.image_url}
+                alt={project.title}
+                className="w-full rounded-xl border border-border"
+                referrerPolicy="no-referrer"
+              />
+            </figure>
+          )}
+
+          {project.content && <MarkdownContent content={project.content} />}
+
+          {(siblings.prev || siblings.next) && (
+            <nav aria-label="Navigation entre projets" className="mt-12 pt-8 border-t border-border grid gap-4 sm:grid-cols-2">
+              {siblings.prev ? (
+                <Link
+                  to={`/project/${siblings.prev.slug || siblings.prev.id}`}
+                  className="group rounded-xl border border-border p-4 hover:border-accent-primary transition-colors"
+                >
+                  <span className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                    <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1" /> Projet précédent
+                  </span>
+                  <span className="block text-[15px] font-semibold text-text-primary group-hover:text-accent-primary transition-colors leading-snug">
+                    {siblings.prev.title}
+                  </span>
+                </Link>
+              ) : <span />}
+              {siblings.next && (
+                <Link
+                  to={`/project/${siblings.next.slug || siblings.next.id}`}
+                  className="group rounded-xl border border-border p-4 hover:border-accent-primary transition-colors sm:text-right"
+                >
+                  <span className="flex items-center gap-1.5 sm:justify-end text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                    Projet suivant <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+                  </span>
+                  <span className="block text-[15px] font-semibold text-text-primary group-hover:text-accent-primary transition-colors leading-snug">
+                    {siblings.next.title}
+                  </span>
+                </Link>
+              )}
+            </nav>
+          )}
+
+          <Link
+            to="/travaux"
+            className="group inline-flex items-center gap-2 mt-12 text-[14px] font-semibold text-text-secondary hover:text-accent-primary transition-colors"
+          >
+            <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-1" /> Retour aux projets
+          </Link>
+        </article>
+
+        {hasToc && (
+          <aside className="hidden xl:block">
+            <ArticleToc headings={headings} />
+          </aside>
+        )}
+      </div>
+    </PageShell>
   );
 };

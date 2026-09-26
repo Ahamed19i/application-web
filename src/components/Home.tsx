@@ -7,6 +7,7 @@ import { Parcours } from './Parcours.tsx';
 import { Experience } from './Experience.tsx';
 import { Projets } from './Projets.tsx';
 import { JournalTeaser } from './JournalTeaser.tsx';
+import { Certifications } from './Certifications.tsx';
 
 export const Home: React.FC = () => {
   return (
@@ -23,12 +24,16 @@ export const Home: React.FC = () => {
           <Experience />
           <Projets />
           <JournalTeaser />
+          <Certifications />
 
           <footer className="pt-8 border-t border-border">
             <p className="text-[13px] text-text-muted leading-relaxed">
               Conçu à Dakar et codé dans <span className="text-text-primary font-medium">VS Code</span>.<br />
-              Construit avec <span className="text-text-primary font-medium">React</span> et <span className="text-text-primary font-medium">Tailwind CSS</span>, déployé sur <span className="text-text-primary font-medium">Vercel</span>.
+              Construit avec <span className="text-text-primary font-medium">React</span> et{' '}
+              <span className="text-text-primary font-medium">Tailwind CSS</span>, déployé sur{' '}
+              <span className="text-text-primary font-medium">Vercel</span>.
             </p>
+            <p className="mt-3 text-[13px] text-text-muted">© 2026 Ahamed Hassani Mhoma</p>
           </footer>
         </main>
       </div>

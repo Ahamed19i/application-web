@@ -1,36 +1,33 @@
 import React, { useState } from 'react';
 
-const ENTRIES = [
+interface Entry {
+  period: string;
+  title: string;
+  org: string;
+  place: string;
+  description?: string;
+}
+
+const ENTRIES: Entry[] = [
   {
     period: '2024 — Aujourd\'hui',
-    title: 'Master 2 SRT',
-    org: 'AFI-L\'UE, Dakar',
+    title: 'Master 2 Systèmes, Réseaux et Télécommunications',
+    org: 'Université de l\'Entreprise (AFI-L\'UE)',
+    place: 'Dakar, Sénégal',
+    description: "Mémoire sur la conception d'une infrastructure hybride résiliente, pensée pour la haute disponibilité des données.",
   },
   {
     period: '2021 — 2024',
-    title: 'Licence SRT',
-    // TODO(Ahamed): nom de l'établissement
-    org: 'TODO(Ahamed) : établissement',
+    title: 'Licence en Génie Logiciel et Systèmes d\'Information',
+    org: 'Université Centrale de Tunis',
+    place: 'Tunis, Tunisie',
+    description: "Là où j'ai découvert l'informatique.",
   },
   {
-    period: '2025',
-    title: 'Cisco Networking Basics',
-    org: 'Cisco Networking Academy',
-  },
-  {
-    period: '2025',
-    title: 'Introduction to Cybersecurity',
-    org: 'Cisco Networking Academy',
-  },
-  {
-    period: '2026',
-    title: 'CCNA (en cours)',
-    org: 'Cisco',
-  },
-  {
-    period: '2026',
-    title: 'DevOps (en cours)',
-    org: 'Coursera',
+    period: '2019',
+    title: 'Baccalauréat scientifique, série D',
+    org: 'GS Avenir',
+    place: 'Moroni, Comores',
   },
 ];
 
@@ -56,15 +53,25 @@ export const Parcours: React.FC = () => {
             className="transition-opacity duration-300"
             style={{ opacity: hovered === null || hovered === i ? 1 : 0.5 }}
           >
-            <div tabIndex={0} className="group grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-6 py-5 -mx-4 px-4 rounded-xl transition-colors duration-200 hover:bg-bg-secondary focus-visible:bg-bg-secondary focus-visible:outline-none">
-              <p className="text-[12px] font-bold uppercase tracking-wider text-text-muted pt-0.5">
+            <div
+              tabIndex={0}
+              className="group grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-6 py-5 -mx-4 px-4 rounded-xl transition-colors duration-200 hover:bg-bg-secondary focus-visible:bg-bg-secondary focus-visible:outline-none"
+            >
+              <p className="text-[12px] font-bold uppercase tracking-wider text-text-muted pt-1 leading-snug">
                 {entry.period}
               </p>
               <div>
-                <h3 className="text-[16px] font-semibold text-text-primary group-hover:text-accent-primary transition-colors">
+                <h3 className="text-[16px] font-semibold text-text-primary leading-snug group-hover:text-accent-primary transition-colors">
                   {entry.title}
                 </h3>
-                <p className="text-[14px] text-text-secondary mt-0.5">{entry.org}</p>
+                <p className="text-[14px] text-text-secondary mt-1">
+                  {entry.org} — {entry.place}
+                </p>
+                {entry.description && (
+                  <p className="text-[14px] sm:text-[15px] text-text-secondary mt-2 leading-relaxed">
+                    {entry.description}
+                  </p>
+                )}
               </div>
             </div>
           </li>

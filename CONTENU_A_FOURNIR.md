@@ -1,20 +1,39 @@
 # Contenu à fournir
 
-Emplacements marqués `TODO(Ahamed)` dans le code — aucun contenu n'a été inventé à leur place. Liste tenue à jour à chaque phase.
+Règle en vigueur : **aucun texte de remplissage ne s'affiche sur le site.**
+Quand une donnée manque, l'élément concerné n'est simplement pas rendu, et le
+manque est noté ici. Aucun contenu n'est inventé.
 
-## Accueil style brittanychiang.com (état actuel)
+## En attente de ta part
 
-- `src/components/Sidebar.tsx` : phrase courte sur ce que tu construis, sous le titre.
-- `src/components/About.tsx` : 3 paragraphes — qui tu es et ce qui t'a amené à l'infrastructure ; ce que tu fais en ce moment ; ce que tu fais en dehors de l'informatique.
-- `src/components/Parcours.tsx` : nom de l'établissement pour la Licence SRT (2021-2024).
-- `src/components/Experience.tsx` : description concrète du stage Tunisie Télécom, et les technologies réellement utilisées (pastilles vides pour l'instant).
-- `src/components/ContactPage.tsx` : phrase d'introduction sur la page /contact.
+- **Description du stage Tunisie Télécom** (`src/components/Experience.tsx`) —
+  l'entrée s'affiche avec période, intitulé, organisation et lieu ; la
+  description et les pastilles de technologies restent masquées tant que tu ne
+  les fournis pas. Elles s'afficheront automatiquement dès que les champs
+  `description` et `stack` de l'entrée seront remplis.
 
-## Résolu depuis la dernière version
+- **Année des projets** — la table Supabase `projects` n'a aucune colonne de
+  date, contrairement à `posts`. La colonne « Année » de l'archive `/travaux` et
+  la ligne « Année » des pages projet sont donc masquées. La migration
+  `migrations/001_projects_add_year.sql` ajoute le champ : exécute-la dans
+  Supabase (SQL Editor), puis renseigne l'année de chaque projet depuis l'admin.
+  L'affichage s'active tout seul.
 
-- **Compétences/certifications** : replacées dans un sous-bloc "Compétences" à la fin de la section À propos (pastilles), et les certifications réelles (Cisco Networking Basics, Introduction to Cybersecurity, CCNA en cours, DevOps en cours) sont maintenant des entrées de la section Parcours. Rien n'a été perdu.
-- **Contact** : page dédiée `/contact` accessible via le bouton "Me contacter" de la colonne gauche (visible sur toutes les pages). Formulaire existant conservé, branché sur `/api/contact`.
+- **Catégories de projets à homogénéiser** — la base contient `DevOps/Cloud` et
+  `Cloud/DevOps`, deux libellés pour la même chose. À corriger depuis l'admin
+  (je ne modifie pas tes données).
+
+## Contenus fournis et intégrés
+
+- Phrase de présentation, texte complet de la section À propos (5 paragraphes),
+  parcours (Master 2 AFI-L'UE, Licence Génie Logiciel Tunis, Baccalauréat GS
+  Avenir), expérience (stage Tunisie Télécom), certifications.
 
 ## Corrections à ne pas réintroduire
 
-- Le projet MPLS/VPN backbone a été réalisé sur **eNSP / Huawei**, pas Cisco IOS — à respecter dans le futur contenu de la page Travaux (étude de cas).
+- Le projet MPLS/VPN a été réalisé sur **eNSP (Huawei)**, jamais « Cisco IOS ».
+- L'ancienne entrée de parcours « Licence SRT » était fausse : c'est une
+  **Licence en Génie Logiciel et Systèmes d'Information**.
+- Le nom affiché dans la colonne de gauche est **Ahamed Hassani** (sur une
+  ligne). Le nom complet **Ahamed Hassani Mhoma** reste dans le titre de
+  l'onglet, les métadonnées SEO et le pied de page.

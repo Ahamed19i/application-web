@@ -1,35 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { motion, AnimatePresence, MotionConfig, useScroll, useSpring } from 'motion/react';
-import { Navbar } from './components/Navbar.tsx';
+import { motion, AnimatePresence, MotionConfig } from 'motion/react';
 import { Home } from './components/Home.tsx';
-import { Footer } from './components/Footer.tsx';
-import { AdminLogin } from './components/AdminLogin.tsx';
-import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { Travaux } from './components/Travaux.tsx';
 import { ContactPage } from './components/ContactPage.tsx';
-import { ProjectDetail } from './components/ProjectDetail.tsx';
-import { BlogPostDetail } from './components/BlogPostDetail.tsx';
 import { NotFound } from './components/NotFound.tsx';
 import { PageTransition } from './components/PageTransition.tsx';
 import { CommandPalette } from './components/CommandPalette.tsx';
 
-const GlobalScrollProgress = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+// Chargées à la demande : le rendu Markdown (avec la coloration syntaxique)
+// et l'admin (avec les graphiques) ne doivent pas peser sur l'accueil.
+const ProjectDetail = lazy(() => import('./components/ProjectDetail.tsx').then(m => ({ default: m.ProjectDetail })));
+const BlogPostDetail = lazy(() => import('./components/BlogPostDetail.tsx').then(m => ({ default: m.BlogPostDetail })));
+const AdminLogin = lazy(() => import('./components/AdminLogin.tsx').then(m => ({ default: m.AdminLogin })));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard.tsx').then(m => ({ default: m.AdminDashboard })));
 
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[2px] bg-accent-primary z-[1000] origin-left"
-      style={{ scaleX }}
-    />
-  );
-};
+const RouteFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 const ScrollToHash = () => {
   const { pathname, hash } = useLocation();
@@ -38,16 +29,9 @@ const ScrollToHash = () => {
     if (hash) {
       const element = document.querySelector(hash);
       if (element) {
-        const offset = 80;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
+        const offset = 24;
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
       }
     } else {
       window.scrollTo(0, 0);
@@ -61,7 +45,7 @@ const VisitTracker = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Only track once per session to avoid spamming
+    // Une seule fois par session, pour ne pas polluer les statistiques.
     const sessionTracked = sessionStorage.getItem('tracked');
     if (!sessionTracked) {
       fetch('/api/track-visit', {
@@ -83,16 +67,18 @@ const AnimatedRoutes = () => {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
-        <Route path="/travaux" element={<PageTransition><Travaux /></PageTransition>} />
-        <Route path="/project/:slug" element={<PageTransition><ProjectDetail /></PageTransition>} />
-        <Route path="/blog/:slug" element={<PageTransition><BlogPostDetail /></PageTransition>} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-      </Routes>
+      <Suspense fallback={<RouteFallback />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
+          <Route path="/travaux" element={<PageTransition><Travaux /></PageTransition>} />
+          <Route path="/project/:slug" element={<PageTransition><ProjectDetail /></PageTransition>} />
+          <Route path="/blog/:slug" element={<PageTransition><BlogPostDetail /></PageTransition>} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 };
@@ -106,7 +92,7 @@ export default function App() {
       const target = e.target as HTMLElement;
       const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
       if (isTyping) return;
-      if ((e.metaKey || e.ctrlKey)) return; // don't interfere with Ctrl/Cmd+K
+      if (e.metaKey || e.ctrlKey) return; // ne pas gêner Ctrl/Cmd+K
 
       keysPressed.current.push(e.key.toLowerCase());
       if (keysPressed.current.length > 4) keysPressed.current.shift();
@@ -133,20 +119,15 @@ export default function App() {
         <Router>
           <Helmet>
             <title>Ahamed Hassani Mhoma — Ingénieur Systèmes & Réseaux · DevOps</title>
-            <meta name="description" content="Site personnel d'Ahamed Hassani Mhoma, ingénieur Systèmes & Réseaux et DevOps : travaux, expérimentations et parcours." />
+            <meta name="description" content="Site personnel d'Ahamed Hassani Mhoma, ingénieur Systèmes & Réseaux et DevOps : projets, parcours et journal." />
           </Helmet>
-          <GlobalScrollProgress />
           <ScrollToHash />
           <VisitTracker />
           <CommandPalette />
           <div className="relative min-h-screen bg-bg">
-            <Navbar />
-
             <AnimatedRoutes />
 
-            <Footer />
-
-            {/* Easter eggs */}
+            {/* Clins d'œil clavier */}
             <AnimatePresence>
               {easterEgg === 'sudo' && (
                 <motion.div

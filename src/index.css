@@ -29,6 +29,10 @@
   --color-warning: #E9B872;
   --color-danger: #F0857A;
 
+  /* Lueur de la souris : vert émeraude profond, indépendante de l'accent ambre. */
+  --glow-core: rgba(18, 200, 126, 0.18);
+  --glow-mid: rgba(18, 200, 126, 0.07);
+
   --radius-lg: 4px;
   --radius-xl: 4px;
   --radius-2xl: 6px;
@@ -48,6 +52,10 @@
   --color-success: #0D9668;
   --color-warning: #A9660F;
   --color-danger: #B8402F;
+
+  /* Même vert, plus discret sur fond clair. */
+  --glow-core: rgba(16, 150, 104, 0.10);
+  --glow-mid: rgba(16, 150, 104, 0.04);
 }
 
 @layer base {
@@ -95,21 +103,50 @@ select:focus-visible,
   color: var(--color-bg);
 }
 
-/* Colonne gauche : le padding vertical se réduit sur les écrans moins
-   hauts pour que tout le contenu (identité, nav, icônes) tienne sans
-   scroll, sur portable comme sur grand écran. */
+/* --------------------------------------------------------------------
+   Colonne gauche : paddings, taille du nom, espace avant la navigation
+   et hauteur des liens se réduisent progressivement selon la HAUTEUR de
+   l'écran, pour que tout (nom → icônes) tienne sans défilement, y
+   compris sur un portable Windows à 125 % (≈1536×730 px CSS).
+   -------------------------------------------------------------------- */
 .sidebar-shell {
   padding-top: 96px;
   padding-bottom: 96px;
 }
+.sidebar-name { font-size: 46px; }
+.sidebar-nav { margin-top: 64px; }
+.sidebar-nav-link { height: 44px; }
+.sidebar-icons { margin-top: 32px; }
+
 @media (max-height: 900px) {
-  .sidebar-shell { padding-top: 80px; padding-bottom: 80px; }
+  .sidebar-shell { padding-top: 72px; padding-bottom: 72px; }
+  .sidebar-nav { margin-top: 52px; }
 }
-@media (max-height: 800px) {
-  .sidebar-shell { padding-top: 64px; padding-bottom: 64px; }
+@media (max-height: 820px) {
+  .sidebar-shell { padding-top: 56px; padding-bottom: 52px; }
+  .sidebar-name { font-size: 44px; }
+  .sidebar-nav { margin-top: 40px; }
+  .sidebar-nav-link { height: 40px; }
+  .sidebar-icons { margin-top: 24px; }
+}
+@media (max-height: 760px) {
+  .sidebar-shell { padding-top: 44px; padding-bottom: 40px; }
+  .sidebar-name { font-size: 40px; }
+  .sidebar-nav { margin-top: 32px; }
+  .sidebar-nav-link { height: 38px; }
+  .sidebar-icons { margin-top: 20px; }
 }
 @media (max-height: 700px) {
-  .sidebar-shell { padding-top: 48px; padding-bottom: 48px; }
+  .sidebar-shell { padding-top: 32px; padding-bottom: 32px; }
+  .sidebar-name { font-size: 38px; }
+  .sidebar-nav { margin-top: 24px; }
+  .sidebar-nav-link { height: 36px; }
+  .sidebar-icons { margin-top: 16px; }
+}
+/* En dessous de lg, la colonne n'est plus sticky : on rend la respiration. */
+@media (max-width: 1023px) {
+  .sidebar-shell { padding-top: 56px; padding-bottom: 32px; }
+  .sidebar-name { font-size: 40px; }
 }
 
 .skip-link {
@@ -187,6 +224,57 @@ select:focus-visible,
   --tw-prose-th-borders: var(--color-border);
   --tw-prose-td-borders: var(--color-border);
 }
+
+/* --------------------------------------------------------------------
+   Coloration syntaxique (highlight.js via rehype-highlight), branchée
+   sur les tokens du site pour suivre les deux thèmes.
+   -------------------------------------------------------------------- */
+:root {
+  --code-keyword: #F0B457;
+  --code-string: #7DD3FC;
+  --code-number: #A5D6A7;
+  --code-comment: #6B7C93;
+  --code-function: #E4C9A0;
+  --code-attr: #9DB8D6;
+}
+:root[data-theme="light"] {
+  --code-keyword: #A9660F;
+  --code-string: #0E6F8E;
+  --code-number: #2F6F52;
+  --code-comment: #8A8577;
+  --code-function: #7A4E12;
+  --code-attr: #46526B;
+}
+
+.hljs { color: var(--color-text-secondary); background: transparent; }
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-built_in,
+.hljs-name { color: var(--code-keyword); }
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-symbol,
+.hljs-bullet { color: var(--code-string); }
+.hljs-number,
+.hljs-meta,
+.hljs-link { color: var(--code-number); }
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion { color: var(--code-comment); font-style: italic; }
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_ { color: var(--code-function); }
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-params { color: var(--code-attr); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { @apply bg-bg; }

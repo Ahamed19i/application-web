@@ -57,19 +57,18 @@ export const Sidebar: React.FC = () => {
     <header className="sidebar-shell lg:sticky lg:top-0 lg:h-screen lg:max-h-screen flex flex-col justify-between px-6 sm:px-10 lg:px-12 xl:px-16">
       <div>
         <Link to="/" className="inline-block">
-          <h1 className="text-5xl font-bold tracking-tight text-text-primary leading-[1.1]">
-            Ahamed Hassani Mhoma
+          <h1 className="sidebar-name font-bold tracking-tight text-text-primary leading-none whitespace-nowrap">
+            Ahamed Hassani
           </h1>
         </Link>
-        <p className="mt-3 text-xl font-medium text-text-primary">
-          Ingénieur Systèmes & Réseaux · DevOps
+        <p className="mt-2.5 text-[19px] font-medium text-text-primary leading-snug">
+          Ingénieur Systèmes &amp; Réseaux · DevOps
         </p>
-        {/* TODO(Ahamed): une phrase sur ce que tu construis, dans tes propres mots. */}
-        <p className="mt-4 text-base text-text-secondary max-w-[320px] leading-relaxed">
-          TODO(Ahamed) : une phrase sur ce que je construis.
+        <p className="mt-3 text-[15px] text-text-secondary max-w-[330px] leading-relaxed">
+          J'aime construire : des infrastructures résilientes aux applications qui tournent dessus.
         </p>
 
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
           <Link
             to="/contact"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent-primary text-accent-primary text-sm font-semibold hover:bg-accent-primary/10 transition-colors"
@@ -85,7 +84,7 @@ export const Sidebar: React.FC = () => {
           </p>
         </div>
 
-        <nav aria-label="Navigation principale" className="hidden lg:block mt-16">
+        <nav aria-label="Navigation principale" className="sidebar-nav hidden lg:block">
           <ul>
             {NAV_ITEMS.map(item => {
               const isActive = isHome && active === item.id;
@@ -94,7 +93,7 @@ export const Sidebar: React.FC = () => {
                   <a
                     href={`#${item.id}`}
                     onClick={(e) => scrollToId(e, item.id)}
-                    className="group flex items-center gap-4 h-11"
+                    className="sidebar-nav-link group flex items-center gap-4"
                   >
                     <span
                       className={`h-px transition-all duration-300 ${
@@ -116,20 +115,20 @@ export const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      <div className="flex items-center gap-5 mt-12 lg:mt-8 pb-2">
+      <div className="sidebar-icons flex items-center gap-5">
         <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Github size={24} />
+          <Github size={22} />
         </a>
         <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Linkedin size={24} />
+          <Linkedin size={22} />
         </a>
         <a href="mailto:ahassanimhoma20@gmail.com" aria-label="Email" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Mail size={24} />
+          <Mail size={22} />
         </a>
         <a href="/images/cv-ahamed-hassani.pdf" download aria-label="Télécharger le CV" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Download size={24} />
+          <Download size={22} />
         </a>
-        <ThemeToggle variant="bare" size={24} />
+        <ThemeToggle variant="bare" size={22} />
       </div>
     </header>
   );

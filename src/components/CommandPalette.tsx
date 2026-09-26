@@ -11,6 +11,9 @@ interface Command {
   action: () => void;
 }
 
+/** macOS affiche ⌘K, tout le reste Ctrl K. */
+const isMac = typeof navigator !== 'undefined' && /mac/i.test(navigator.platform || navigator.userAgent);
+
 export const CommandPalette: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -146,6 +149,9 @@ export const CommandPalette: React.FC = () => {
                 className="w-full bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted"
                 aria-label="Rechercher une page, un travail, ou une action"
               />
+              <kbd className="text-[10px] font-semibold text-text-muted border border-border px-1.5 py-0.5 rounded shrink-0">
+                {isMac ? '⌘K' : 'Ctrl K'}
+              </kbd>
               <kbd className="text-[10px] font-semibold text-text-muted border border-border px-1.5 py-0.5 rounded shrink-0">Esc</kbd>
             </div>
 

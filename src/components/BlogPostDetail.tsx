@@ -1,285 +1,172 @@
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { motion, useScroll, useSpring } from 'motion/react';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Tag, 
-  Share2, 
-  Clock, 
-  User, 
-  Bookmark, 
-  FileDown, 
-  ChevronRight,
-  MessageCircle,
-  Hash,
-  Terminal,
-  Info,
-  Code2,
-  Layers,
-  CheckCircle2,
-  Globe
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Post } from '../types';
-import Markdown from 'react-markdown';
+import { PageShell } from './PageShell.tsx';
+import { MarkdownContent, extractHeadings } from './MarkdownContent.tsx';
+import { ArticleToc } from './ArticleToc.tsx';
+
+function readingTime(markdown: string): number {
+  const words = markdown.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}
 
 export const BlogPostDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
+  const [siblings, setSiblings] = useState<{ prev: Post | null; next: Post | null }>({ prev: null, next: null });
   const [loading, setLoading] = useState(true);
-  const [showToast, setShowToast] = useState(false);
 
-  // Reading progress bar
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!slug) return;
+    setLoading(true);
 
     fetch(`/api/posts/${slug}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Post not found');
-        return res.json();
-      })
-      .then(data => {
+      .then(res => (res.ok ? res.json() : Promise.reject(new Error('not found'))))
+      .then((data: Post) => {
         setPost(data);
         setLoading(false);
+        return fetch('/api/posts');
       })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+      .then(res => (res && res.ok ? res.json() : []))
+      .then((all: Post[]) => {
+        if (!Array.isArray(all)) return;
+        const published = all.filter(p => p.published);
+        const index = published.findIndex(p => String(p.slug) === slug || String(p.id) === slug);
+        if (index === -1) return;
+        setSiblings({
+          prev: published[index - 1] ?? null,
+          next: published[index + 1] ?? null,
+        });
+      })
+      .catch(() => setLoading(false));
   }, [slug]);
 
-  const handleShare = () => {
-    const shareUrl = window.location.href;
-    if (navigator.share) {
-      navigator.share({
-        title: post?.title,
-        text: post?.title,
-        url: shareUrl,
-      });
-    } else {
-      navigator.clipboard.writeText(shareUrl);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    }
-  };
+  const headings = useMemo(() => (post ? extractHeadings(post.content) : []), [post]);
+  const hasToc = headings.length >= 2;
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-bg">
-        <div className="w-12 h-12 border-4 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <PageShell>
+        <div className="py-24 flex justify-center">
+          <div className="w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </PageShell>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-bg px-6">
-        <h1 className="text-4xl font-bold mb-4">Article introuvable</h1>
-        <button onClick={() => navigate('/')} className="btn-p">Retour à l'accueil</button>
-      </div>
+      <PageShell>
+        <div className="py-24">
+          <h1 className="text-3xl font-bold text-text-primary mb-4">Article introuvable</h1>
+          <p className="text-text-secondary mb-8">Cet article n'existe pas ou n'est plus publié.</p>
+          <Link to="/#journal" className="inline-flex items-center gap-2 text-accent-primary font-semibold">
+            <ArrowLeft size={16} /> Retour au journal
+          </Link>
+        </div>
+      </PageShell>
     );
   }
 
+  const tags = (post.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg pb-12 md:pb-20"
-    >
-      {/* Reading Progress Bar */}
+    <>
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-accent-primary z-[100] origin-left"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-accent-primary z-[1000] origin-left"
         style={{ scaleX }}
       />
+      <PageShell>
+        <div className={hasToc ? 'xl:grid xl:grid-cols-[minmax(0,1fr)_240px] xl:gap-16' : ''}>
+          <article className={`min-w-0 max-w-[720px] ${hasToc ? '' : 'mx-auto'}`}>
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-5">
+              {post.category && <span className="text-accent-primary">{post.category}</span>}
+              {post.category && <span aria-hidden="true">·</span>}
+              <span>
+                {new Date(post.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>{readingTime(post.content)} min de lecture</span>
+            </p>
 
-      <div className="max-w-[1400px] mx-auto px-6 pt-20 md:pt-32">
-        {/* Breadcrumbs - MDN Style */}
-        <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
-          <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
-          <ChevronRight size={12} />
-          <Link to="/#blog" className="hover:text-accent-primary transition-colors">Blog</Link>
-          <ChevronRight size={12} />
-          <span className="text-accent-primary truncate max-w-[200px]">{post.title}</span>
-        </nav>
+            <h1 className="text-[32px] sm:text-[38px] font-bold text-text-primary tracking-tight leading-[1.15] mb-8">
+              {post.title}
+            </h1>
 
-        <div className="grid lg:grid-cols-[1fr_380px] gap-12 xl:gap-16">
-          {/* Main Content Area */}
-          <article className="min-w-0">
-            <header id="introduction" className="mb-12 scroll-mt-32">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="px-3 py-1 rounded-md bg-accent-primary/10 text-accent-primary text-[10px] font-mono uppercase tracking-widest border border-accent-primary/20">
-                  {post.category}
-                </span>
-                <span className="text-text-muted text-[10px] font-mono uppercase tracking-widest">
-                  {new Date(post.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </span>
-              </div>
-              
-              <h3 className="text-3xl md:text-4xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-8">
-                {post.title}
-              </h3>
+            {post.image_url && (
+              <img
+                src={post.image_url}
+                alt=""
+                className="w-full rounded-xl border border-border mb-10"
+                referrerPolicy="no-referrer"
+              />
+            )}
 
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-bg-tertiary border border-border w-fit">
-                <div className="w-10 h-10 rounded-full bg-accent-primary/20 flex items-center justify-center border border-accent-primary/30 overflow-hidden">
-                  <User size={20} className="text-accent-primary" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold">Ahamed Hassani</p>
-                  <p className="text-[10px] text-text-muted font-mono uppercase tracking-wider">Ingenieur Système & Réseaux</p>
-                </div>
-              </div>
-            </header>
+            <MarkdownContent content={post.content} />
 
-            {/* Markdown Content with MDN-like styling */}
-            <div id="concepts" className="prose prose-lg md:prose-xl max-w-none prose-headings:tracking-tight prose-headings:font-extrabold prose-a:text-accent-primary prose-img:rounded-3xl prose-pre:bg-bg-tertiary prose-pre:border prose-pre:border-border mb-16 scroll-mt-32">
-              <div className="markdown-body">
-                <Markdown>{post.content}</Markdown>
-              </div>
-            </div>
-
-            {/* Conclusion Section */}
-            <div id="conclusion" className="glass p-10 rounded-3xl border-border bg-gradient-to-br from-accent-primary/5 to-transparent mb-16 scroll-mt-32">
-              <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-                <CheckCircle2 className="text-accent-primary" size={24} />
-                Conclusion & Prochaines étapes
-              </h2>
-              <p className="text-text-secondary leading-relaxed mb-8">
-                La maîtrise de ces outils est un voyage continu. J'espère que cet article vous a donné les bases nécessaires pour explorer davantage ces technologies fascinantes.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="p-4 rounded-xl bg-bg-tertiary border border-border text-center">
-                  <p className="text-xl font-bold text-accent-primary mb-1">1</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Expérimenter</p>
-                </div>
-                <div className="p-4 rounded-xl bg-bg-tertiary border border-border text-center">
-                  <p className="text-xl font-bold text-accent-primary mb-1">2</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Approfondir</p>
-                </div>
-                <div className="p-4 rounded-xl bg-bg-tertiary border border-border text-center">
-                  <p className="text-xl font-bold text-accent-primary mb-1">3</p>
-                  <p className="text-[10px] font-mono text-text-muted uppercase tracking-widest">Partager</p>
-                </div>
-              </div>
-            </div>
-
-            <footer className="pt-10 border-t border-border">
-              <div className="flex flex-wrap gap-2 mb-10">
-                {post.tags.split(',').map((tag, i) => (
-                  <span key={i} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-tertiary border border-border text-xs text-text-secondary hover:border-accent-primary/30 transition-colors cursor-default">
-                    <Hash size={12} className="text-accent-primary" />
-                    {tag.trim()}
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-12 pt-8 border-t border-border">
+                {tags.map(tag => (
+                  <span key={tag} className="px-3 py-1.5 rounded-full bg-bg-secondary border border-border text-text-secondary text-[12px] font-medium">
+                    {tag}
                   </span>
                 ))}
               </div>
+            )}
 
-              <div className="glass p-8 rounded-3xl border-accent-primary/20 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                  <h4 className="text-lg font-bold mb-1">Cet article vous a aidé ?</h4>
-                  <p className="text-sm text-text-muted">Partagez-le avec votre réseau ou téléchargez le PDF.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  {post.pdf_url && (
-                    <a 
-                      href={post.pdf_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-bg-tertiary border border-border text-sm font-medium hover:bg-bg-tertiary transition-colors"
-                    >
-                      <FileDown size={18} />
-                      PDF
-                    </a>
-                  )}
-                  <button 
-                    onClick={handleShare}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent-primary text-bg font-bold hover:glow-primary transition-all"
+            {(siblings.prev || siblings.next) && (
+              <nav aria-label="Navigation entre articles" className="mt-12 pt-8 border-t border-border grid gap-4 sm:grid-cols-2">
+                {siblings.prev ? (
+                  <Link
+                    to={`/blog/${siblings.prev.slug || siblings.prev.id}`}
+                    className="group rounded-xl border border-border p-4 hover:border-accent-primary transition-colors"
                   >
-                    <Share2 size={18} />
-                    Partager
-                  </button>
-                </div>
-              </div>
-            </footer>
+                    <span className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                      <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1" /> Article précédent
+                    </span>
+                    <span className="block text-[15px] font-semibold text-text-primary group-hover:text-accent-primary transition-colors leading-snug">
+                      {siblings.prev.title}
+                    </span>
+                  </Link>
+                ) : <span />}
+                {siblings.next && (
+                  <Link
+                    to={`/blog/${siblings.next.slug || siblings.next.id}`}
+                    className="group rounded-xl border border-border p-4 hover:border-accent-primary transition-colors sm:text-right"
+                  >
+                    <span className="flex items-center gap-1.5 sm:justify-end text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-1.5">
+                      Article suivant <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+                    </span>
+                    <span className="block text-[15px] font-semibold text-text-primary group-hover:text-accent-primary transition-colors leading-snug">
+                      {siblings.next.title}
+                    </span>
+                  </Link>
+                )}
+              </nav>
+            )}
+
+            <Link
+              to="/#journal"
+              className="group inline-flex items-center gap-2 mt-12 text-[14px] font-semibold text-text-secondary hover:text-accent-primary transition-colors"
+            >
+              <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-1" /> Retour au journal
+            </Link>
           </article>
 
-          {/* Sidebar - MDN Style */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-32 space-y-10">
-              {/* Table of Contents Placeholder */}
-              <div>
-                <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-6 flex items-center gap-2">
-                  <div className="w-4 h-[1px] bg-accent-primary"></div>
-                  Dans cet article
-                </h3>
-                <nav className="space-y-4 border-l border-border ml-2">
-                  <a href="#introduction" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Introduction</a>
-                  <a href="#concepts" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Concepts Clés</a>
-                  <a href="#concepts" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Mise en œuvre</a>
-                  <a href="#conclusion" className="block pl-4 text-sm text-text-muted hover:text-accent-primary transition-colors">Conclusion</a>
-                </nav>
-              </div>
-
-              {/* Quick Metadata */}
-              <div className="p-8 rounded-3xl bg-bg-tertiary border border-border space-y-6 shadow-xl">
-                <div className="flex items-center gap-4 text-text-secondary">
-                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
-                    <Clock size={18} className="text-accent-primary" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Temps de lecture</p>
-                    <p className="text-sm font-bold">~5 min</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 text-text-secondary">
-                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
-                    <MessageCircle size={18} className="text-accent-primary" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Commentaires</p>
-                    <p className="text-sm font-bold">0</p>
-                  </div>
-                </div>
-                <button className="w-full py-4 rounded-2xl bg-bg-tertiary border border-border text-xs font-mono uppercase tracking-widest hover:bg-bg-tertiary transition-all flex items-center justify-center gap-2 group">
-                  <Bookmark size={14} className="group-hover:text-accent-primary transition-colors" />
-                  Sauvegarder l'article
-                </button>
-              </div>
-
-              {/* Related Links / Resources */}
-              <div className="p-6 rounded-2xl bg-bg-tertiary border border-border space-y-4">
-                <h4 className="text-[10px] font-mono uppercase tracking-widest text-text-muted">Ressources utiles</h4>
-                <div className="space-y-3">
-                  <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">
-                    <Globe size={14} /> Documentation officielle
-                  </a>
-                  <a href="#" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent-primary transition-colors">
-                    <Code2 size={14} /> Exemples de code (GitHub)
-                  </a>
-                </div>
-              </div>
-            </div>
-          </aside>
+          {hasToc && (
+            <aside className="hidden xl:block">
+              <ArticleToc headings={headings} />
+            </aside>
+          )}
         </div>
-      </div>
-
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200]">
-          <div className="glass px-6 py-3 rounded-full border-accent-primary/30 flex items-center gap-3 shadow-2xl animate-bounce">
-            <div className="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></div>
-            <span className="text-xs font-mono tracking-widest text-accent-primary">LIEN COPIÉ</span>
-          </div>
-        </div>
-      )}
-    </motion.div>
+      </PageShell>
+    </>
   );
 };
