@@ -9,7 +9,12 @@ function getStoredIsLight(): boolean {
   }
 }
 
-export const ThemeToggle: React.FC = () => {
+interface ThemeToggleProps {
+  variant?: 'boxed' | 'bare';
+  size?: number;
+}
+
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ variant = 'boxed', size = 16 }) => {
   const [isDark, setIsDark] = useState<boolean>(() => !getStoredIsLight());
 
   useEffect(() => {
@@ -28,6 +33,19 @@ export const ThemeToggle: React.FC = () => {
     setIsDark(!isDark);
   };
 
+  if (variant === 'bare') {
+    return (
+      <button
+        type="button"
+        onClick={toggle}
+        aria-label={isDark ? 'Passer au thème clair' : 'Passer au thème sombre'}
+        className="text-text-muted hover:text-accent-primary transition-colors shrink-0"
+      >
+        {isDark ? <Sun size={size} /> : <Moon size={size} />}
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -35,7 +53,7 @@ export const ThemeToggle: React.FC = () => {
       aria-label={isDark ? 'Passer au thème clair' : 'Passer au thème sombre'}
       className="w-9 h-9 flex items-center justify-center rounded-xl border border-border text-text-secondary hover:border-accent-primary hover:text-accent-primary transition-colors shrink-0"
     >
-      {isDark ? <Sun size={16} /> : <Moon size={16} />}
+      {isDark ? <Sun size={size} /> : <Moon size={size} />}
     </button>
   );
 };

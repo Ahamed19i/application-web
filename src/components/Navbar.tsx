@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
   const isAdmin = location.pathname.startsWith('/admin');
 
   // La page d'accueil a sa propre colonne de gauche (Sidebar) qui remplace cette nav.
-  if (isAdmin || location.pathname === '/') return null;
+  if (isAdmin || location.pathname === '/' || location.pathname === '/contact') return null;
 
   const isLinkActive = (path: string) => {
     if (path.startsWith('#')) {

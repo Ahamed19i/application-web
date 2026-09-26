@@ -10,15 +10,6 @@
   font-style: normal;
   font-display: swap;
 }
-@font-face {
-  font-family: 'Manrope';
-  src: url('/fonts/manrope-variable.woff2') format('woff2-variations'),
-       url('/fonts/manrope-variable.woff2') format('woff2');
-  font-weight: 200 800;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
   /* Une seule famille sans-serif pour tout le site. */
   --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
@@ -32,8 +23,8 @@
   --color-text-primary: #F1F5F9;
   --color-text-secondary: #CBD5E1;
   --color-text-muted: #8B9BB4;
-  --color-accent-primary: #6EE7B7;
-  --color-accent-secondary: #6EE7B7;
+  --color-accent-primary: #F0B457;
+  --color-accent-secondary: #F0B457;
   --color-success: #6EE7B7;
   --color-warning: #E9B872;
   --color-danger: #F0857A;
@@ -52,8 +43,8 @@
   --color-text-primary: #15161A;
   --color-text-secondary: #3F4552;
   --color-text-muted: #6B7280;
-  --color-accent-primary: #0D9668;
-  --color-accent-secondary: #0D9668;
+  --color-accent-primary: #A9660F;
+  --color-accent-secondary: #A9660F;
   --color-success: #0D9668;
   --color-warning: #A9660F;
   --color-danger: #B8402F;
@@ -102,6 +93,23 @@ select:focus-visible,
 ::selection {
   background: var(--color-accent-primary);
   color: var(--color-bg);
+}
+
+/* Colonne gauche : le padding vertical se réduit sur les écrans moins
+   hauts pour que tout le contenu (identité, nav, icônes) tienne sans
+   scroll, sur portable comme sur grand écran. */
+.sidebar-shell {
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+@media (max-height: 900px) {
+  .sidebar-shell { padding-top: 80px; padding-bottom: 80px; }
+}
+@media (max-height: 800px) {
+  .sidebar-shell { padding-top: 64px; padding-bottom: 64px; }
+}
+@media (max-height: 700px) {
+  .sidebar-shell { padding-top: 48px; padding-bottom: 48px; }
 }
 
 .skip-link {

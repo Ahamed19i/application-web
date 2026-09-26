@@ -15,7 +15,7 @@ export const MouseGlow: React.FC = () => {
     const handleMove = (e: MouseEvent) => {
       if (frame.current) cancelAnimationFrame(frame.current);
       frame.current = requestAnimationFrame(() => {
-        el.style.background = `radial-gradient(600px at ${e.clientX}px ${e.clientY}px, color-mix(in srgb, var(--color-accent-primary) 14%, transparent), transparent 80%)`;
+        el.style.background = `radial-gradient(600px at ${e.clientX}px ${e.clientY}px, color-mix(in srgb, var(--color-accent-primary) 15%, transparent), transparent 80%)`;
       });
     };
 

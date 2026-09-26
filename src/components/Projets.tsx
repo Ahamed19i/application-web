@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { Project } from '../types';
 
-export const TravauxTeaser: React.FC = () => {
+export const Projets: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hovered, setHovered] = useState<number | null>(null);
@@ -20,12 +20,12 @@ export const TravauxTeaser: React.FC = () => {
   }, []);
 
   return (
-    <section id="travaux" aria-labelledby="travaux-heading" className="scroll-mt-24">
+    <section id="projets" aria-labelledby="projets-heading" className="scroll-mt-24">
       <div className="lg:hidden sticky top-0 z-20 -mx-6 sm:-mx-10 px-6 sm:px-10 py-4 mb-6 bg-bg/85 backdrop-blur-md border-b border-border">
-        <h2 id="travaux-heading" className="text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary">Travaux</h2>
+        <h2 id="projets-heading" className="text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary">Projets</h2>
       </div>
       <h2 className="hidden lg:block text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary mb-10">
-        Travaux
+        Projets
       </h2>
 
       {loading ? (
@@ -35,7 +35,7 @@ export const TravauxTeaser: React.FC = () => {
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <p className="text-text-muted text-sm">Aucun travail publié pour l'instant.</p>
+        <p className="text-text-muted text-sm">Aucun projet publié pour l'instant.</p>
       ) : (
         <ul onMouseLeave={() => setHovered(null)}>
           {projects.map((project) => (
@@ -47,7 +47,9 @@ export const TravauxTeaser: React.FC = () => {
             >
               <Link
                 to={`/project/${project.slug || project.id}`}
-                className="group grid grid-cols-[88px_1fr] sm:grid-cols-[112px_1fr] gap-4 sm:gap-6 py-5 -mx-4 px-4 rounded-lg transition-colors duration-200 hover:bg-bg-secondary items-start"
+                onFocus={() => setHovered(project.id)}
+                onBlur={() => setHovered(null)}
+                className="group grid grid-cols-[88px_1fr] sm:grid-cols-[112px_1fr] gap-4 sm:gap-6 py-5 -mx-4 px-4 rounded-xl transition-colors duration-200 hover:bg-bg-secondary focus-visible:bg-bg-secondary focus-visible:outline-none items-start"
               >
                 <div className="w-[88px] h-[66px] sm:w-[112px] sm:h-[84px] rounded-lg border border-border overflow-hidden bg-bg-tertiary shrink-0">
                   {project.image_url ? (
@@ -91,7 +93,7 @@ export const TravauxTeaser: React.FC = () => {
         to="/travaux"
         className="inline-flex items-center gap-2 mt-2 text-[14px] font-semibold text-text-primary hover:text-accent-primary transition-colors"
       >
-        Voir tous les travaux →
+        Voir tous les projets →
       </Link>
     </section>
   );

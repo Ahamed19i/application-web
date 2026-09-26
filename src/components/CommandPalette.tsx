@@ -79,10 +79,11 @@ export const CommandPalette: React.FC = () => {
     { id: 'home', label: 'Accueil', action: () => { navigate('/'); close(); } },
     { id: 'about', label: 'À propos', action: () => goHash('#a-propos') },
     { id: 'parcours', label: 'Parcours', action: () => goHash('#parcours') },
-    { id: 'travaux-section', label: 'Travaux (accueil)', action: () => goHash('#travaux') },
-    { id: 'travaux', label: 'Travaux (archive)', action: () => { navigate('/travaux'); close(); } },
+    { id: 'experience', label: 'Expérience', action: () => goHash('#experience') },
+    { id: 'projets-section', label: 'Projets (accueil)', action: () => goHash('#projets') },
+    { id: 'travaux', label: 'Projets (archive)', action: () => { navigate('/travaux'); close(); } },
     { id: 'journal', label: 'Journal', action: () => goHash('#journal') },
-    { id: 'contact', label: 'Contact par email', action: () => { window.location.href = 'mailto:ahassanimhoma20@gmail.com'; close(); } },
+    { id: 'contact', label: 'Contact', action: () => { navigate('/contact'); close(); } },
     { id: 'theme', label: 'Changer de thème (clair / sombre)', hint: 'Thème', action: toggleTheme },
   ];
 

@@ -8,6 +8,7 @@ import { Footer } from './components/Footer.tsx';
 import { AdminLogin } from './components/AdminLogin.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { Travaux } from './components/Travaux.tsx';
+import { ContactPage } from './components/ContactPage.tsx';
 import { ProjectDetail } from './components/ProjectDetail.tsx';
 import { BlogPostDetail } from './components/BlogPostDetail.tsx';
 import { NotFound } from './components/NotFound.tsx';
@@ -84,6 +85,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
         <Route path="/travaux" element={<PageTransition><Travaux /></PageTransition>} />
         <Route path="/project/:slug" element={<PageTransition><ProjectDetail /></PageTransition>} />
         <Route path="/blog/:slug" element={<PageTransition><BlogPostDetail /></PageTransition>} />

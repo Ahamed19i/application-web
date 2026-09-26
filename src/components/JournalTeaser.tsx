@@ -47,7 +47,9 @@ export const JournalTeaser: React.FC = () => {
             >
               <Link
                 to={`/blog/${post.slug || post.id}`}
-                className="group grid grid-cols-[72px_1fr] sm:grid-cols-[96px_1fr] gap-4 sm:gap-6 py-5 -mx-4 px-4 rounded-lg transition-colors duration-200 hover:bg-bg-secondary items-center"
+                onFocus={() => setHovered(post.id)}
+                onBlur={() => setHovered(null)}
+                className="group grid grid-cols-[72px_1fr] sm:grid-cols-[96px_1fr] gap-4 sm:gap-6 py-5 -mx-4 px-4 rounded-xl transition-colors duration-200 hover:bg-bg-secondary focus-visible:bg-bg-secondary focus-visible:outline-none items-center"
               >
                 <div className="w-[72px] h-[54px] sm:w-[96px] sm:h-[72px] rounded-lg border border-border overflow-hidden bg-bg-tertiary shrink-0">
                   {post.image_url ? (
