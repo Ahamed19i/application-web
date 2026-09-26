@@ -23,9 +23,11 @@ import {
   Users,
   RefreshCw,
   GraduationCap,
+  Briefcase,
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
 import { AdminParcours } from './AdminParcours.tsx';
+import { AdminExperiences } from './AdminExperiences.tsx';
 import { 
   LineChart, 
   Line, 
@@ -39,7 +41,7 @@ import {
 } from 'recharts';
 
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'timeline' | 'messages' | 'analytics'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'timeline' | 'experiences' | 'messages' | 'analytics'>('stats');
   const [stats, setStats] = useState({ projects: 0, posts: 0, unreadMessages: 0 });
   const [analytics, setAnalytics] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -310,6 +312,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'projects', label: 'Projets', icon: FolderKanban },
             { id: 'posts', label: 'Blog', icon: FileText },
             { id: 'timeline', label: 'Parcours', icon: GraduationCap },
+            { id: 'experiences', label: 'Expériences', icon: Briefcase },
             { id: 'messages', label: 'Messages', icon: MessageSquare, badge: stats.unreadMessages },
           ].map((item) => (
             <button
@@ -362,7 +365,7 @@ export const AdminDashboard: React.FC = () => {
           >
             <div className="flex justify-between items-center mb-10">
               <h1 className="text-3xl font-bold capitalize">
-                {activeTab === 'timeline' ? 'Parcours' : activeTab}
+                {activeTab === 'timeline' ? 'Parcours' : activeTab === 'experiences' ? 'Expériences' : activeTab}
               </h1>
               {(activeTab === 'projects' || activeTab === 'posts') && (
                 <button 
@@ -626,6 +629,20 @@ export const AdminDashboard: React.FC = () => {
 
             {activeTab === 'timeline' && (
               <AdminParcours
+                token={token || ''}
+                notify={(message, type) =>
+                  setNotification({
+                    isOpen: true,
+                    title: type === 'success' ? 'Succès' : 'Erreur',
+                    message,
+                    type: 'alert',
+                  })
+                }
+              />
+            )}
+
+            {activeTab === 'experiences' && (
+              <AdminExperiences
                 token={token || ''}
                 notify={(message, type) =>
                   setNotification({

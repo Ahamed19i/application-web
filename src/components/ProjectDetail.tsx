@@ -151,11 +151,13 @@ export const ProjectDetail: React.FC = () => {
           )}
 
           {project.image_url && (
-            <figure className="mb-10">
+            <figure className="mb-10 max-w-[760px]">
               <img
                 src={project.image_url}
                 alt={project.title}
-                className="w-full rounded-xl border border-border"
+                width={760}
+                height={420}
+                className="w-full aspect-[16/9] max-h-[420px] object-cover rounded-xl border border-border"
                 referrerPolicy="no-referrer"
               />
             </figure>

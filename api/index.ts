@@ -393,6 +393,176 @@ app.put("/api/timeline/:id/photos", authenticateToken, async (req, res) => {
   res.json({ success: true });
 });
 
+// --- Expériences ---
+// Table créée par migrations/003_experiences.sql. Même principe que le
+// parcours : tant qu'elle n'existe pas, ces routes renvoient une liste vide
+// et le site retombe sur son entrée statique.
+
+const EXPERIENCE_FIELDS =
+  "id, slug, sort_order, period_label, role, organization, organization_url, type, location, remote, confidential, summary, technologies, cover_image_url, cover_image_alt, content, achievements, lessons, start_date, end_date, published, created_at, updated_at";
+
+app.get("/api/experiences", async (req, res) => {
+  const { data, error } = await supabase
+    .from("experiences")
+    .select(EXPERIENCE_FIELDS)
+    .eq("published", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.warn("Table 'experiences' absente ou inaccessible:", error.message);
+    return res.json([]);
+  }
+
+  const { data: photoRows } = await supabase
+    .from("experience_photos")
+    .select("experience_id");
+  const withPhotos = new Set((photoRows ?? []).map((p: any) => p.experience_id));
+
+  res.json((data ?? []).map((entry: any) => ({
+    ...entry,
+    has_photos: withPhotos.has(entry.id),
+  })));
+});
+
+app.get("/api/experiences/:slug", async (req, res) => {
+  const { data: entry, error } = await supabase
+    .from("experiences")
+    .select(EXPERIENCE_FIELDS)
+    .eq("slug", req.params.slug)
+    .eq("published", true)
+    .single();
+
+  if (error || !entry) return res.status(404).json({ message: "Expérience non trouvée" });
+
+  const { data: photos } = await supabase
+    .from("experience_photos")
+    .select("id, image_url, alt, caption, sort_order")
+    .eq("experience_id", entry.id)
+    .order("sort_order", { ascending: true });
+
+  res.json({ ...entry, photos: photos ?? [] });
+});
+
+app.get("/api/admin/experiences", authenticateToken, async (req, res) => {
+  const { data, error } = await supabase
+    .from("experiences")
+    .select(EXPERIENCE_FIELDS)
+    .order("sort_order", { ascending: true });
+
+  if (error) return res.status(500).json(error);
+  res.json(data ?? []);
+});
+
+app.get("/api/admin/experiences/:id/photos", authenticateToken, async (req, res) => {
+  const { data, error } = await supabase
+    .from("experience_photos")
+    .select("id, experience_id, image_url, alt, caption, sort_order")
+    .eq("experience_id", req.params.id)
+    .order("sort_order", { ascending: true });
+
+  if (error) return res.status(500).json(error);
+  res.json(data ?? []);
+});
+
+const EXPERIENCE_TYPES = ["Entreprise", "Stage", "Freelance", "Mission"];
+
+function stringList(value: unknown) {
+  return Array.isArray(value)
+    ? value.filter((v: unknown): v is string => typeof v === "string" && v.trim().length > 0)
+    : [];
+}
+
+function experiencePayload(body: any) {
+  const confidential = body.confidential === true || body.confidential === 1;
+  return {
+    slug: body.slug,
+    sort_order: Number(body.sort_order) || 0,
+    period_label: body.period_label,
+    role: body.role,
+    // Mission confidentielle : le nom du client n'est jamais enregistré, même
+    // si le formulaire en contenait un. La description générique du résumé
+    // prend sa place à l'affichage.
+    organization: confidential ? null : (body.organization || null),
+    organization_url: confidential ? null : (body.organization_url || null),
+    type: EXPERIENCE_TYPES.includes(body.type) ? body.type : "Entreprise",
+    location: body.location || null,
+    remote: body.remote === true || body.remote === 1,
+    confidential,
+    summary: body.summary || null,
+    technologies: stringList(body.technologies),
+    cover_image_url: body.cover_image_url || null,
+    cover_image_alt: body.cover_image_alt || null,
+    content: body.content || null,
+    achievements: stringList(body.achievements),
+    lessons: stringList(body.lessons),
+    start_date: body.start_date || null,
+    end_date: body.end_date || null,
+    published: body.published === true || body.published === 1,
+  };
+}
+
+app.post("/api/experiences", authenticateToken, async (req, res) => {
+  const { data, error } = await supabase
+    .from("experiences")
+    .insert([experiencePayload(req.body)])
+    .select("id");
+
+  if (error) return res.status(500).json(error);
+  res.json({ id: data?.[0]?.id });
+});
+
+app.put("/api/experiences/:id", authenticateToken, async (req, res) => {
+  const { error } = await supabase
+    .from("experiences")
+    .update(experiencePayload(req.body))
+    .eq("id", req.params.id);
+
+  if (error) return res.status(500).json(error);
+  res.json({ success: true });
+});
+
+app.delete("/api/experiences/:id", authenticateToken, async (req, res) => {
+  const { error } = await supabase
+    .from("experiences")
+    .delete()
+    .eq("id", req.params.id);
+
+  if (error) return res.status(500).json(error);
+  res.json({ success: true });
+});
+
+// Galerie : remplace d'un bloc la liste des photos d'une expérience.
+app.put("/api/experiences/:id/photos", authenticateToken, async (req, res) => {
+  const experienceId = Number(req.params.id);
+  const photos = Array.isArray(req.body?.photos) ? req.body.photos : [];
+
+  const invalid = photos.find((p: any) => !p?.image_url || !p?.alt?.trim());
+  if (invalid) {
+    return res.status(400).json({ message: "Chaque photo doit avoir une URL et un texte alternatif." });
+  }
+
+  const { error: deleteError } = await supabase
+    .from("experience_photos")
+    .delete()
+    .eq("experience_id", experienceId);
+
+  if (deleteError) return res.status(500).json(deleteError);
+
+  if (photos.length === 0) return res.json({ success: true });
+
+  const rows = photos.map((p: any, index: number) => ({
+    experience_id: experienceId,
+    image_url: p.image_url,
+    alt: p.alt.trim(),
+    caption: p.caption?.trim() || null,
+    sort_order: index,
+  }));
+
+  const { error } = await supabase.from("experience_photos").insert(rows);
+  if (error) return res.status(500).json(error);
+  res.json({ success: true });
+});
+
 // Upload d'image vers le bucket `parcours` (redimensionnée côté navigateur).
 app.post("/api/admin/upload", authenticateToken, async (req, res) => {
   try {

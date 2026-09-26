@@ -3,6 +3,8 @@ import Markdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { Check, Copy } from 'lucide-react';
+import { Lightbox } from './Lightbox.tsx';
+import { TimelinePhoto } from '../types';
 
 
 
@@ -135,6 +137,9 @@ const CodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
   const headingIds = useRef<Map<string, number>>(new Map());
   headingIds.current = new Map();
+  // Une image du récit s'ouvre en grand dans la même visionneuse que les
+  // galeries : la vignette reste contenue, le détail se regarde en plein écran.
+  const [zoom, setZoom] = useState<TimelinePhoto | null>(null);
 
   const makeId = (children: React.ReactNode) => {
     const base = slugify(childrenToText(children));
@@ -200,18 +205,33 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
             </th>
           ),
           td: ({ children }) => <td className="px-4 py-2.5 border-b border-border align-top">{children}</td>,
-          img: ({ src, alt }) => (
-            <figure className="my-8">
-              <img
-                src={typeof src === 'string' ? src : undefined}
-                alt={alt || ''}
-                loading="lazy"
-                className="w-full rounded-xl border border-border"
-                referrerPolicy="no-referrer"
-              />
-              {alt && <figcaption className="mt-2 text-[13px] text-text-muted text-center">{alt}</figcaption>}
-            </figure>
-          ),
+          img: ({ src, alt }) => {
+            const url = typeof src === 'string' ? src : undefined;
+            if (!url) return null;
+            return (
+              <figure className="my-8">
+                {/* Vignette bornée en hauteur pour que le texte reste l'élément
+                    dominant : une photo portrait ne fait plus défiler l'écran.
+                    Le recadrage n'est que d'aperçu — la visionneuse montre
+                    l'image entière. */}
+                <button
+                  type="button"
+                  onClick={() => setZoom({ image_url: url, alt: alt || '', caption: alt || null })}
+                  className="group block w-full overflow-hidden rounded-xl border border-border bg-bg-secondary"
+                  aria-label={alt ? `Agrandir : ${alt}` : 'Agrandir l’image'}
+                >
+                  <img
+                    src={url}
+                    alt={alt || ''}
+                    loading="lazy"
+                    className="w-full max-h-[380px] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    referrerPolicy="no-referrer"
+                  />
+                </button>
+                {alt && <figcaption className="mt-2 text-[13px] text-text-muted text-center">{alt}</figcaption>}
+              </figure>
+            );
+          },
           pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
           code: ({ children, className }) => {
             const isBlock = (className || '').includes('language-') || (className || '').includes('hljs');
@@ -226,6 +246,10 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
       >
         {content}
       </Markdown>
+
+      {zoom && (
+        <Lightbox photos={[zoom]} index={0} onClose={() => setZoom(null)} onNavigate={() => {}} />
+      )}
     </div>
   );
 };

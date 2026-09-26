@@ -15,6 +15,7 @@ import { CommandPalette } from './components/CommandPalette.tsx';
 const ProjectDetail = lazy(() => import('./components/ProjectDetail.tsx').then(m => ({ default: m.ProjectDetail })));
 const BlogPostDetail = lazy(() => import('./components/BlogPostDetail.tsx').then(m => ({ default: m.BlogPostDetail })));
 const ParcoursDetail = lazy(() => import('./components/ParcoursDetail.tsx').then(m => ({ default: m.ParcoursDetail })));
+const ExperienceDetail = lazy(() => import('./components/ExperienceDetail.tsx').then(m => ({ default: m.ExperienceDetail })));
 const AdminLogin = lazy(() => import('./components/AdminLogin.tsx').then(m => ({ default: m.AdminLogin })));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard.tsx').then(m => ({ default: m.AdminDashboard })));
 
@@ -76,6 +77,7 @@ const AnimatedRoutes = () => {
           <Route path="/travaux" element={<PageTransition><Travaux /></PageTransition>} />
           <Route path="/journal" element={<PageTransition><Journal /></PageTransition>} />
           <Route path="/parcours/:slug" element={<PageTransition><ParcoursDetail /></PageTransition>} />
+          <Route path="/experience/:slug" element={<PageTransition><ExperienceDetail /></PageTransition>} />
           <Route path="/project/:slug" element={<PageTransition><ProjectDetail /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPostDetail /></PageTransition>} />
           <Route path="/admin/login" element={<AdminLogin />} />

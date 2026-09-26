@@ -15,10 +15,14 @@ export const Home: React.FC = () => {
       <MouseGlow />
       <a href="#contenu-principal" className="skip-link">Aller au contenu</a>
 
-      <div className="relative z-10 max-w-[1312px] mx-auto lg:grid lg:grid-cols-[45fr_55fr] lg:gap-8 xl:gap-16">
+      {/* Ratio calé sur la référence : à 1536 px, la colonne droite commence à
+          753 px et mesure 607 px, exactement comme elle. En fr (jamais en %) :
+          les pourcentages se calculent sur la largeur totale et le gap
+          s'ajoute par-dessus, ce qui débordait de la largeur du gap. */}
+      <div className="relative z-10 max-w-[1312px] mx-auto lg:grid lg:grid-cols-[46.25fr_53.75fr] lg:gap-8 xl:gap-16">
         <Sidebar />
 
-        <main id="contenu-principal" className="px-6 sm:px-10 lg:px-0 lg:pr-12 xl:pr-16 py-6 lg:py-16 space-y-24 lg:space-y-36">
+        <main id="contenu-principal" className="main-column px-6 sm:px-10 lg:px-0 lg:pr-12 xl:pr-16 pb-6 lg:pb-24 space-y-24 lg:space-y-36">
           <About />
           <Parcours />
           <Experience />

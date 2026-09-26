@@ -72,6 +72,54 @@ export function timelineHasStory(entry: TimelineEntry): boolean {
   return hasContent || hasPhotos || hasCover;
 }
 
+export type ExperienceType = 'Entreprise' | 'Stage' | 'Freelance' | 'Mission';
+
+export interface Experience {
+  id?: number;
+  slug: string;
+  sort_order: number;
+  period_label: string;
+  role: string;
+  organization?: string | null;
+  organization_url?: string | null;
+  type: ExperienceType;
+  location?: string | null;
+  remote?: boolean;
+  /**
+   * Mission sous accord de confidentialité : le nom du client n'est ni stocké
+   * ni affiché. C'est `summary` qui décrit le client en termes génériques.
+   */
+  confidential?: boolean;
+  summary?: string | null;
+  technologies?: string[];
+  cover_image_url?: string | null;
+  cover_image_alt?: string | null;
+  content?: string | null;
+  achievements?: string[];
+  lessons?: string[];
+  start_date?: string | null;
+  end_date?: string | null;
+  published?: boolean;
+  photos?: TimelinePhoto[];
+  /** Ajouté par /api/experiences pour savoir si l'expérience a une galerie. */
+  has_photos?: boolean;
+}
+
+/** Ce qu'on affiche à la place du client quand la mission est confidentielle. */
+export function experienceOrganization(entry: Experience): string | null {
+  if (entry.confidential) return 'Client confidentiel';
+  return entry.organization || null;
+}
+
+/** Une expérience n'est cliquable que si elle a vraiment quelque chose à montrer. */
+export function experienceHasStory(entry: Experience): boolean {
+  const hasContent = !!entry.content && entry.content.trim().length > 0;
+  const hasPhotos = entry.has_photos === true || (entry.photos?.length ?? 0) > 0;
+  const hasAchievements = (entry.achievements?.length ?? 0) > 0;
+  const hasCover = !!entry.cover_image_url;
+  return hasContent || hasPhotos || hasAchievements || hasCover;
+}
+
 export interface Message {
   id: number;
   name: string;

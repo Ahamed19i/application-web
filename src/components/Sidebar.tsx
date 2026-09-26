@@ -117,18 +117,18 @@ export const Sidebar: React.FC = () => {
 
       <div className="sidebar-icons flex items-center gap-5">
         <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Github size={22} />
+          <Github size={24} />
         </a>
         <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Linkedin size={22} />
+          <Linkedin size={24} />
         </a>
         <a href="mailto:ahassanimhoma20@gmail.com" aria-label="Email" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Mail size={22} />
+          <Mail size={24} />
         </a>
         <a href="/images/cv-ahamed-hassani.pdf" download aria-label="Télécharger le CV" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Download size={22} />
+          <Download size={24} />
         </a>
-        <ThemeToggle variant="bare" size={22} />
+        <ThemeToggle variant="bare" size={24} />
       </div>
     </header>
   );

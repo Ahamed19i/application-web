@@ -100,11 +100,15 @@ export const BlogPostDetail: React.FC = () => {
               {post.title}
             </h1>
 
+            {/* Couverture bornée en hauteur : l'article reste l'élément
+                dominant, quelle que soit la taille de l'image fournie. */}
             {post.image_url && (
               <img
                 src={post.image_url}
                 alt=""
-                className="w-full rounded-xl border border-border mb-10"
+                width={760}
+                height={420}
+                className="w-full max-w-[760px] aspect-[16/9] max-h-[420px] object-cover rounded-xl border border-border mb-10"
                 referrerPolicy="no-referrer"
               />
             )}

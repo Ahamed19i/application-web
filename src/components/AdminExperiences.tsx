@@ -3,26 +3,35 @@ import {
   Plus, Edit, Trash2, Eye, EyeOff, X, Upload, ArrowUp, ArrowDown, Loader2, Images,
 } from 'lucide-react';
 import Markdown from 'react-markdown';
-import { TimelineEntry, TimelinePhoto } from '../types';
+import { Experience, ExperienceType, TimelinePhoto } from '../types';
 import { uploadImage } from '../lib/adminUpload';
 
 const INPUT =
   'w-full bg-bg-tertiary border border-border rounded-lg px-4 py-2.5 text-sm text-text-primary outline-none transition-colors focus:border-accent-primary';
 const LABEL = 'block text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-1.5';
 
-const emptyEntry = (): TimelineEntry => ({
+const TYPES: ExperienceType[] = ['Entreprise', 'Stage', 'Freelance', 'Mission'];
+
+const emptyEntry = (): Experience => ({
   slug: '',
-  period_label: '',
   sort_order: 0,
-  title: '',
-  institution: '',
-  city: '',
-  country: '',
+  period_label: '',
+  role: '',
+  organization: '',
+  organization_url: '',
+  type: 'Entreprise',
+  location: '',
+  remote: false,
+  confidential: false,
   summary: '',
+  technologies: [],
   cover_image_url: '',
   cover_image_alt: '',
   content: '',
+  achievements: [],
   lessons: [],
+  start_date: '',
+  end_date: '',
   published: false,
 });
 
@@ -31,13 +40,63 @@ interface Props {
   notify: (message: string, type: 'success' | 'error') => void;
 }
 
-export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
-  const [entries, setEntries] = useState<TimelineEntry[]>([]);
+/** Éditeur générique d'une liste de phrases (réalisations, leçons). */
+const StringList: React.FC<{
+  label: string;
+  emptyHint: string;
+  numbered?: boolean;
+  items: string[];
+  onChange: (items: string[]) => void;
+}> = ({ label, emptyHint, numbered, items, onChange }) => {
+  const move = (index: number, direction: -1 | 1) => {
+    const next = [...items];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  };
+
+  return (
+    <div className="rounded-xl border border-border p-4">
+      <div className="flex items-center justify-between mb-3">
+        <p className={LABEL}>{label}</p>
+        <button type="button" onClick={() => onChange([...items, ''])}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-accent-primary">
+          <Plus size={14} /> Ajouter
+        </button>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-xs text-text-muted">{emptyHint}</p>
+      ) : (
+        <ul className="space-y-2">
+          {items.map((item, i) => (
+            <li key={i} className="flex items-center gap-2">
+              {numbered && (
+                <span className="text-xs font-bold text-accent-primary w-6 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+              )}
+              <input className={INPUT} value={item}
+                onChange={e => onChange(items.map((v, j) => (j === i ? e.target.value : v)))} />
+              <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label="Monter" className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ArrowUp size={14} /></button>
+              <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1} aria-label="Descendre" className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ArrowDown size={14} /></button>
+              <button type="button" aria-label="Supprimer"
+                onClick={() => onChange(items.filter((_, j) => j !== i))}
+                className="p-1 text-red-500/50 hover:text-red-500"><Trash2 size={14} /></button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export const AdminExperiences: React.FC<Props> = ({ token, notify }) => {
+  const [entries, setEntries] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<TimelineEntry | null>(null);
-  const [form, setForm] = useState<TimelineEntry>(emptyEntry());
+  const [editing, setEditing] = useState<Experience | null>(null);
+  const [form, setForm] = useState<Experience>(emptyEntry());
   const [photos, setPhotos] = useState<TimelinePhoto[]>([]);
+  const [techInput, setTechInput] = useState('');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(false);
@@ -49,11 +108,11 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
 
   const load = async () => {
     try {
-      const res = await fetch('/api/admin/timeline', { headers });
+      const res = await fetch('/api/admin/experiences', { headers });
       const data = await res.json();
       setEntries(Array.isArray(data) ? data : []);
     } catch {
-      notify('Chargement du parcours impossible.', 'error');
+      notify('Chargement des expériences impossible.', 'error');
     } finally {
       setLoading(false);
     }
@@ -61,16 +120,24 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
 
   useEffect(() => { load(); }, []);
 
-  const openModal = async (entry: TimelineEntry | null) => {
+  const openModal = async (entry: Experience | null) => {
     setEditing(entry);
-    setForm(entry ? { ...entry, lessons: entry.lessons ?? [] } : emptyEntry());
+    setForm(entry
+      ? {
+          ...entry,
+          technologies: entry.technologies ?? [],
+          achievements: entry.achievements ?? [],
+          lessons: entry.lessons ?? [],
+        }
+      : emptyEntry());
+    setTechInput('');
     setPreview(false);
     setPhotos([]);
     setModalOpen(true);
 
     if (entry?.id) {
       try {
-        const res = await fetch(`/api/admin/timeline/${entry.id}/photos`, { headers });
+        const res = await fetch(`/api/admin/experiences/${entry.id}/photos`, { headers });
         const data = await res.json();
         setPhotos(Array.isArray(data) ? data : []);
       } catch {
@@ -132,19 +199,20 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
     });
   };
 
-  const moveLesson = (index: number, direction: -1 | 1) => {
-    setForm(f => {
-      const lessons = [...(f.lessons ?? [])];
-      const target = index + direction;
-      if (target < 0 || target >= lessons.length) return f;
-      [lessons[index], lessons[target]] = [lessons[target], lessons[index]];
-      return { ...f, lessons };
-    });
+  const addTech = () => {
+    const value = techInput.trim();
+    if (!value) return;
+    setForm(f => ({ ...f, technologies: [...(f.technologies ?? []), value] }));
+    setTechInput('');
   };
 
   const save = async () => {
-    if (!form.slug.trim() || !form.title.trim() || !form.period_label.trim()) {
-      notify('Slug, période et titre sont obligatoires.', 'error');
+    if (!form.slug.trim() || !form.role.trim() || !form.period_label.trim()) {
+      notify('Slug, période et intitulé sont obligatoires.', 'error');
+      return;
+    }
+    if (form.confidential && !form.summary?.trim()) {
+      notify('Mission confidentielle : décrivez le client en une phrase dans le résumé.', 'error');
       return;
     }
     const missingAlt = photos.find(p => !p.alt.trim());
@@ -155,8 +223,13 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
 
     setSaving(true);
     try {
-      const payload = { ...form, lessons: (form.lessons ?? []).filter(l => l.trim()) };
-      const url = editing?.id ? `/api/timeline/${editing.id}` : '/api/timeline';
+      const payload = {
+        ...form,
+        technologies: (form.technologies ?? []).filter(t => t.trim()),
+        achievements: (form.achievements ?? []).filter(a => a.trim()),
+        lessons: (form.lessons ?? []).filter(l => l.trim()),
+      };
+      const url = editing?.id ? `/api/experiences/${editing.id}` : '/api/experiences';
       const res = await fetch(url, {
         method: editing?.id ? 'PUT' : 'POST',
         headers: { ...headers, 'Content-Type': 'application/json' },
@@ -167,7 +240,7 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
 
       const entryId = editing?.id ?? data?.id;
       if (entryId) {
-        const photoRes = await fetch(`/api/timeline/${entryId}/photos`, {
+        const photoRes = await fetch(`/api/experiences/${entryId}/photos`, {
           method: 'PUT',
           headers: { ...headers, 'Content-Type': 'application/json' },
           body: JSON.stringify({ photos }),
@@ -178,7 +251,7 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
         }
       }
 
-      notify('Étape enregistrée.', 'success');
+      notify('Expérience enregistrée.', 'success');
       setModalOpen(false);
       load();
     } catch (err: any) {
@@ -188,21 +261,21 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
     }
   };
 
-  const remove = async (entry: TimelineEntry) => {
-    if (!confirm(`Supprimer « ${entry.title} » et sa galerie ?`)) return;
+  const remove = async (entry: Experience) => {
+    if (!confirm(`Supprimer « ${entry.role} » et sa galerie ?`)) return;
     try {
-      const res = await fetch(`/api/timeline/${entry.id}`, { method: 'DELETE', headers });
+      const res = await fetch(`/api/experiences/${entry.id}`, { method: 'DELETE', headers });
       if (!res.ok) throw new Error();
-      notify('Étape supprimée.', 'success');
+      notify('Expérience supprimée.', 'success');
       load();
     } catch {
       notify('Suppression impossible.', 'error');
     }
   };
 
-  const togglePublish = async (entry: TimelineEntry) => {
+  const togglePublish = async (entry: Experience) => {
     try {
-      const res = await fetch(`/api/timeline/${entry.id}`, {
+      const res = await fetch(`/api/experiences/${entry.id}`, {
         method: 'PUT',
         headers: { ...headers, 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...entry, published: !entry.published }),
@@ -214,19 +287,19 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
     }
   };
 
-  const reorder = async (entry: TimelineEntry, direction: -1 | 1) => {
+  const reorder = async (entry: Experience, direction: -1 | 1) => {
     const index = entries.findIndex(e => e.id === entry.id);
     const target = index + direction;
     if (target < 0 || target >= entries.length) return;
     const other = entries[target];
     try {
       await Promise.all([
-        fetch(`/api/timeline/${entry.id}`, {
+        fetch(`/api/experiences/${entry.id}`, {
           method: 'PUT',
           headers: { ...headers, 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...entry, sort_order: other.sort_order }),
         }),
-        fetch(`/api/timeline/${other.id}`, {
+        fetch(`/api/experiences/${other.id}`, {
           method: 'PUT',
           headers: { ...headers, 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...other, sort_order: entry.sort_order }),
@@ -242,10 +315,10 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
     <div>
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-text-muted">
-          Les étapes sans récit ni photo restent visibles sur l'accueil, mais ne sont pas cliquables.
+          Les expériences sans récit, réalisation ni photo restent visibles sur l'accueil, mais ne sont pas cliquables.
         </p>
         <button onClick={() => openModal(null)} className="btn-p text-sm">
-          <Plus size={16} /> Nouvelle étape
+          <Plus size={16} /> Nouvelle expérience
         </button>
       </div>
 
@@ -256,8 +329,8 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
       ) : entries.length === 0 ? (
         <div className="glass rounded-xl p-8 text-center">
           <p className="text-text-muted text-sm">
-            Aucune étape. Si vous venez d'installer cette fonctionnalité, exécutez d'abord
-            la migration <code className="text-accent-primary">migrations/002_timeline.sql</code> dans Supabase.
+            Aucune expérience. Si vous venez d'installer cette fonctionnalité, exécutez d'abord
+            la migration <code className="text-accent-primary">migrations/003_experiences.sql</code> dans Supabase.
           </p>
         </div>
       ) : (
@@ -266,7 +339,8 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
             <thead className="bg-bg-tertiary border-b border-border">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Période</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Titre</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Intitulé</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Type</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Récit</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Ordre</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-widest text-text-muted">Actions</th>
@@ -277,9 +351,12 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
                 <tr key={entry.id} className="border-b border-border last:border-0">
                   <td className="px-6 py-4 text-sm text-text-secondary whitespace-nowrap">{entry.period_label}</td>
                   <td className="px-6 py-4">
-                    <p className="text-sm font-semibold text-text-primary">{entry.title}</p>
-                    <p className="text-xs text-text-muted mt-0.5">/parcours/{entry.slug}</p>
+                    <p className="text-sm font-semibold text-text-primary">{entry.role}</p>
+                    <p className="text-xs text-text-muted mt-0.5">
+                      {entry.confidential ? 'Client confidentiel' : entry.organization || '—'} · /experience/{entry.slug}
+                    </p>
                   </td>
+                  <td className="px-6 py-4 text-sm text-text-secondary whitespace-nowrap">{entry.type}</td>
                   <td className="px-6 py-4 text-sm text-text-secondary">
                     {entry.content?.trim() ? 'Oui' : '—'}
                   </td>
@@ -316,7 +393,7 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
           <div className="glass rounded-2xl w-full max-w-4xl my-8">
             <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-bg-secondary rounded-t-2xl z-10">
               <h2 className="text-xl font-bold text-text-primary">
-                {editing ? 'Modifier l\'étape' : 'Nouvelle étape'}
+                {editing ? 'Modifier l\'expérience' : 'Nouvelle expérience'}
               </h2>
               <button onClick={() => setModalOpen(false)} aria-label="Fermer" className="text-text-muted hover:text-text-primary">
                 <X size={22} />
@@ -326,47 +403,131 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className={LABEL} htmlFor="tl-period">Période *</label>
-                  <input id="tl-period" className={INPUT} value={form.period_label}
+                  <label className={LABEL} htmlFor="xp-period">Période *</label>
+                  <input id="xp-period" className={INPUT} value={form.period_label}
                     onChange={e => setForm(f => ({ ...f, period_label: e.target.value }))}
-                    placeholder="2021 — 2024" />
+                    placeholder="2024 — Aujourd'hui" />
                 </div>
                 <div>
-                  <label className={LABEL} htmlFor="tl-slug">Slug (URL) *</label>
-                  <input id="tl-slug" className={INPUT} value={form.slug}
+                  <label className={LABEL} htmlFor="xp-slug">Slug (URL) *</label>
+                  <input id="xp-slug" className={INPUT} value={form.slug}
                     onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
-                    placeholder="licence-genie-logiciel-tunis" />
+                    placeholder="stage-administrateur-systemes-reseaux-tunisie-telecom" />
                 </div>
               </div>
 
               <div>
-                <label className={LABEL} htmlFor="tl-title">Titre *</label>
-                <input id="tl-title" className={INPUT} value={form.title}
-                  onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+                <label className={LABEL} htmlFor="xp-role">Intitulé du poste *</label>
+                <input id="xp-role" className={INPUT} value={form.role}
+                  onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+                  placeholder="Stage Administrateur Systèmes &amp; Réseaux" />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className={LABEL} htmlFor="xp-type">Type</label>
+                <select id="xp-type" className={INPUT} value={form.type}
+                  onChange={e => setForm(f => ({ ...f, type: e.target.value as ExperienceType }))}>
+                  {TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+
+              {/* Client confidentiel */}
+              <div className="rounded-xl border border-border p-4 space-y-3">
+                <label className="flex items-start gap-3 text-sm text-text-secondary">
+                  <input type="checkbox" checked={!!form.confidential}
+                    onChange={e => setForm(f => ({ ...f, confidential: e.target.checked }))}
+                    className="w-4 h-4 mt-0.5 accent-current shrink-0" />
+                  <span>
+                    Client confidentiel
+                    <span className="block text-xs text-text-muted mt-0.5">
+                      Le nom du client n'est ni enregistré ni affiché. Décrivez-le vous-même en une
+                      phrase dans le résumé ci-dessous (par exemple « un opérateur télécom »).
+                    </span>
+                  </span>
+                </label>
+
+                {!form.confidential && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className={LABEL} htmlFor="xp-org">Organisation</label>
+                      <input id="xp-org" className={INPUT} value={form.organization ?? ''}
+                        onChange={e => setForm(f => ({ ...f, organization: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className={LABEL} htmlFor="xp-org-url">Site de l'organisation</label>
+                      <input id="xp-org-url" className={INPUT} value={form.organization_url ?? ''}
+                        onChange={e => setForm(f => ({ ...f, organization_url: e.target.value }))}
+                        placeholder="https://..." />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className={LABEL} htmlFor="tl-inst">Établissement</label>
-                  <input id="tl-inst" className={INPUT} value={form.institution ?? ''}
-                    onChange={e => setForm(f => ({ ...f, institution: e.target.value }))} />
+                  <label className={LABEL} htmlFor="xp-location">Lieu</label>
+                  <input id="xp-location" className={INPUT} value={form.location ?? ''}
+                    onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
+                    placeholder="Tunis, Tunisie" />
+                </div>
+                <label className="flex items-center gap-3 text-sm text-text-secondary sm:mt-7">
+                  <input type="checkbox" checked={!!form.remote}
+                    onChange={e => setForm(f => ({ ...f, remote: e.target.checked }))}
+                    className="w-4 h-4 accent-current" />
+                  À distance
+                </label>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className={LABEL} htmlFor="xp-start">Début</label>
+                  <input id="xp-start" type="date" className={INPUT} value={form.start_date ?? ''}
+                    onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} />
                 </div>
                 <div>
-                  <label className={LABEL} htmlFor="tl-city">Ville</label>
-                  <input id="tl-city" className={INPUT} value={form.city ?? ''}
-                    onChange={e => setForm(f => ({ ...f, city: e.target.value }))} />
-                </div>
-                <div>
-                  <label className={LABEL} htmlFor="tl-country">Pays</label>
-                  <input id="tl-country" className={INPUT} value={form.country ?? ''}
-                    onChange={e => setForm(f => ({ ...f, country: e.target.value }))} />
+                  <label className={LABEL} htmlFor="xp-end">Fin (vide si en cours)</label>
+                  <input id="xp-end" type="date" className={INPUT} value={form.end_date ?? ''}
+                    onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))} />
                 </div>
               </div>
 
               <div>
-                <label className={LABEL} htmlFor="tl-summary">Résumé (1-2 phrases)</label>
-                <textarea id="tl-summary" rows={2} className={`${INPUT} resize-none`} value={form.summary ?? ''}
-                  onChange={e => setForm(f => ({ ...f, summary: e.target.value }))} />
+                <label className={LABEL} htmlFor="xp-summary">
+                  Résumé (1-2 phrases){form.confidential ? ' *' : ''}
+                </label>
+                <textarea id="xp-summary" rows={2} className={`${INPUT} resize-none`} value={form.summary ?? ''}
+                  onChange={e => setForm(f => ({ ...f, summary: e.target.value }))}
+                  placeholder={form.confidential ? 'Mission pour un opérateur télécom…' : undefined} />
+              </div>
+
+              {/* Technologies */}
+              <div className="rounded-xl border border-border p-4">
+                <p className={LABEL}>Technologies</p>
+                <div className="flex gap-2">
+                  <input className={INPUT} value={techInput}
+                    onChange={e => setTechInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTech(); } }}
+                    placeholder="Ajouter une technologie puis Entrée" />
+                  <button type="button" onClick={addTech}
+                    className="px-3 rounded-lg border border-border text-sm text-text-primary hover:border-accent-primary shrink-0">
+                    Ajouter
+                  </button>
+                </div>
+                {(form.technologies ?? []).length === 0 ? (
+                  <p className="text-xs text-text-muted mt-3">Aucune technologie. Le bloc ne s'affichera pas.</p>
+                ) : (
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {(form.technologies ?? []).map((tech, i) => (
+                      <span key={i} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-[12px] font-medium">
+                        {tech}
+                        <button type="button" aria-label={`Retirer ${tech}`}
+                          onClick={() => setForm(f => ({ ...f, technologies: (f.technologies ?? []).filter((_, j) => j !== i) }))}>
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Couverture */}
@@ -395,7 +556,7 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
               {/* Récit */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className={LABEL} htmlFor="tl-content">Récit (Markdown)</label>
+                  <label className={LABEL} htmlFor="xp-content">Récit (Markdown)</label>
                   <div className="flex items-center gap-3">
                     <label className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-accent-primary cursor-pointer">
                       <Images size={14} /> Insérer une photo
@@ -413,45 +574,27 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
                     <Markdown>{form.content || '_Rien à afficher._'}</Markdown>
                   </div>
                 ) : (
-                  <textarea id="tl-content" ref={contentRef} rows={12} className={`${INPUT} resize-y font-mono text-[13px]`}
+                  <textarea id="xp-content" ref={contentRef} rows={12} className={`${INPUT} resize-y font-mono text-[13px]`}
                     value={form.content ?? ''}
                     onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                    placeholder={'## Ce que j\'ai fait\n\nVotre récit...\n\n> Une anecdote mise en avant.'} />
+                    placeholder={'## Le contexte\n\nVotre récit...\n\n> Une anecdote mise en avant.'} />
                 )}
               </div>
 
-              {/* Leçons */}
-              <div className="rounded-xl border border-border p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <p className={LABEL}>Leçons retenues</p>
-                  <button type="button" onClick={() => setForm(f => ({ ...f, lessons: [...(f.lessons ?? []), ''] }))}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-accent-primary">
-                    <Plus size={14} /> Ajouter
-                  </button>
-                </div>
-                {(form.lessons ?? []).length === 0 ? (
-                  <p className="text-xs text-text-muted">Aucune leçon. Le bloc ne s'affichera pas.</p>
-                ) : (
-                  <ul className="space-y-2">
-                    {(form.lessons ?? []).map((lesson, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-accent-primary w-6 shrink-0">{String(i + 1).padStart(2, '0')}</span>
-                        <input className={INPUT} value={lesson}
-                          onChange={e => setForm(f => {
-                            const lessons = [...(f.lessons ?? [])];
-                            lessons[i] = e.target.value;
-                            return { ...f, lessons };
-                          })} />
-                        <button type="button" onClick={() => moveLesson(i, -1)} disabled={i === 0} aria-label="Monter" className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ArrowUp size={14} /></button>
-                        <button type="button" onClick={() => moveLesson(i, 1)} disabled={i === (form.lessons ?? []).length - 1} aria-label="Descendre" className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ArrowDown size={14} /></button>
-                        <button type="button" aria-label="Supprimer"
-                          onClick={() => setForm(f => ({ ...f, lessons: (f.lessons ?? []).filter((_, j) => j !== i) }))}
-                          className="p-1 text-red-500/50 hover:text-red-500"><Trash2 size={14} /></button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              <StringList
+                label="Ce que j'ai réalisé"
+                emptyHint="Aucune réalisation. Le bloc ne s'affichera pas."
+                items={form.achievements ?? []}
+                onChange={achievements => setForm(f => ({ ...f, achievements }))}
+              />
+
+              <StringList
+                label="Leçons retenues"
+                emptyHint="Aucune leçon. Le bloc ne s'affichera pas."
+                numbered
+                items={form.lessons ?? []}
+                onChange={lessons => setForm(f => ({ ...f, lessons }))}
+              />
 
               {/* Galerie */}
               <div className="rounded-xl border border-border p-4">
@@ -493,7 +636,7 @@ export const AdminParcours: React.FC<Props> = ({ token, notify }) => {
                 <input type="checkbox" checked={!!form.published}
                   onChange={e => setForm(f => ({ ...f, published: e.target.checked }))}
                   className="w-4 h-4 accent-current" />
-                Publier cette étape
+                Publier cette expérience
               </label>
             </div>
 
