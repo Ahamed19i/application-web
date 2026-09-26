@@ -2,13 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence, MotionConfig, useScroll, useSpring } from 'motion/react';
-import { Terminal } from 'lucide-react';
 import { Navbar } from './components/Navbar.tsx';
-import { Hero } from './components/Hero.tsx';
-import { About } from './components/About.tsx';
-import { TravauxTeaser } from './components/TravauxTeaser.tsx';
-import { JournalTeaser } from './components/JournalTeaser.tsx';
-import { Contact } from './components/Contact.tsx';
+import { Home } from './components/Home.tsx';
 import { Footer } from './components/Footer.tsx';
 import { AdminLogin } from './components/AdminLogin.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
@@ -88,17 +83,7 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={
-          <PageTransition>
-            <main>
-              <Hero />
-              <About />
-              <TravauxTeaser />
-              <JournalTeaser />
-              <Contact />
-            </main>
-          </PageTransition>
-        } />
+        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/travaux" element={<PageTransition><Travaux /></PageTransition>} />
         <Route path="/project/:slug" element={<PageTransition><ProjectDetail /></PageTransition>} />
         <Route path="/blog/:slug" element={<PageTransition><BlogPostDetail /></PageTransition>} />
@@ -111,17 +96,27 @@ const AnimatedRoutes = () => {
 };
 
 export default function App() {
-  const [sudoActive, setSudoActive] = useState(false);
+  const [easterEgg, setEasterEgg] = useState<'sudo' | 'ping' | null>(null);
   const keysPressed = useRef<string[]>([]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+      if (isTyping) return;
+      if ((e.metaKey || e.ctrlKey)) return; // don't interfere with Ctrl/Cmd+K
+
       keysPressed.current.push(e.key.toLowerCase());
       if (keysPressed.current.length > 4) keysPressed.current.shift();
 
-      if (keysPressed.current.join('') === 'sudo') {
-        setSudoActive(true);
-        setTimeout(() => setSudoActive(false), 3000);
+      const buffer = keysPressed.current.join('');
+      if (buffer.endsWith('sudo')) {
+        setEasterEgg('sudo');
+        setTimeout(() => setEasterEgg(null), 3000);
+        keysPressed.current = [];
+      } else if (buffer.endsWith('ping')) {
+        setEasterEgg('ping');
+        setTimeout(() => setEasterEgg(null), 2000);
         keysPressed.current = [];
       }
     };
@@ -142,27 +137,37 @@ export default function App() {
           <ScrollToHash />
           <VisitTracker />
           <CommandPalette />
-          <div className="relative min-h-screen overflow-x-hidden bg-bg">
+          <div className="relative min-h-screen bg-bg">
             <Navbar />
 
             <AnimatedRoutes />
 
             <Footer />
 
-            {/* Easter Egg */}
+            {/* Easter eggs */}
             <AnimatePresence>
-              {sudoActive && (
+              {easterEgg === 'sudo' && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.5 }}
-                  className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md"
+                  className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 backdrop-blur-md"
                 >
                   <div className="text-center">
-                    <Terminal className="w-24 h-24 text-accent-primary mx-auto mb-6 animate-bounce" />
-                    <h2 className="text-4xl font-mono font-bold text-accent-primary mb-2">ACCESS GRANTED</h2>
-                    <p className="text-white/60 font-mono">System override initiated... Just kidding!</p>
+                    <h2 className="text-4xl font-bold text-accent-primary mb-2">ACCESS GRANTED</h2>
+                    <p className="text-white/60">System override initiated... Just kidding!</p>
                   </div>
+                </motion.div>
+              )}
+              {easterEgg === 'ping' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-text-primary text-bg px-5 py-2.5 rounded-full text-sm font-medium"
+                >
+                  pong — 12 ms depuis Dakar
                 </motion.div>
               )}
             </AnimatePresence>

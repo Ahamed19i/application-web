@@ -64,21 +64,25 @@ export const CommandPalette: React.FC = () => {
 
   const toggleTheme = () => {
     const root = document.documentElement;
-    const current = root.getAttribute('data-theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const currentlyDark = current === 'dark' || (!current && prefersDark);
-    const next = currentlyDark ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch {}
+    const currentlyLight = root.getAttribute('data-theme') === 'light';
+    if (currentlyLight) {
+      root.removeAttribute('data-theme');
+      try { localStorage.setItem('theme', 'dark'); } catch {}
+    } else {
+      root.setAttribute('data-theme', 'light');
+      try { localStorage.setItem('theme', 'light'); } catch {}
+    }
     close();
   };
 
   const staticCommands: Command[] = [
     { id: 'home', label: 'Accueil', action: () => { navigate('/'); close(); } },
-    { id: 'travaux', label: 'Travaux', action: () => { navigate('/travaux'); close(); } },
-    { id: 'about', label: 'À propos', action: () => goHash('#about') },
-    { id: 'blog', label: 'Journal', action: () => goHash('#blog') },
-    { id: 'contact', label: 'Contact', action: () => goHash('#contact') },
+    { id: 'about', label: 'À propos', action: () => goHash('#a-propos') },
+    { id: 'parcours', label: 'Parcours', action: () => goHash('#parcours') },
+    { id: 'travaux-section', label: 'Travaux (accueil)', action: () => goHash('#travaux') },
+    { id: 'travaux', label: 'Travaux (archive)', action: () => { navigate('/travaux'); close(); } },
+    { id: 'journal', label: 'Journal', action: () => goHash('#journal') },
+    { id: 'contact', label: 'Contact par email', action: () => { window.location.href = 'mailto:ahassanimhoma20@gmail.com'; close(); } },
     { id: 'theme', label: 'Changer de thème (clair / sombre)', hint: 'Thème', action: toggleTheme },
   ];
 
@@ -141,7 +145,7 @@ export const CommandPalette: React.FC = () => {
                 className="w-full bg-transparent outline-none text-sm text-text-primary placeholder:text-text-muted"
                 aria-label="Rechercher une page, un travail, ou une action"
               />
-              <kbd className="text-[10px] font-mono text-text-muted border border-border px-1.5 py-0.5 rounded shrink-0">Esc</kbd>
+              <kbd className="text-[10px] font-semibold text-text-muted border border-border px-1.5 py-0.5 rounded shrink-0">Esc</kbd>
             </div>
 
             <div className="max-h-[50vh] overflow-y-auto py-2">
@@ -160,7 +164,7 @@ export const CommandPalette: React.FC = () => {
                   <span className="truncate">{cmd.label}</span>
                   <span className="flex items-center gap-2 shrink-0">
                     {cmd.hint && (
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted">{cmd.hint}</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{cmd.hint}</span>
                     )}
                     {i === activeIndex && <ArrowRight size={13} className="text-accent-primary" />}
                   </span>

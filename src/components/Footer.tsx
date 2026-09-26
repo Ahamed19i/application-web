@@ -11,7 +11,8 @@ export const Footer: React.FC = () => {
 
   const isAdmin = location.pathname.startsWith('/admin');
 
-  if (isAdmin) return null;
+  // La page d'accueil a son propre petit pied de page intégré (voir Home.tsx).
+  if (isAdmin || location.pathname === '/') return null;
 
   return (
     <footer className="bg-bg border-t border-border pt-12 md:pt-20 pb-12 px-6 mt-10 md:mt-20">

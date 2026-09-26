@@ -1,71 +1,98 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Project } from '../types';
 
 export const TravauxTeaser: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hovered, setHovered] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/api/projects')
       .then(res => (res.ok ? res.json() : []))
       .then((data: Project[]) => {
-        setProjects(Array.isArray(data) ? data.filter(p => p.published).slice(0, 3) : []);
+        setProjects(Array.isArray(data) ? data.filter(p => p.published) : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  if (!loading && projects.length === 0) return null;
-
   return (
-    <section id="projects" className="py-20 md:py-28 px-6 max-w-4xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-        <div className="flex items-end justify-between mb-10 gap-4">
-          <div>
-            <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-4">Travaux</p>
-            <h2 className="font-serif font-medium text-3xl md:text-4xl text-text-primary tracking-tight">
-              Travaux récents
-            </h2>
-          </div>
-          <Link to="/travaux" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors shrink-0">
-            Tout voir <ArrowRight size={14} />
-          </Link>
+    <section id="travaux" aria-labelledby="travaux-heading" className="scroll-mt-24">
+      <div className="lg:hidden sticky top-0 z-20 -mx-6 sm:-mx-10 px-6 sm:px-10 py-4 mb-6 bg-bg/85 backdrop-blur-md border-b border-border">
+        <h2 id="travaux-heading" className="text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary">Travaux</h2>
+      </div>
+      <h2 className="hidden lg:block text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary mb-10">
+        Travaux
+      </h2>
+
+      {loading ? (
+        <div className="space-y-6">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-24 bg-bg-secondary rounded-lg animate-pulse"></div>
+          ))}
         </div>
-
-        {loading ? (
-          <div className="space-y-6">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 bg-bg-tertiary rounded animate-pulse"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="border-t border-border">
-            {projects.map((project) => (
+      ) : projects.length === 0 ? (
+        <p className="text-text-muted text-sm">Aucun travail publié pour l'instant.</p>
+      ) : (
+        <ul onMouseLeave={() => setHovered(null)}>
+          {projects.map((project) => (
+            <li
+              key={project.id}
+              onMouseEnter={() => setHovered(project.id)}
+              className="transition-opacity duration-300"
+              style={{ opacity: hovered === null || hovered === project.id ? 1 : 0.5 }}
+            >
               <Link
-                key={project.id}
                 to={`/project/${project.slug || project.id}`}
-                className="group block py-6 border-b border-border hover:bg-bg-secondary transition-colors -mx-6 px-6"
+                className="group grid grid-cols-[88px_1fr] sm:grid-cols-[112px_1fr] gap-4 sm:gap-6 py-5 -mx-4 px-4 rounded-lg transition-colors duration-200 hover:bg-bg-secondary items-start"
               >
-                <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="font-serif font-medium text-lg md:text-xl text-text-primary group-hover:text-accent-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <ArrowUpRight size={16} className="text-text-muted group-hover:text-accent-primary opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                <div className="w-[88px] h-[66px] sm:w-[112px] sm:h-[84px] rounded-lg border border-border overflow-hidden bg-bg-tertiary shrink-0">
+                  {project.image_url ? (
+                    <img
+                      src={project.image_url}
+                      alt=""
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center px-2 text-center">
+                      <span className="text-[9px] font-semibold uppercase tracking-wider text-text-muted leading-tight">{project.category}</span>
+                    </div>
+                  )}
                 </div>
-                <p className="text-text-secondary text-sm mt-1.5 max-w-[65ch] line-clamp-1">{project.description}</p>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-1.5">{project.category}</p>
+                  <h3 className="text-[16px] sm:text-[17px] font-semibold text-text-primary flex items-center gap-1.5">
+                    <span className="group-hover:text-accent-primary transition-colors">{project.title}</span>
+                    <ArrowUpRight size={15} className="text-text-muted group-hover:text-accent-primary transition-colors shrink-0" />
+                  </h3>
+                  <p className="text-[14px] text-text-secondary mt-1.5 leading-relaxed line-clamp-2">{project.description}</p>
+                  {project.stack && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {project.stack.split(',').slice(0, 4).map((s, i) => (
+                        <span key={i} className="px-2.5 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-[11px] font-medium">
+                          {s.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </Link>
-            ))}
-          </div>
-        )}
+            </li>
+          ))}
+        </ul>
+      )}
 
-        <Link to="/travaux" className="sm:hidden mt-8 flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors">
-          Tout voir <ArrowRight size={14} />
-        </Link>
-      </motion.div>
+      <Link
+        to="/travaux"
+        className="inline-flex items-center gap-2 mt-2 text-[14px] font-semibold text-text-primary hover:text-accent-primary transition-colors"
+      >
+        Voir tous les travaux →
+      </Link>
     </section>
   );
 };

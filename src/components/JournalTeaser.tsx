@@ -1,62 +1,83 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { Post } from '../types';
 
 export const JournalTeaser: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hovered, setHovered] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/api/posts')
       .then(res => (res.ok ? res.json() : []))
       .then((data: Post[]) => {
-        setPosts(Array.isArray(data) ? data.filter(p => p.published).slice(0, 3) : []);
+        setPosts(Array.isArray(data) ? data.filter(p => p.published) : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  if (!loading && posts.length === 0) return null;
-
   return (
-    <section id="blog" className="py-20 md:py-28 px-6 max-w-4xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-        <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-4">Journal</p>
-        <h2 className="font-serif font-medium text-3xl md:text-4xl text-text-primary tracking-tight mb-10">
-          Derniers articles
-        </h2>
+    <section id="journal" aria-labelledby="journal-heading" className="scroll-mt-24">
+      <div className="lg:hidden sticky top-0 z-20 -mx-6 sm:-mx-10 px-6 sm:px-10 py-4 mb-6 bg-bg/85 backdrop-blur-md border-b border-border">
+        <h2 id="journal-heading" className="text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary">Journal</h2>
+      </div>
+      <h2 className="hidden lg:block text-[13px] font-semibold uppercase tracking-[0.15em] text-text-primary mb-10">
+        Journal
+      </h2>
 
-        {loading ? (
-          <div className="space-y-6">
-            {[1, 2].map(i => (
-              <div key={i} className="h-16 bg-bg-tertiary rounded animate-pulse"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="border-t border-border">
-            {posts.map((post) => (
+      {loading ? (
+        <div className="space-y-6">
+          {[1, 2].map(i => (
+            <div key={i} className="h-20 bg-bg-secondary rounded-lg animate-pulse"></div>
+          ))}
+        </div>
+      ) : posts.length === 0 ? (
+        <p className="text-text-muted text-sm">Aucun article publié pour l'instant.</p>
+      ) : (
+        <ul onMouseLeave={() => setHovered(null)}>
+          {posts.map((post) => (
+            <li
+              key={post.id}
+              onMouseEnter={() => setHovered(post.id)}
+              className="transition-opacity duration-300"
+              style={{ opacity: hovered === null || hovered === post.id ? 1 : 0.5 }}
+            >
               <Link
-                key={post.id}
                 to={`/blog/${post.slug || post.id}`}
-                className="group block py-6 border-b border-border hover:bg-bg-secondary transition-colors -mx-6 px-6"
+                className="group grid grid-cols-[72px_1fr] sm:grid-cols-[96px_1fr] gap-4 sm:gap-6 py-5 -mx-4 px-4 rounded-lg transition-colors duration-200 hover:bg-bg-secondary items-center"
               >
-                <p className="font-mono text-[11px] text-text-muted uppercase tracking-wider mb-2">
-                  {new Date(post.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
-                </p>
-                <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="font-serif font-medium text-lg md:text-xl text-text-primary group-hover:text-accent-primary transition-colors">
-                    {post.title}
+                <div className="w-[72px] h-[54px] sm:w-[96px] sm:h-[72px] rounded-lg border border-border overflow-hidden bg-bg-tertiary shrink-0">
+                  {post.image_url ? (
+                    <img
+                      src={post.image_url}
+                      alt=""
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-[9px] font-semibold uppercase tracking-wider text-text-muted">Journal</span>
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[12px] font-semibold uppercase tracking-wider text-text-muted mb-1">
+                    {new Date(post.created_at).getFullYear()}
+                  </p>
+                  <h3 className="text-[16px] sm:text-[17px] font-semibold text-text-primary flex items-center gap-1.5">
+                    <span className="group-hover:text-accent-primary transition-colors">{post.title}</span>
+                    <ArrowUpRight size={15} className="text-text-muted group-hover:text-accent-primary transition-colors shrink-0" />
                   </h3>
-                  <ArrowUpRight size={16} className="text-text-muted group-hover:text-accent-primary opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                 </div>
               </Link>
-            ))}
-          </div>
-        )}
-      </motion.div>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 };
