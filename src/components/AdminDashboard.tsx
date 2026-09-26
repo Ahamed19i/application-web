@@ -21,9 +21,11 @@ import {
   BarChart3,
   TrendingUp,
   Users,
-  RefreshCw
+  RefreshCw,
+  GraduationCap,
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
+import { AdminParcours } from './AdminParcours.tsx';
 import { 
   LineChart, 
   Line, 
@@ -37,7 +39,7 @@ import {
 } from 'recharts';
 
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'messages' | 'analytics'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'timeline' | 'messages' | 'analytics'>('stats');
   const [stats, setStats] = useState({ projects: 0, posts: 0, unreadMessages: 0 });
   const [analytics, setAnalytics] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -307,6 +309,7 @@ export const AdminDashboard: React.FC = () => {
             { id: 'analytics', label: 'Analytiques', icon: BarChart3, isNew: true },
             { id: 'projects', label: 'Projets', icon: FolderKanban },
             { id: 'posts', label: 'Blog', icon: FileText },
+            { id: 'timeline', label: 'Parcours', icon: GraduationCap },
             { id: 'messages', label: 'Messages', icon: MessageSquare, badge: stats.unreadMessages },
           ].map((item) => (
             <button
@@ -358,7 +361,9 @@ export const AdminDashboard: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="flex justify-between items-center mb-10">
-              <h1 className="text-3xl font-bold capitalize">{activeTab}</h1>
+              <h1 className="text-3xl font-bold capitalize">
+                {activeTab === 'timeline' ? 'Parcours' : activeTab}
+              </h1>
               {(activeTab === 'projects' || activeTab === 'posts') && (
                 <button 
                   onClick={() => openModal()}
@@ -617,6 +622,20 @@ export const AdminDashboard: React.FC = () => {
                   </tbody>
                 </table>
               </div>
+            )}
+
+            {activeTab === 'timeline' && (
+              <AdminParcours
+                token={token || ''}
+                notify={(message, type) =>
+                  setNotification({
+                    isOpen: true,
+                    title: type === 'success' ? 'Succès' : 'Erreur',
+                    message,
+                    type: 'alert',
+                  })
+                }
+              />
             )}
 
             {activeTab === 'messages' && (

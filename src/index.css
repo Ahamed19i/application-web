@@ -54,8 +54,12 @@
   --color-danger: #B8402F;
 
   /* Même vert, plus discret sur fond clair. */
-  --glow-core: rgba(16, 150, 104, 0.10);
-  --glow-mid: rgba(16, 150, 104, 0.04);
+  /* En clair, la lueur est dans la famille bleu nuit du thème sombre, mais
+     un peu plus saturée : mélangé à un fond chaud, un navy aussi sombre que
+     #0B1220 fait surtout baisser la luminosité sans laisser de dominante
+     bleue. Ce bleu-là teinte réellement le fond. */
+  --glow-core: rgba(20, 50, 130, 0.14);
+  --glow-mid: rgba(20, 50, 130, 0.055);
 }
 
 @layer base {

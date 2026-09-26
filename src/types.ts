@@ -36,6 +36,42 @@ export interface Post {
   pdf_url?: string;
 }
 
+export interface TimelinePhoto {
+  id?: number;
+  image_url: string;
+  alt: string;
+  caption?: string | null;
+  sort_order?: number;
+}
+
+export interface TimelineEntry {
+  id?: number;
+  slug: string;
+  period_label: string;
+  sort_order: number;
+  title: string;
+  institution?: string | null;
+  city?: string | null;
+  country?: string | null;
+  summary?: string | null;
+  cover_image_url?: string | null;
+  cover_image_alt?: string | null;
+  content?: string | null;
+  lessons?: string[];
+  published?: boolean;
+  photos?: TimelinePhoto[];
+  /** Ajouté par /api/timeline pour savoir si l'étape a une galerie. */
+  has_photos?: boolean;
+}
+
+/** Une étape n'est cliquable que si elle a vraiment quelque chose à montrer. */
+export function timelineHasStory(entry: TimelineEntry): boolean {
+  const hasContent = !!entry.content && entry.content.trim().length > 0;
+  const hasPhotos = entry.has_photos === true || (entry.photos?.length ?? 0) > 0;
+  const hasCover = !!entry.cover_image_url;
+  return hasContent || hasPhotos || hasCover;
+}
+
 export interface Message {
   id: number;
   name: string;

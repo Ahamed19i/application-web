@@ -4,7 +4,20 @@ Règle en vigueur : **aucun texte de remplissage ne s'affiche sur le site.**
 Quand une donnée manque, l'élément concerné n'est simplement pas rendu, et le
 manque est noté ici. Aucun contenu n'est inventé.
 
+## À faire en premier : exécuter la migration du parcours
+
+`migrations/002_timeline.sql` crée la table des étapes, la galerie, les règles
+d'accès et le bucket de photos, et y insère tes 3 étapes actuelles. Tant qu'elle
+n'est pas exécutée, la section Parcours de l'accueil continue de fonctionner
+(elle retombe sur les mêmes données en dur), mais l'admin « Parcours » sera vide
+et aucune étape ne sera cliquable.
+
 ## En attente de ta part
+
+- **Récits et photos du parcours** — chaque étape s'affiche sans récit ni
+  galerie tant que tu ne les ajoutes pas depuis l'admin. Une étape sans récit
+  ni photo reste visible sur l'accueil mais n'est pas cliquable : elle ne mène
+  jamais à une page vide.
 
 - **Description du stage Tunisie Télécom** (`src/components/Experience.tsx`) —
   l'entrée s'affiche avec période, intitulé, organisation et lieu ; la

@@ -31,7 +31,9 @@ if (!process.env.JWT_SECRET) {
 }
 const JWT_SECRET = process.env.JWT_SECRET;
 
-app.use(express.json());
+// 8 Mo : les images arrivent en base64 (≈ +33 % par rapport au fichier),
+// la limite réelle par image est vérifiée dans /api/admin/upload.
+app.use(express.json({ limit: "8mb" }));
 
 // Request logging for debug
 app.use((req, res, next) => {
@@ -235,6 +237,206 @@ app.delete("/api/posts/:id", authenticateToken, async (req, res) => {
   
   if (error) return res.status(500).json(error);
   res.json({ success: true });
+});
+
+// --- Parcours (timeline) ---
+// Table créée par migrations/002_timeline.sql. Tant qu'elle n'existe pas,
+// ces routes renvoient une liste vide et le site retombe sur ses entrées
+// statiques : rien ne casse avant que la migration soit exécutée.
+
+const TIMELINE_FIELDS =
+  "id, slug, period_label, sort_order, title, institution, city, country, summary, cover_image_url, cover_image_alt, content, lessons, published, created_at, updated_at";
+
+app.get("/api/timeline", async (req, res) => {
+  const { data, error } = await supabase
+    .from("timeline_entries")
+    .select(TIMELINE_FIELDS)
+    .eq("published", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    console.warn("Table 'timeline_entries' absente ou inaccessible:", error.message);
+    return res.json([]);
+  }
+
+  // has_photos permet à l'accueil de savoir si une étape mène à une vraie page.
+  const { data: photoRows } = await supabase
+    .from("timeline_photos")
+    .select("entry_id");
+  const withPhotos = new Set((photoRows ?? []).map((p: any) => p.entry_id));
+
+  res.json((data ?? []).map((entry: any) => ({
+    ...entry,
+    has_photos: withPhotos.has(entry.id),
+  })));
+});
+
+app.get("/api/timeline/:slug", async (req, res) => {
+  const { slug } = req.params;
+
+  const { data: entry, error } = await supabase
+    .from("timeline_entries")
+    .select(TIMELINE_FIELDS)
+    .eq("slug", slug)
+    .eq("published", true)
+    .single();
+
+  if (error || !entry) return res.status(404).json({ message: "Étape non trouvée" });
+
+  const { data: photos } = await supabase
+    .from("timeline_photos")
+    .select("id, image_url, alt, caption, sort_order")
+    .eq("entry_id", entry.id)
+    .order("sort_order", { ascending: true });
+
+  res.json({ ...entry, photos: photos ?? [] });
+});
+
+app.get("/api/admin/timeline", authenticateToken, async (req, res) => {
+  const { data, error } = await supabase
+    .from("timeline_entries")
+    .select(TIMELINE_FIELDS)
+    .order("sort_order", { ascending: true });
+
+  if (error) return res.status(500).json(error);
+  res.json(data ?? []);
+});
+
+app.get("/api/admin/timeline/:id/photos", authenticateToken, async (req, res) => {
+  const { data, error } = await supabase
+    .from("timeline_photos")
+    .select("id, entry_id, image_url, alt, caption, sort_order")
+    .eq("entry_id", req.params.id)
+    .order("sort_order", { ascending: true });
+
+  if (error) return res.status(500).json(error);
+  res.json(data ?? []);
+});
+
+function timelinePayload(body: any) {
+  return {
+    slug: body.slug,
+    period_label: body.period_label,
+    sort_order: Number(body.sort_order) || 0,
+    title: body.title,
+    institution: body.institution || null,
+    city: body.city || null,
+    country: body.country || null,
+    summary: body.summary || null,
+    cover_image_url: body.cover_image_url || null,
+    cover_image_alt: body.cover_image_alt || null,
+    content: body.content || null,
+    lessons: Array.isArray(body.lessons) ? body.lessons.filter((l: unknown) => typeof l === "string" && l.trim()) : [],
+    published: body.published === true || body.published === 1,
+  };
+}
+
+app.post("/api/timeline", authenticateToken, async (req, res) => {
+  const { data, error } = await supabase
+    .from("timeline_entries")
+    .insert([timelinePayload(req.body)])
+    .select("id");
+
+  if (error) return res.status(500).json(error);
+  res.json({ id: data?.[0]?.id });
+});
+
+app.put("/api/timeline/:id", authenticateToken, async (req, res) => {
+  const { error } = await supabase
+    .from("timeline_entries")
+    .update(timelinePayload(req.body))
+    .eq("id", req.params.id);
+
+  if (error) return res.status(500).json(error);
+  res.json({ success: true });
+});
+
+app.delete("/api/timeline/:id", authenticateToken, async (req, res) => {
+  const { error } = await supabase
+    .from("timeline_entries")
+    .delete()
+    .eq("id", req.params.id);
+
+  if (error) return res.status(500).json(error);
+  res.json({ success: true });
+});
+
+// Galerie : remplace d'un bloc la liste des photos d'une étape (ordre inclus).
+app.put("/api/timeline/:id/photos", authenticateToken, async (req, res) => {
+  const entryId = Number(req.params.id);
+  const photos = Array.isArray(req.body?.photos) ? req.body.photos : [];
+
+  const invalid = photos.find((p: any) => !p?.image_url || !p?.alt?.trim());
+  if (invalid) {
+    return res.status(400).json({ message: "Chaque photo doit avoir une URL et un texte alternatif." });
+  }
+
+  const { error: deleteError } = await supabase
+    .from("timeline_photos")
+    .delete()
+    .eq("entry_id", entryId);
+
+  if (deleteError) return res.status(500).json(deleteError);
+
+  if (photos.length === 0) return res.json({ success: true });
+
+  const rows = photos.map((p: any, index: number) => ({
+    entry_id: entryId,
+    image_url: p.image_url,
+    alt: p.alt.trim(),
+    caption: p.caption?.trim() || null,
+    sort_order: index,
+  }));
+
+  const { error } = await supabase.from("timeline_photos").insert(rows);
+  if (error) return res.status(500).json(error);
+  res.json({ success: true });
+});
+
+// Upload d'image vers le bucket `parcours` (redimensionnée côté navigateur).
+app.post("/api/admin/upload", authenticateToken, async (req, res) => {
+  try {
+    const { dataUrl, filename } = req.body ?? {};
+    if (typeof dataUrl !== "string") {
+      return res.status(400).json({ message: "Image manquante." });
+    }
+
+    const match = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(dataUrl);
+    if (!match) {
+      return res.status(400).json({ message: "Format non accepté (JPEG, PNG ou WebP uniquement)." });
+    }
+
+    const contentType = match[1];
+    const buffer = Buffer.from(match[2], "base64");
+
+    if (buffer.byteLength > 5 * 1024 * 1024) {
+      return res.status(400).json({ message: "Image trop lourde (5 Mo maximum)." });
+    }
+
+    const extension = contentType.split("/")[1].replace("jpeg", "jpg");
+    const safeName = String(filename || "photo")
+      .toLowerCase()
+      .replace(/\.[^.]+$/, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 40) || "photo";
+    const path = `${Date.now()}-${safeName}.${extension}`;
+
+    const { error } = await supabase.storage
+      .from("parcours")
+      .upload(path, buffer, { contentType, upsert: false });
+
+    if (error) {
+      console.error("Upload échoué:", error.message);
+      return res.status(500).json({ message: "Envoi impossible. Le bucket 'parcours' existe-t-il ?" });
+    }
+
+    const { data } = supabase.storage.from("parcours").getPublicUrl(path);
+    res.json({ url: data.publicUrl });
+  } catch (err: any) {
+    console.error("Upload échoué:", err?.message);
+    res.status(500).json({ message: "Envoi impossible." });
+  }
 });
 
 // Messages

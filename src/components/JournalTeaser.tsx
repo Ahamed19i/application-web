@@ -80,6 +80,13 @@ export const JournalTeaser: React.FC = () => {
           ))}
         </ul>
       )}
+
+      <Link
+        to="/journal"
+        className="inline-flex items-center gap-2 mt-2 text-[14px] font-semibold text-text-primary hover:text-accent-primary transition-colors"
+      >
+        Voir tout le journal →
+      </Link>
     </section>
   );
 };

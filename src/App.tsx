@@ -4,6 +4,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence, MotionConfig } from 'motion/react';
 import { Home } from './components/Home.tsx';
 import { Travaux } from './components/Travaux.tsx';
+import { Journal } from './components/Journal.tsx';
 import { ContactPage } from './components/ContactPage.tsx';
 import { NotFound } from './components/NotFound.tsx';
 import { PageTransition } from './components/PageTransition.tsx';
@@ -13,6 +14,7 @@ import { CommandPalette } from './components/CommandPalette.tsx';
 // et l'admin (avec les graphiques) ne doivent pas peser sur l'accueil.
 const ProjectDetail = lazy(() => import('./components/ProjectDetail.tsx').then(m => ({ default: m.ProjectDetail })));
 const BlogPostDetail = lazy(() => import('./components/BlogPostDetail.tsx').then(m => ({ default: m.BlogPostDetail })));
+const ParcoursDetail = lazy(() => import('./components/ParcoursDetail.tsx').then(m => ({ default: m.ParcoursDetail })));
 const AdminLogin = lazy(() => import('./components/AdminLogin.tsx').then(m => ({ default: m.AdminLogin })));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard.tsx').then(m => ({ default: m.AdminDashboard })));
 
@@ -72,6 +74,8 @@ const AnimatedRoutes = () => {
           <Route path="/" element={<PageTransition><Home /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
           <Route path="/travaux" element={<PageTransition><Travaux /></PageTransition>} />
+          <Route path="/journal" element={<PageTransition><Journal /></PageTransition>} />
+          <Route path="/parcours/:slug" element={<PageTransition><ParcoursDetail /></PageTransition>} />
           <Route path="/project/:slug" element={<PageTransition><ProjectDetail /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPostDetail /></PageTransition>} />
           <Route path="/admin/login" element={<AdminLogin />} />

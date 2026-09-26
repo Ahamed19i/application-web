@@ -1,38 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
+import { TimelineEntry, timelineHasStory } from '../types';
 
-interface Entry {
-  period: string;
-  title: string;
-  org: string;
-  place: string;
-  description?: string;
-}
-
-const ENTRIES: Entry[] = [
+/**
+ * Repli utilisé tant que la migration 002 n'a pas été exécutée : ce sont
+ * exactement les données affichées jusqu'ici, pour que la section ne
+ * disparaisse jamais. Dès que la table existe, la base fait autorité.
+ */
+const FALLBACK_ENTRIES: TimelineEntry[] = [
   {
-    period: '2024 — Aujourd\'hui',
+    slug: 'master-2-srt-afi-lue',
+    period_label: '2024 — Aujourd\'hui',
+    sort_order: 1,
     title: 'Master 2 Systèmes, Réseaux et Télécommunications',
-    org: 'Université de l\'Entreprise (AFI-L\'UE)',
-    place: 'Dakar, Sénégal',
-    description: "Mémoire sur la conception d'une infrastructure hybride résiliente, pensée pour la haute disponibilité des données.",
+    institution: 'Université de l\'Entreprise (AFI-L\'UE)',
+    city: 'Dakar',
+    country: 'Sénégal',
+    summary: "Mémoire sur la conception d'une infrastructure hybride résiliente, pensée pour la haute disponibilité des données.",
   },
   {
-    period: '2021 — 2024',
+    slug: 'licence-genie-logiciel-tunis',
+    period_label: '2021 — 2024',
+    sort_order: 2,
     title: 'Licence en Génie Logiciel et Systèmes d\'Information',
-    org: 'Université Centrale de Tunis',
-    place: 'Tunis, Tunisie',
-    description: "Là où j'ai découvert l'informatique.",
+    institution: 'Université Centrale de Tunis',
+    city: 'Tunis',
+    country: 'Tunisie',
+    summary: "Là où j'ai découvert l'informatique.",
   },
   {
-    period: '2019',
+    slug: 'baccalaureat-gs-avenir',
+    period_label: '2019',
+    sort_order: 3,
     title: 'Baccalauréat scientifique, série D',
-    org: 'GS Avenir',
-    place: 'Moroni, Comores',
+    institution: 'GS Avenir',
+    city: 'Moroni',
+    country: 'Comores',
   },
 ];
 
+const ROW_CLASS =
+  'group grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-6 py-5 -mx-4 px-4 rounded-xl transition-colors duration-200 hover:bg-bg-secondary focus-visible:bg-bg-secondary focus-visible:outline-none';
+
+const EntryBody: React.FC<{ entry: TimelineEntry; clickable: boolean }> = ({ entry, clickable }) => {
+  const place = [entry.city, entry.country].filter(Boolean).join(', ');
+  return (
+    <>
+      <p className="text-[12px] font-bold uppercase tracking-wider text-text-muted pt-1 leading-snug">
+        {entry.period_label}
+      </p>
+      <div>
+        <h3 className="text-[16px] font-semibold text-text-primary leading-snug flex items-start gap-1.5">
+          <span className="group-hover:text-accent-primary transition-colors">{entry.title}</span>
+          {clickable && (
+            <ArrowUpRight
+              size={14}
+              className="text-text-muted group-hover:text-accent-primary transition-all shrink-0 mt-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+          )}
+        </h3>
+        {(entry.institution || place) && (
+          <p className="text-[14px] text-text-secondary mt-1">
+            {[entry.institution, place].filter(Boolean).join(' — ')}
+          </p>
+        )}
+        {entry.summary && (
+          <p className="text-[14px] sm:text-[15px] text-text-secondary mt-2 leading-relaxed">
+            {entry.summary}
+          </p>
+        )}
+      </div>
+    </>
+  );
+};
+
 export const Parcours: React.FC = () => {
-  const [hovered, setHovered] = useState<number | null>(null);
+  const [entries, setEntries] = useState<TimelineEntry[]>(FALLBACK_ENTRIES);
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/timeline')
+      .then(res => (res.ok ? res.json() : []))
+      .then((data: TimelineEntry[]) => {
+        if (Array.isArray(data) && data.length > 0) setEntries(data);
+      })
+      .catch(() => { /* on garde le repli */ });
+  }, []);
 
   return (
     <section id="parcours" aria-labelledby="parcours-heading" className="scroll-mt-24">
@@ -44,38 +98,29 @@ export const Parcours: React.FC = () => {
       </h2>
 
       <ul onMouseLeave={() => setHovered(null)}>
-        {ENTRIES.map((entry, i) => (
-          <li
-            key={i}
-            onMouseEnter={() => setHovered(i)}
-            onFocus={() => setHovered(i)}
-            onBlur={() => setHovered(null)}
-            className="transition-opacity duration-300"
-            style={{ opacity: hovered === null || hovered === i ? 1 : 0.5 }}
-          >
-            <div
-              tabIndex={0}
-              className="group grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-1 sm:gap-6 py-5 -mx-4 px-4 rounded-xl transition-colors duration-200 hover:bg-bg-secondary focus-visible:bg-bg-secondary focus-visible:outline-none"
+        {entries.map(entry => {
+          const clickable = timelineHasStory(entry);
+          return (
+            <li
+              key={entry.slug}
+              onMouseEnter={() => setHovered(entry.slug)}
+              onFocus={() => setHovered(entry.slug)}
+              onBlur={() => setHovered(null)}
+              className="transition-opacity duration-300"
+              style={{ opacity: hovered === null || hovered === entry.slug ? 1 : 0.5 }}
             >
-              <p className="text-[12px] font-bold uppercase tracking-wider text-text-muted pt-1 leading-snug">
-                {entry.period}
-              </p>
-              <div>
-                <h3 className="text-[16px] font-semibold text-text-primary leading-snug group-hover:text-accent-primary transition-colors">
-                  {entry.title}
-                </h3>
-                <p className="text-[14px] text-text-secondary mt-1">
-                  {entry.org} — {entry.place}
-                </p>
-                {entry.description && (
-                  <p className="text-[14px] sm:text-[15px] text-text-secondary mt-2 leading-relaxed">
-                    {entry.description}
-                  </p>
-                )}
-              </div>
-            </div>
-          </li>
-        ))}
+              {clickable ? (
+                <Link to={`/parcours/${entry.slug}`} className={ROW_CLASS}>
+                  <EntryBody entry={entry} clickable />
+                </Link>
+              ) : (
+                <div tabIndex={0} className={ROW_CLASS}>
+                  <EntryBody entry={entry} clickable={false} />
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </section>
   );
