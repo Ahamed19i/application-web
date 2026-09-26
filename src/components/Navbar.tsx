@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Github, Linkedin, Mail } from 'lucide-react';
+import { Menu, X, Github, Linkedin, Mail, Search } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle.tsx';
 
@@ -15,7 +15,9 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-      
+
+      if (location.pathname !== '/') return;
+
       const sections = ['home', 'about', 'projects', 'blog', 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
@@ -25,7 +27,7 @@ export const Navbar: React.FC = () => {
         }
         return false;
       });
-      
+
       if (current) {
         setActiveSection(current);
       }
@@ -33,12 +35,12 @@ export const Navbar: React.FC = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const navLinks = [
     { name: 'Accueil', path: '#home' },
     { name: 'À Propos', path: '#about' },
-    { name: 'Projets', path: '#projects' },
+    { name: 'Travaux', path: '/travaux' },
     { name: 'Blog', path: '#blog' },
     { name: 'Contact', path: '#contact' },
   ];
@@ -47,15 +49,27 @@ export const Navbar: React.FC = () => {
 
   if (isAdmin) return null;
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+  const isLinkActive = (path: string) => {
     if (path.startsWith('#')) {
-      e.preventDefault();
-      setIsOpen(false);
-      
+      return location.pathname === '/' && activeSection === path.substring(1);
+    }
+    return location.pathname === path;
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    if (path.startsWith('#')) {
       // Always use navigate to let ScrollToHash handle the scroll
       // This is more consistent across pages and mobile devices
       navigate('/' + path);
+    } else {
+      navigate(path);
     }
+  };
+
+  const openPalette = () => {
+    window.dispatchEvent(new CustomEvent('open-command-palette'));
   };
 
   return (
@@ -76,18 +90,26 @@ export const Navbar: React.FC = () => {
               href={link.path}
               onClick={(e) => handleNavClick(e, link.path)}
               className={`font-mono text-[11px] uppercase tracking-[0.15em] transition-colors relative group/link ${
-                activeSection === link.path.substring(1)
+                isLinkActive(link.path)
                   ? 'text-accent-primary'
                   : 'text-text-muted hover:text-accent-primary'
               }`}
             >
               {link.name}
               <span className={`absolute -bottom-1 left-0 h-[1px] bg-accent-primary transition-all duration-300 ${
-                activeSection === link.path.substring(1) ? 'w-full' : 'w-0 group-hover/link:w-full'
+                isLinkActive(link.path) ? 'w-full' : 'w-0 group-hover/link:w-full'
               }`}></span>
             </a>
           ))}
-          <div className="flex items-center gap-4 ml-4 pl-4 border-l border-border">
+          <div className="flex items-center gap-3 ml-4 pl-4 border-l border-border">
+            <button
+              onClick={openPalette}
+              aria-label="Ouvrir la palette de commandes"
+              className="flex items-center gap-2 px-2.5 py-1.5 border border-border text-text-muted hover:border-accent-primary hover:text-accent-primary transition-colors"
+            >
+              <Search size={13} />
+              <kbd className="text-[10px] font-mono">⌘K</kbd>
+            </button>
             <a href="images/cv-ahamed-hassani.pdf" download className="text-[11px] font-mono px-3 py-1.5 border border-border text-text-secondary hover:border-accent-primary hover:text-accent-primary transition-colors tracking-wider">
               CV
             </a>
@@ -97,6 +119,13 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Toggle */}
         <div className="flex items-center gap-3 md:hidden">
+          <button
+            onClick={openPalette}
+            aria-label="Ouvrir la palette de commandes"
+            className="w-9 h-9 flex items-center justify-center border border-border text-text-muted"
+          >
+            <Search size={15} />
+          </button>
           <ThemeToggle />
           <button
             className="text-text-primary p-2 z-50 relative"
@@ -124,7 +153,7 @@ export const Navbar: React.FC = () => {
                   href={link.path}
                   onClick={(e) => handleNavClick(e, link.path)}
                   className={`font-mono text-lg uppercase tracking-widest transition-colors ${
-                    activeSection === link.path.substring(1)
+                    isLinkActive(link.path)
                       ? 'text-accent-primary'
                       : 'text-text-secondary hover:text-accent-primary'
                   }`}

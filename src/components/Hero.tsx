@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight, Download } from 'lucide-react';
 
@@ -78,33 +79,33 @@ export const Hero: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="z-10 order-2 lg:order-1 text-center lg:text-left"
         >
-          <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-5 flex items-center justify-center lg:justify-start gap-2">
+          <p className="font-mono text-[11px] text-accent-primary uppercase tracking-[0.2em] mb-6 flex items-center justify-center lg:justify-start gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-accent-primary"></span>
             Disponible — stage / alternance 2026
           </p>
 
-          <h1 className="font-serif font-medium text-4xl md:text-6xl lg:text-[4.2rem] mb-6 leading-[1.05] tracking-tight text-text-primary">
+          <h1 className="font-serif font-medium text-5xl md:text-7xl lg:text-[5rem] mb-7 leading-[1.02] tracking-tight text-text-primary">
             Ahamed Hassani Mhoma
           </h1>
-          <p className="text-base md:text-lg text-text-secondary uppercase tracking-[0.1em] mb-8 font-mono">
+          <p className="text-base md:text-lg text-text-secondary uppercase tracking-[0.1em] mb-9 font-mono">
             Ingénieur Systèmes & Réseaux · DevOps
           </p>
 
           {/* TODO(Ahamed): une phrase de positionnement personnelle — ce que tu fais concrètement,
               dans tes propres mots. Ne pas laisser une formule générique à sa place. */}
-          <p className="text-sm md:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+          <p className="text-base md:text-lg text-text-secondary mb-11 max-w-[42ch] mx-auto lg:mx-0 leading-relaxed">
             Ingénieur en <strong className="text-text-primary">Systèmes & Réseaux Télécom</strong> à l'AFI-Université (Dakar),
             spécialisé sur la <strong className="text-text-primary">virtualisation des infrastructures IT</strong>.
             Expérience chez <strong className="text-text-primary">Tunisie Télécom</strong>.
           </p>
 
-          <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-10">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-11">
             <a href="images/cv-ahamed-hassani.pdf" download className="btn-p text-sm">
               Télécharger le CV <Download size={15} />
             </a>
-            <a href="#projects" className="btn-g text-sm">
+            <Link to="/travaux" className="btn-g text-sm">
               Voir mes travaux <ArrowRight size={15} />
-            </a>
+            </Link>
           </div>
 
           <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-10">

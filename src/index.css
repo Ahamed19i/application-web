@@ -81,6 +81,23 @@
   }
 }
 
+/* Focus clavier visible partout, jamais de outline:none sans remplacement. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-accent-primary);
+  color: var(--color-bg);
+}
+
 /* ---------------------------------------------------------------------
    Primitives sobres : filets + surfaces plates, pas de glassmorphism,
    pas de halos, rayons faibles. Ces classes restent en place pendant la

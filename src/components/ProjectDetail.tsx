@@ -8,8 +8,7 @@ import {
   ArrowLeft, 
   Github, 
   ExternalLink, 
-  Calendar, 
-  Tag, 
+  Tag,
   Share2, 
   CheckCircle2, 
   FileDown, 
@@ -106,7 +105,7 @@ export const ProjectDetail: React.FC = () => {
         <nav className="flex items-center gap-2 text-[10px] md:text-xs font-mono uppercase tracking-widest text-text-muted mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link to="/" className="hover:text-accent-primary transition-colors">Accueil</Link>
           <ChevronRight size={12} />
-          <Link to="/#projects" className="hover:text-accent-primary transition-colors">Projets</Link>
+          <Link to="/travaux" className="hover:text-accent-primary transition-colors">Travaux</Link>
           <ChevronRight size={12} />
           <span className="text-accent-primary truncate max-w-[200px]">{project.title}</span>
         </nav>
@@ -210,15 +209,6 @@ export const ProjectDetail: React.FC = () => {
                       <div>
                         <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Statut</p>
                         <p className="text-sm font-medium text-text-primary">{project.status}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-accent-primary/10 flex items-center justify-center shrink-0">
-                        <Calendar size={16} className="text-accent-primary" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-mono text-text-muted uppercase tracking-wider mb-0.5">Date de réalisation</p>
-                        <p className="text-sm font-medium text-text-primary">Mars 2024</p>
                       </div>
                     </div>
                   </div>
