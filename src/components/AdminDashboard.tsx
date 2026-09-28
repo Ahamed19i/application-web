@@ -21,9 +21,13 @@ import {
   BarChart3,
   TrendingUp,
   Users,
-  RefreshCw
+  RefreshCw,
+  GraduationCap,
+  Briefcase,
 } from 'lucide-react';
 import { Project, Post, Message } from '../types';
+import { AdminParcours } from './AdminParcours.tsx';
+import { AdminExperiences } from './AdminExperiences.tsx';
 import { 
   LineChart, 
   Line, 
@@ -37,7 +41,7 @@ import {
 } from 'recharts';
 
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'messages' | 'analytics'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'projects' | 'posts' | 'timeline' | 'experiences' | 'messages' | 'analytics'>('stats');
   const [stats, setStats] = useState({ projects: 0, posts: 0, unreadMessages: 0 });
   const [analytics, setAnalytics] = useState<any>(null);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -291,14 +295,14 @@ export const AdminDashboard: React.FC = () => {
     <div className="min-h-screen flex">
       {/* Sidebar */}
       <aside className="w-64 glass border-y-0 border-l-0 flex flex-col">
-        <div className="p-8 border-b border-white/10">
+        <div className="p-8 border-b border-border">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 rounded bg-accent-primary/10 flex items-center justify-center border border-accent-primary/20">
               <LayoutDashboard className="text-accent-primary w-5 h-5" />
             </div>
             <span className="font-mono font-bold tracking-tighter">ADMIN PANEL</span>
           </div>
-          <p className="text-[10px] text-white/40 uppercase tracking-widest">Ahamed Hassani</p>
+          <p className="text-[10px] text-text-muted uppercase tracking-widest">Ahamed Hassani</p>
         </div>
 
         <nav className="flex-grow p-4 space-y-2">
@@ -307,13 +311,15 @@ export const AdminDashboard: React.FC = () => {
             { id: 'analytics', label: 'Analytiques', icon: BarChart3, isNew: true },
             { id: 'projects', label: 'Projets', icon: FolderKanban },
             { id: 'posts', label: 'Blog', icon: FileText },
+            { id: 'timeline', label: 'Parcours', icon: GraduationCap },
+            { id: 'experiences', label: 'Expériences', icon: Briefcase },
             { id: 'messages', label: 'Messages', icon: MessageSquare, badge: stats.unreadMessages },
           ].map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
-                activeTab === item.id ? 'bg-accent-primary/10 text-accent-primary' : 'text-white/60 hover:bg-white/5'
+                activeTab === item.id ? 'bg-accent-primary/10 text-accent-primary' : 'text-text-secondary hover:bg-bg-tertiary'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -334,7 +340,7 @@ export const AdminDashboard: React.FC = () => {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-border">
           <button 
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
@@ -358,7 +364,9 @@ export const AdminDashboard: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="flex justify-between items-center mb-10">
-              <h1 className="text-3xl font-bold capitalize">{activeTab}</h1>
+              <h1 className="text-3xl font-bold capitalize">
+                {activeTab === 'timeline' ? 'Parcours' : activeTab === 'experiences' ? 'Expériences' : activeTab}
+              </h1>
               {(activeTab === 'projects' || activeTab === 'posts') && (
                 <button 
                   onClick={() => openModal()}
@@ -374,22 +382,22 @@ export const AdminDashboard: React.FC = () => {
                 <div className="grid grid-cols-4 gap-8">
                   <div className="glass p-8 rounded-3xl">
                     <Users className="text-accent-primary mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Visiteurs (30j)</p>
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">Visiteurs (30j)</p>
                     <p className="text-4xl font-mono font-bold">{analytics?.last30Days || 0}</p>
                   </div>
                   <div className="glass p-8 rounded-3xl">
                     <FolderKanban className="text-accent-primary mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Projets</p>
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">Projets</p>
                     <p className="text-4xl font-mono font-bold">{stats.projects}</p>
                   </div>
                   <div className="glass p-8 rounded-3xl">
                     <FileText className="text-accent-secondary mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Articles</p>
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">Articles</p>
                     <p className="text-4xl font-mono font-bold">{stats.posts}</p>
                   </div>
                   <div className="glass p-8 rounded-3xl">
-                    <MessageSquare className="text-white mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Messages</p>
+                    <MessageSquare className="text-text-primary mb-4" size={32} />
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">Messages</p>
                     <p className="text-4xl font-mono font-bold">{stats.unreadMessages}</p>
                   </div>
                 </div>
@@ -461,23 +469,23 @@ export const AdminDashboard: React.FC = () => {
               <div className="space-y-8">
                 {analytics?.error && (
                   <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-500 text-sm">
-                    ⚠️ {analytics.error}
+                    {analytics.error}
                   </div>
                 )}
                 <div className="grid grid-cols-3 gap-8">
                   <div className="glass p-8 rounded-3xl">
                     <Clock className="text-accent-primary mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">Aujourd'hui</p>
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">Aujourd'hui</p>
                     <p className="text-4xl font-mono font-bold">{analytics?.today || 0}</p>
                   </div>
                   <div className="glass p-8 rounded-3xl">
                     <TrendingUp className="text-accent-secondary mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">7 derniers jours</p>
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">7 derniers jours</p>
                     <p className="text-4xl font-mono font-bold">{analytics?.last7Days || 0}</p>
                   </div>
                   <div className="glass p-8 rounded-3xl">
-                    <Users className="text-white mb-4" size={32} />
-                    <p className="text-white/40 text-sm uppercase tracking-widest mb-1">30 derniers jours</p>
+                    <Users className="text-text-primary mb-4" size={32} />
+                    <p className="text-text-muted text-sm uppercase tracking-widest mb-1">30 derniers jours</p>
                     <p className="text-4xl font-mono font-bold">{analytics?.last30Days || 0}</p>
                   </div>
                 </div>
@@ -532,9 +540,9 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="glass p-8 rounded-3xl border-white/5">
+                <div className="glass p-8 rounded-3xl border-border">
                   <h4 className="text-lg font-bold mb-4">Pourquoi ces données sont importantes ?</h4>
-                  <p className="text-white/60 leading-relaxed text-sm">
+                  <p className="text-text-secondary leading-relaxed text-sm">
                     Le suivi du trafic vous permet de mesurer l'impact de vos publications sur le blog et de vos nouveaux projets. 
                     Une augmentation soudaine peut indiquer qu'un de vos articles a été partagé ou que votre SEO s'améliore. 
                     Utilisez ces informations pour décider quels sujets intéressent le plus votre audience.
@@ -546,22 +554,22 @@ export const AdminDashboard: React.FC = () => {
             {activeTab === 'projects' && (
               <div className="glass rounded-3xl overflow-hidden">
                 <table className="w-full text-left">
-                  <thead className="bg-white/5 border-b border-white/10">
+                  <thead className="bg-bg-tertiary border-b border-border">
                     <tr>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Titre</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Slug</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Catégorie</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Statut</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Visibilité</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Actions</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Titre</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Slug</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Catégorie</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Statut</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Visibilité</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {projects.map((project) => (
-                      <tr key={project.id} className="hover:bg-white/5 transition-colors">
+                      <tr key={project.id} className="hover:bg-bg-tertiary transition-colors">
                         <td className="px-6 py-4 font-bold">{project.title}</td>
                         <td className="px-6 py-4 text-xs font-mono text-accent-primary">{project.slug}</td>
-                        <td className="px-6 py-4 text-white/60">{project.category}</td>
+                        <td className="px-6 py-4 text-text-secondary">{project.category}</td>
                         <td className="px-6 py-4">
                           <span className={`text-[10px] px-2 py-1 rounded ${
                             project.status === 'Terminé' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'
@@ -571,11 +579,11 @@ export const AdminDashboard: React.FC = () => {
                         </td>
                         <td className="px-6 py-4">
                           <button onClick={() => togglePublish('projects', project)}>
-                            {project.published ? <Eye className="text-accent-primary" size={18} /> : <EyeOff className="text-white/20" size={18} />}
+                            {project.published ? <Eye className="text-accent-primary" size={18} /> : <EyeOff className="text-text-muted" size={18} />}
                           </button>
                         </td>
                         <td className="px-6 py-4 flex gap-3">
-                          <button onClick={() => openModal(project)} className="text-white/40 hover:text-white"><Edit size={18} /></button>
+                          <button onClick={() => openModal(project)} className="text-text-muted hover:text-text-primary"><Edit size={18} /></button>
                           <button onClick={() => deleteItem('projects', project.id)} className="text-red-500/40 hover:text-red-500"><Trash2 size={18} /></button>
                         </td>
                       </tr>
@@ -588,28 +596,28 @@ export const AdminDashboard: React.FC = () => {
             {activeTab === 'posts' && (
               <div className="glass rounded-3xl overflow-hidden">
                 <table className="w-full text-left">
-                  <thead className="bg-white/5 border-b border-white/10">
+                  <thead className="bg-bg-tertiary border-b border-border">
                     <tr>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Titre</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Slug</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Date</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Visibilité</th>
-                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-white/40">Actions</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Titre</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Slug</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Date</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Visibilité</th>
+                      <th className="px-6 py-4 font-mono text-xs uppercase tracking-widest text-text-muted">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {posts.map((post) => (
-                      <tr key={post.id} className="hover:bg-white/5 transition-colors">
+                      <tr key={post.id} className="hover:bg-bg-tertiary transition-colors">
                         <td className="px-6 py-4 font-bold">{post.title}</td>
                         <td className="px-6 py-4 text-xs font-mono text-accent-primary">{post.slug}</td>
-                        <td className="px-6 py-4 text-white/40 text-sm">{new Date(post.created_at).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 text-text-muted text-sm">{new Date(post.created_at).toLocaleDateString()}</td>
                         <td className="px-6 py-4">
                           <button onClick={() => togglePublish('posts', post)}>
-                            {post.published ? <Eye className="text-accent-primary" size={18} /> : <EyeOff className="text-white/20" size={18} />}
+                            {post.published ? <Eye className="text-accent-primary" size={18} /> : <EyeOff className="text-text-muted" size={18} />}
                           </button>
                         </td>
                         <td className="px-6 py-4 flex gap-3">
-                          <button onClick={() => openModal(post)} className="text-white/40 hover:text-white"><Edit size={18} /></button>
+                          <button onClick={() => openModal(post)} className="text-text-muted hover:text-text-primary"><Edit size={18} /></button>
                           <button onClick={() => deleteItem('posts', post.id)} className="text-red-500/40 hover:text-red-500"><Trash2 size={18} /></button>
                         </td>
                       </tr>
@@ -619,24 +627,52 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
 
+            {activeTab === 'timeline' && (
+              <AdminParcours
+                token={token || ''}
+                notify={(message, type) =>
+                  setNotification({
+                    isOpen: true,
+                    title: type === 'success' ? 'Succès' : 'Erreur',
+                    message,
+                    type: 'alert',
+                  })
+                }
+              />
+            )}
+
+            {activeTab === 'experiences' && (
+              <AdminExperiences
+                token={token || ''}
+                notify={(message, type) =>
+                  setNotification({
+                    isOpen: true,
+                    title: type === 'success' ? 'Succès' : 'Erreur',
+                    message,
+                    type: 'alert',
+                  })
+                }
+              />
+            )}
+
             {activeTab === 'messages' && (
               <div className="space-y-4">
                 {messages.map((msg) => (
-                  <div key={msg.id} className={`glass p-6 rounded-2xl border-l-4 ${msg.read ? 'border-white/10' : 'border-accent-primary'}`}>
+                  <div key={msg.id} className={`glass p-6 rounded-2xl border-l-4 ${msg.read ? 'border-border' : 'border-accent-primary'}`}>
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h4 className="font-bold text-lg">{msg.subject}</h4>
-                        <p className="text-sm text-white/60">{msg.name} ({msg.email})</p>
+                        <p className="text-sm text-text-secondary">{msg.name} ({msg.email})</p>
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="text-xs text-white/30 font-mono">{new Date(msg.created_at).toLocaleString()}</span>
+                        <span className="text-xs text-text-muted font-mono">{new Date(msg.created_at).toLocaleString()}</span>
                         <button onClick={() => deleteItem('messages', msg.id)} className="text-red-500/40 hover:text-red-500"><Trash2 size={16} /></button>
                       </div>
                     </div>
-                    <p className="text-white/80 bg-white/5 p-4 rounded-xl">{msg.message}</p>
+                    <p className="text-text-primary bg-bg-tertiary p-4 rounded-xl">{msg.message}</p>
                   </div>
                 ))}
-                {messages.length === 0 && <div className="text-center py-20 glass rounded-3xl text-white/40">Aucun message</div>}
+                {messages.length === 0 && <div className="text-center py-20 glass rounded-3xl text-text-muted">Aucun message</div>}
               </div>
             )}
           </motion.div>
@@ -657,7 +693,7 @@ export const AdminDashboard: React.FC = () => {
                 <h2 className="text-2xl font-bold">
                   {editingItem ? 'Modifier' : 'Nouveau'} {activeTab === 'projects' ? 'Projet' : 'Article'}
                 </h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-white/40 hover:text-white">
+                <button onClick={() => setIsModalOpen(false)} className="text-text-muted hover:text-text-primary">
                   <X size={24} />
                 </button>
               </div>
@@ -665,18 +701,18 @@ export const AdminDashboard: React.FC = () => {
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Titre</label>
+                    <label className="text-xs font-mono text-text-muted uppercase tracking-widest">Titre</label>
                     <input 
                       type="text" 
                       required
                       value={formData.title || ''}
                       onChange={e => handleTitleChange(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Slug (URL)</label>
+                      <label className="text-xs font-mono text-text-muted uppercase tracking-widest">Slug (URL)</label>
                       <button 
                         type="button"
                         onClick={() => setFormData({...formData, slug: generateSlug(formData.title || '')})}
@@ -691,7 +727,7 @@ export const AdminDashboard: React.FC = () => {
                         required
                         value={formData.slug || ''}
                         onChange={e => setFormData({...formData, slug: e.target.value})}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none font-mono text-sm"
+                        className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none font-mono text-sm"
                         placeholder="mon-projet-professionnel"
                       />
                     </div>
@@ -700,69 +736,69 @@ export const AdminDashboard: React.FC = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Catégorie</label>
+                    <label className="text-xs font-mono text-text-muted uppercase tracking-widest">Catégorie</label>
                     <input 
                       type="text" 
                       required
                       value={formData.category || ''}
                       onChange={e => setFormData({...formData, category: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">
+                    <label className="text-xs font-mono text-text-muted uppercase tracking-widest">
                       {activeTab === 'projects' ? 'Stack (séparé par des virgules)' : 'Tags (séparés par des virgules)'}
                     </label>
                     <input 
                       type="text" 
                       value={activeTab === 'projects' ? formData.stack : formData.tags || ''}
                       onChange={e => setFormData({...formData, [activeTab === 'projects' ? 'stack' : 'tags']: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
                 </div>
 
                 {activeTab === 'projects' && (
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Description Courte</label>
+                    <label className="text-xs font-mono text-text-muted uppercase tracking-widest">Description Courte</label>
                     <input 
                       type="text" 
                       required
                       value={formData.description || ''}
                       onChange={e => setFormData({...formData, description: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Contenu (Markdown)</label>
+                  <label className="text-xs font-mono text-text-muted uppercase tracking-widest">Contenu (Markdown)</label>
                   <textarea 
                     required
                     rows={8}
                     value={formData.content || ''}
                     onChange={e => setFormData({...formData, content: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none resize-none"
+                    className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none resize-none"
                   />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">URL Image</label>
+                    <label className="text-xs font-mono text-text-muted uppercase tracking-widest">URL Image</label>
                     <input 
                       type="text" 
                       value={formData.image_url || ''}
                       onChange={e => setFormData({...formData, image_url: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-white/40 uppercase tracking-widest">URL PDF (GitHub Raw)</label>
+                    <label className="text-xs font-mono text-text-muted uppercase tracking-widest">URL PDF (GitHub Raw)</label>
                     <input 
                       type="text" 
                       value={formData.pdf_url || ''}
                       onChange={e => setFormData({...formData, pdf_url: e.target.value})}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                      className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                       placeholder="https://raw.githubusercontent.com/..."
                     />
                   </div>
@@ -771,20 +807,20 @@ export const AdminDashboard: React.FC = () => {
                 {activeTab === 'projects' && (
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-mono text-white/40 uppercase tracking-widest">GitHub URL</label>
+                      <label className="text-xs font-mono text-text-muted uppercase tracking-widest">GitHub URL</label>
                       <input 
                         type="text" 
                         value={formData.github_url || ''}
                         onChange={e => setFormData({...formData, github_url: e.target.value})}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                        className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-mono text-white/40 uppercase tracking-widest">Statut</label>
+                      <label className="text-xs font-mono text-text-muted uppercase tracking-widest">Statut</label>
                       <select 
                         value={formData.status || 'En cours'}
                         onChange={e => setFormData({...formData, status: e.target.value})}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
+                        className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-3 focus:border-accent-primary outline-none"
                       >
                         <option value="En cours">En cours</option>
                         <option value="Terminé">Terminé</option>
@@ -798,7 +834,7 @@ export const AdminDashboard: React.FC = () => {
                   <button 
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-3 text-white/60 hover:text-white transition-colors"
+                    className="px-6 py-3 text-text-secondary hover:text-text-primary transition-colors"
                   >
                     Annuler
                   </button>
@@ -833,7 +869,7 @@ export const AdminDashboard: React.FC = () => {
                 <h3 className="text-xl font-bold">{notification.title}</h3>
               </div>
               
-              <p className="text-white/60 mb-8 leading-relaxed">
+              <p className="text-text-secondary mb-8 leading-relaxed">
                 {notification.message}
               </p>
               
@@ -842,7 +878,7 @@ export const AdminDashboard: React.FC = () => {
                   <>
                     <button 
                       onClick={() => setNotification({ ...notification, isOpen: false })}
-                      className="px-6 py-2 text-white/60 hover:text-white transition-colors"
+                      className="px-6 py-2 text-text-secondary hover:text-text-primary transition-colors"
                     >
                       Annuler
                     </button>

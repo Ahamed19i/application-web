@@ -1,110 +1,295 @@
-
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Polices auto-hébergées — plus aucune dépendance à un CDN de polices. */
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist-sans-variable.woff2') format('woff2-variations'),
+       url('/fonts/geist-sans-variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 @theme {
-  --font-sans: "Syne", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-display: "Space Mono", monospace;
-  
-  --color-bg: #03080f;
-  --color-bg-secondary: #060e1c;
-  --color-bg-tertiary: #091525;
-  --color-accent-primary: #00b4ff;
-  --color-accent-secondary: #0055ee;
-  --color-text-primary: #ddeeff;
-  --color-text-secondary: #7aa8c8;
-  --color-text-muted: #3d6a8a;
-  --color-success: #00e87a;
-  --color-warning: #ffaa00;
-  --color-danger: #ff4455;
-  
-  --radius-custom: 14px;
+  /* Une seule famille sans-serif pour tout le site. */
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Sombre : thème par défaut --- */
+  --color-bg: #0B1220;
+  --color-bg-secondary: #101A2C;
+  --color-bg-tertiary: #16233A;
+  --color-border: #1E2D45;
+  --color-text-primary: #F1F5F9;
+  /* Texte courant en gris-bleu éteint : mesuré sur la référence, le corps de
+     texte et la phrase de présentation sont en rgb(148,163,184). Le blanc
+     cassé au-dessus reste réservé aux titres et aux mots mis en avant. */
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #8B9BB4;
+  --color-accent-primary: #F0B457;
+  --color-accent-secondary: #F0B457;
+  --color-success: #6EE7B7;
+  --color-warning: #E9B872;
+  --color-danger: #F0857A;
+
+  /* Lueur de la souris : vert émeraude profond, indépendante de l'accent ambre. */
+  --glow-core: rgba(18, 200, 126, 0.18);
+  --glow-mid: rgba(18, 200, 126, 0.07);
+
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #F7F5F0;
+  --color-bg-secondary: #EFEBE2;
+  --color-bg-tertiary: #E7E1D3;
+  --color-border: #DBD4C5;
+  --color-text-primary: #15161A;
+  --color-text-secondary: #3F4552;
+  --color-text-muted: #6B7280;
+  --color-accent-primary: #A9660F;
+  --color-accent-secondary: #A9660F;
+  --color-success: #0D9668;
+  --color-warning: #A9660F;
+  --color-danger: #B8402F;
+
+  /* Même vert, plus discret sur fond clair. */
+  /* En clair, la lueur est dans la famille bleu nuit du thème sombre, mais
+     un peu plus saturée : mélangé à un fond chaud, un navy aussi sombre que
+     #0B1220 fait surtout baisser la luminosité sans laisser de dominante
+     bleue. Ce bleu-là teinte réellement le fond. */
+  --glow-core: rgba(20, 50, 130, 0.14);
+  --glow-mid: rgba(20, 50, 130, 0.055);
 }
 
 @layer base {
+  html {
+    /* overflow-x ici (jamais sur un div interne) pour ne pas casser
+       position: sticky dans les descendants (voir Sidebar). */
+    overflow-x: clip;
+  }
+
   body {
-    @apply bg-bg text-text-primary selection:bg-accent-primary selection:text-bg;
+    @apply bg-bg text-text-secondary selection:bg-accent-primary selection:text-bg;
     font-family: var(--font-sans);
     line-height: 1.6;
-    overflow-x: hidden;
-    background-image: 
-      linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-sans);
+    text-wrap: balance;
+    color: var(--color-text-primary);
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus clavier visible partout, jamais de outline:none sans remplacement. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-accent-primary);
+  color: var(--color-bg);
+}
+
+/* --------------------------------------------------------------------
+   Colonne gauche. Mesures relevées sur la référence : le nom commence à
+   96 px du haut, les icônes finissent à 96 px du bas, et ces deux valeurs
+   ne bougent pas avec la hauteur de l'écran. On garde donc 96/96 aussi
+   longtemps que possible — jusqu'à ~690 px de haut, ce qui couvre le
+   portable Windows à 125 % (≈1536×730 px CSS) — et on ne réduit qu'en
+   dessous, pour que tout (nom → icônes) tienne toujours sans défilement
+   malgré les cinq liens de navigation et le bouton de contact.
+
+   .main-column reprend exactement le même padding haut : c'est ce qui met
+   le premier paragraphe de droite à la même hauteur que le nom.
+   -------------------------------------------------------------------- */
+.sidebar-shell {
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+.main-column { padding-top: 96px; }
+.sidebar-name { font-size: 48px; }
+.sidebar-nav { margin-top: 64px; }
+.sidebar-nav-link { height: 44px; }
+.sidebar-icons { margin-top: 32px; }
+
+/* Les liens se resserrent avant que les marges ne bougent : c'est le poste
+   le moins visible, et il y en a cinq au lieu de trois. */
+@media (max-height: 800px) {
+  .sidebar-nav-link { height: 40px; }
+  .sidebar-icons { margin-top: 24px; }
+}
+@media (max-height: 700px) {
+  .sidebar-shell { padding-top: 72px; padding-bottom: 64px; }
+  .main-column { padding-top: 72px; }
+  .sidebar-name { font-size: 44px; }
+  .sidebar-nav { margin-top: 44px; }
+  .sidebar-nav-link { height: 38px; }
+  .sidebar-icons { margin-top: 20px; }
+}
+@media (max-height: 620px) {
+  .sidebar-shell { padding-top: 48px; padding-bottom: 48px; }
+  .main-column { padding-top: 48px; }
+  .sidebar-name { font-size: 40px; }
+  .sidebar-nav { margin-top: 32px; }
+  .sidebar-nav-link { height: 34px; }
+  .sidebar-icons { margin-top: 16px; }
+}
+/* En dessous de lg, la colonne n'est plus sticky et passe au-dessus du
+   contenu : les deux colonnes s'empilent, il n'y a plus d'alignement à
+   tenir, on rend la respiration. */
+@media (max-width: 1023px) {
+  .sidebar-shell { padding-top: 56px; padding-bottom: 32px; }
+  .sidebar-name { font-size: 40px; }
+  .main-column { padding-top: 24px; }
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  background: var(--color-text-primary);
+  color: var(--color-bg);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 1000;
+  transition: top 0.2s ease;
+  border-radius: 3px;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ---------------------------------------------------------------------
+   Primitives héritées des étapes précédentes : gardées pour que les pages
+   pas encore adaptées à la nouvelle direction (archive /travaux, détail
+   de projet/article, admin) ne se retrouvent pas cassées visuellement.
+   --------------------------------------------------------------------- */
 @layer components {
   .glass {
-    @apply bg-bg/60 backdrop-blur-xl border border-white/10;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
   }
-  
   .glass-nav {
-    @apply bg-bg/95 backdrop-blur-2xl border-b border-white/10;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
   }
-  
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-primary to-accent-secondary;
-  }
-  
-  .hover-glow-primary:hover {
-    @apply shadow-[0_0_35px_rgba(0,180,255,0.12)];
-  }
+  .text-gradient { color: var(--color-accent-primary); }
+  .hover-glow-primary:hover { border-color: var(--color-accent-primary); }
 
   .btn-p {
-    @apply bg-accent-primary text-bg font-bold px-6 py-3 rounded-xl hover:shadow-[0_0_44px_rgba(0,180,255,0.44)] transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2;
+    @apply font-semibold px-6 py-3 rounded-xl transition-colors inline-flex items-center gap-2;
+    background: var(--color-text-primary);
+    color: var(--color-bg);
   }
+  .btn-p:hover { background: var(--color-accent-primary); color: var(--color-bg); }
 
   .btn-g {
-    @apply border border-white/10 text-text-primary px-6 py-3 rounded-xl hover:border-accent-primary hover:text-accent-primary transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2;
+    @apply px-6 py-3 rounded-xl transition-colors inline-flex items-center gap-2;
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
   }
+  .btn-g:hover { border-color: var(--color-accent-primary); color: var(--color-accent-primary); }
 
   .btn-gr {
-    @apply bg-success/10 text-success border border-success/20 px-6 py-3 rounded-xl hover:bg-success/20 transition-all transform hover:-translate-y-0.5 inline-flex items-center gap-2;
+    @apply px-6 py-3 rounded-xl transition-colors inline-flex items-center gap-2;
+    color: var(--color-accent-primary);
+    border: 1px solid var(--color-accent-primary);
+    background: transparent;
   }
+  .btn-gr:hover { background: var(--color-accent-primary); color: var(--color-bg); }
 }
 
-::-webkit-scrollbar {
-  width: 4px;
+.prose {
+  --tw-prose-body: var(--color-text-secondary);
+  --tw-prose-headings: var(--color-text-primary);
+  --tw-prose-lead: var(--color-text-secondary);
+  --tw-prose-links: var(--color-accent-primary);
+  --tw-prose-bold: var(--color-text-primary);
+  --tw-prose-counters: var(--color-text-muted);
+  --tw-prose-bullets: var(--color-border);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-text-primary);
+  --tw-prose-quote-borders: var(--color-accent-primary);
+  --tw-prose-captions: var(--color-text-muted);
+  --tw-prose-code: var(--color-text-primary);
+  --tw-prose-pre-code: var(--color-text-secondary);
+  --tw-prose-pre-bg: var(--color-bg-tertiary);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-bg;
+/* --------------------------------------------------------------------
+   Coloration syntaxique (highlight.js via rehype-highlight), branchée
+   sur les tokens du site pour suivre les deux thèmes.
+   -------------------------------------------------------------------- */
+:root {
+  --code-keyword: #F0B457;
+  --code-string: #7DD3FC;
+  --code-number: #A5D6A7;
+  --code-comment: #6B7C93;
+  --code-function: #E4C9A0;
+  --code-attr: #9DB8D6;
+}
+:root[data-theme="light"] {
+  --code-keyword: #A9660F;
+  --code-string: #0E6F8E;
+  --code-number: #2F6F52;
+  --code-comment: #8A8577;
+  --code-function: #7A4E12;
+  --code-attr: #46526B;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-accent-primary rounded-full;
-}
+.hljs { color: var(--color-text-secondary); background: transparent; }
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-built_in,
+.hljs-name { color: var(--code-keyword); }
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-symbol,
+.hljs-bullet { color: var(--code-string); }
+.hljs-number,
+.hljs-meta,
+.hljs-link { color: var(--code-number); }
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion { color: var(--code-comment); font-style: italic; }
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_ { color: var(--code-function); }
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-params { color: var(--code-attr); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
 
-.typing-cursor::after {
-  content: '▋';
-  animation: blink 0.9s step-end infinite;
-  margin-left: 2px;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-@keyframes morph {
-  0%, 100% { border-radius: 42% 58% 58% 42%/42% 42% 58% 58%; }
-  33% { border-radius: 58% 42% 42% 58%/58% 58% 42% 42%; }
-  66% { border-radius: 50% 50% 68% 32%/32% 68% 50% 50%; }
-}
-
-.animate-morph {
-  animation: morph 9s ease-in-out infinite;
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 24s linear infinite;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { @apply bg-bg; }
+::-webkit-scrollbar-thumb { @apply bg-accent-primary rounded-full; }
