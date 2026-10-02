@@ -37,7 +37,7 @@ export const Home: React.FC = () => {
               <span className="text-text-primary font-medium">Tailwind CSS</span>, déployé sur{' '}
               <span className="text-text-primary font-medium">Vercel</span>.
             </p>
-            <p className="mt-3 text-[13px] text-text-muted">© 2026 Ahamed Hassani Mhoma</p>
+            <p className="mt-3 text-[13px] text-text-muted">© 2026 Ahamed HASSANI MHOMA</p>
           </footer>
         </main>
       </div>

@@ -20,27 +20,28 @@ export const About: React.FC = () => {
 
       <div className="space-y-5 text-[16px] text-text-secondary leading-[1.75] max-w-[640px]">
         <p>
-          Salut ! Je m'appelle Ahamed Hassani et j'aime construire. Je suis <Strong>ingénieur systèmes et réseaux</Strong>,
-          passionné par les infrastructures, le cloud, le DevOps et le développement logiciel. J'aime comprendre comment
-          les choses fonctionnent et transformer des idées en solutions concrètes.
+          Salut ! Je m'appelle Ahamed Hassani, et j'aime construire et transmettre. Je suis{" "}
+          <Strong>formateur et spécialiste en intelligence artificielle appliquée</Strong>, avec un socle d'
+          <Strong>ingénieur systèmes et réseaux</Strong> : infrastructures, cloud, DevOps et développement web et mobile.
+          J'aime comprendre comment les choses fonctionnent, transformer des idées en solutions concrètes, et aider les
+          autres à en faire autant.
         </p>
         <p>
-          Actuellement en fin de <Strong>Master 2 en Systèmes, Réseaux et Télécommunications</Strong> à Dakar, je travaille
-          sur des projets qui mêlent infrastructure et développement, des plateformes web aux solutions de gestion et
-          d'automatisation.
+          Je forme des professionnels et des étudiants à l'<Strong>informatique et à l'IA</Strong>, et j'accompagne des
+          entreprises dans l'<Strong>intégration concrète de l'IA</Strong> : création de contenu, automatisation, assistants
+          IA. En parallèle, je développe mes propres projets, avec l'IA intégrée à chaque étape du développement.
         </p>
         <p>
-          Mon mémoire porte sur la conception d'une <Strong>infrastructure hybride résiliente</Strong>, pensée pour assurer
-          la <Strong>haute disponibilité des données</Strong>. En parallèle, je développe mes propres projets et j'explore
-          de nouvelles façons de créer des solutions numériques utiles.
+          En fin de <Strong>Master 2 en Systèmes, Réseaux et Télécommunications</Strong> à Dakar, je consacre mon mémoire à
+          la conception d'une <Strong>infrastructure hybride résiliente</Strong>, pensée pour assurer la{" "}
+          <Strong>haute disponibilité des services critiques</Strong>.
         </p>
         <p>
           En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse aussi à la
-          politique et à la géopolitique, et j'aime voyager, découvrir de nouveaux endroits, de nouvelles cultures et des
-          parcours différents.
+          politique et à la géopolitique, et j'aime voyager, découvrir de nouvelles cultures et des parcours différents.
         </p>
         <p>
-          Ce site rassemble un peu de tout cela : ce que je construis, ce que j'apprends et les expériences qui façonnent
+          Ce site rassemble un peu de tout cela : ce que je construis, ce que je transmets et les expériences qui façonnent
           mon parcours.
         </p>
       </div>

@@ -124,8 +124,8 @@ export default function App() {
       <MotionConfig reducedMotion="user">
         <Router>
           <Helmet>
-            <title>Ahamed Hassani Mhoma — Ingénieur Systèmes & Réseaux · DevOps</title>
-            <meta name="description" content="Site personnel d'Ahamed Hassani Mhoma, ingénieur Systèmes & Réseaux et DevOps : projets, parcours et journal." />
+            <title>Ahamed Hassani — IA appliquée, Systèmes & Développement</title>
+            <meta name="description" content="Formateur en IA appliquée, ingénieur systèmes et réseaux et développeur web et mobile à Dakar. J'aide les professionnels à intégrer l'IA dans leur travail." />
           </Helmet>
           <ScrollToHash />
           <VisitTracker />

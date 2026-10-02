@@ -3,6 +3,20 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle.tsx';
 
+const InstagramIcon = ({ size = 24 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" />
+    <circle cx="12" cy="12" r="4" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
+
+const FacebookIcon = ({ size = 24 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+  </svg>
+);
+
 const NAV_ITEMS = [
   { id: 'a-propos', label: 'À propos' },
   { id: 'parcours', label: 'Parcours' },
@@ -62,10 +76,10 @@ export const Sidebar: React.FC = () => {
           </h1>
         </Link>
         <p className="mt-2.5 text-[19px] font-medium text-text-primary leading-snug">
-          Ingénieur Systèmes &amp; Réseaux · DevOps
+          IA appliquée · Systèmes & Réseaux · Développement
         </p>
         <p className="mt-3 text-[15px] text-text-secondary max-w-[330px] leading-relaxed">
-          J'aime construire : des infrastructures résilientes aux applications qui tournent dessus.
+          J'aime construire et transmettre : des infrastructures résilientes aux applications qui tournent dessus, et l'IA pour aider chacun à aller plus loin.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -122,10 +136,16 @@ export const Sidebar: React.FC = () => {
         <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-text-muted hover:text-accent-primary transition-colors">
           <Linkedin size={24} />
         </a>
+        <a href="https://instagram.com/Ahamed19i" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-text-muted hover:text-accent-primary transition-colors">
+          <InstagramIcon size={24} />
+        </a>
+        <a href="https://facebook.com/TON_PSEUDO" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-text-muted hover:text-accent-primary transition-colors">
+          <FacebookIcon size={24} />
+        </a>
         <a href="mailto:ahassanimhoma20@gmail.com" aria-label="Email" className="text-text-muted hover:text-accent-primary transition-colors">
           <Mail size={24} />
         </a>
-        <a href="/images/cv-ahamed-hassani.pdf" download aria-label="Télécharger le CV" className="text-text-muted hover:text-accent-primary transition-colors">
+        <a href="/images/CV-AhamedHassani.pdf" download aria-label="Télécharger le CV" className="text-text-muted hover:text-accent-primary transition-colors">
           <Download size={24} />
         </a>
         <ThemeToggle variant="bare" size={24} />
