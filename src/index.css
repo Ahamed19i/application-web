@@ -113,11 +113,12 @@ select:focus-visible,
 /* --------------------------------------------------------------------
    Colonne gauche. Mesures relevées sur la référence : le nom commence à
    96 px du haut, les icônes finissent à 96 px du bas, et ces deux valeurs
-   ne bougent pas avec la hauteur de l'écran. On garde donc 96/96 aussi
-   longtemps que possible — jusqu'à ~690 px de haut, ce qui couvre le
-   portable Windows à 125 % (≈1536×730 px CSS) — et on ne réduit qu'en
-   dessous, pour que tout (nom → icônes) tienne toujours sans défilement
-   malgré les cinq liens de navigation et le bouton de contact.
+   ne bougent pas avec la hauteur de l'écran. On garde 96/96 au-dessus de
+   800 px de haut, puis on réduit par paliers pour que tout (nom → icônes)
+   tienne toujours sans défilement, avec un vrai blanc sous les icônes.
+   Budget mesuré (titre sur 1 ligne, phrase sur 3) : 753 px par défaut,
+   685 px à ≤800, 601 px à ≤680, 541 px à ≤600 — ce dernier couvre
+   l'écran 1920×1080 à 150 % avec barre de favoris (≈1280×551 px CSS).
 
    .main-column reprend exactement le même padding haut : c'est ce qui met
    le premier paragraphe de droite à la même hauteur que le nom.
@@ -132,27 +133,36 @@ select:focus-visible,
 .sidebar-nav-link { height: 44px; }
 .sidebar-icons { margin-top: 32px; }
 
-/* Les liens se resserrent avant que les marges ne bougent : c'est le poste
-   le moins visible, et il y en a cinq au lieu de trois. */
+/* La marge au-dessus des icônes est la dernière à baisser : c'est elle qui
+   les détache nettement de la navigation. */
 @media (max-height: 800px) {
+  .sidebar-shell { padding-bottom: 64px; }
+  .sidebar-nav { margin-top: 48px; }
   .sidebar-nav-link { height: 40px; }
-  .sidebar-icons { margin-top: 24px; }
 }
-@media (max-height: 700px) {
-  .sidebar-shell { padding-top: 72px; padding-bottom: 64px; }
-  .main-column { padding-top: 72px; }
+@media (max-height: 680px) {
+  .sidebar-shell { padding-top: 64px; padding-bottom: 48px; }
+  .main-column { padding-top: 64px; }
   .sidebar-name { font-size: 44px; }
-  .sidebar-nav { margin-top: 44px; }
-  .sidebar-nav-link { height: 38px; }
-  .sidebar-icons { margin-top: 20px; }
+  .sidebar-nav { margin-top: 40px; }
+  .sidebar-nav-link { height: 36px; }
+  .sidebar-icons { margin-top: 28px; }
 }
-@media (max-height: 620px) {
-  .sidebar-shell { padding-top: 48px; padding-bottom: 48px; }
+@media (max-height: 600px) {
+  .sidebar-shell { padding-top: 48px; padding-bottom: 40px; }
   .main-column { padding-top: 48px; }
   .sidebar-name { font-size: 40px; }
   .sidebar-nav { margin-top: 32px; }
-  .sidebar-nav-link { height: 34px; }
-  .sidebar-icons { margin-top: 16px; }
+  .sidebar-nav-link { height: 32px; }
+  .sidebar-icons { margin-top: 24px; }
+}
+@media (max-height: 540px) {
+  .sidebar-shell { padding-top: 32px; padding-bottom: 32px; }
+  .main-column { padding-top: 32px; }
+  .sidebar-name { font-size: 36px; }
+  .sidebar-nav { margin-top: 20px; }
+  .sidebar-nav-link { height: 30px; }
+  .sidebar-icons { margin-top: 20px; }
 }
 /* En dessous de lg, la colonne n'est plus sticky et passe au-dessus du
    contenu : les deux colonnes s'empilent, il n'y a plus d'alignement à

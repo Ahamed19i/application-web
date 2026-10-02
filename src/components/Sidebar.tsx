@@ -75,10 +75,10 @@ export const Sidebar: React.FC = () => {
             Ahamed Hassani
           </h1>
         </Link>
-        <p className="mt-2.5 text-[19px] font-medium text-text-primary leading-snug">
+        <p className="mt-2.5 text-[17px] font-medium text-text-primary leading-snug">
           IA appliquée · Systèmes & Réseaux · Développement
         </p>
-        <p className="mt-3 text-[15px] text-text-secondary max-w-[330px] leading-relaxed">
+        <p className="mt-3 text-[15px] text-text-secondary max-w-[420px] leading-[1.55]">
           J'aime construire et transmettre : des infrastructures résilientes aux applications qui tournent dessus, et l'IA pour aider chacun à aller plus loin.
         </p>
 
