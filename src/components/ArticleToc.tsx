@@ -1,60 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import { Heading } from './MarkdownContent.tsx';
+import { scrollToHeading, useReadingState } from './ReadingGuide.tsx';
 
 interface ArticleTocProps {
   headings: Heading[];
+  /** Section en cours, quand la page la suit déjà ; sinon le sommaire la calcule. */
+  active?: string;
+  label?: string;
+  /** Part de l'article lue (0 à 1) et durée totale : affiche le temps restant. */
+  progress?: number;
+  minutes?: number;
 }
 
-export const ArticleToc: React.FC<ArticleTocProps> = ({ headings }) => {
-  const [active, setActive] = useState<string>('');
-
-  useEffect(() => {
-    if (headings.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) setActive(entry.target.id);
-        });
-      },
-      { rootMargin: '-15% 0px -75% 0px', threshold: 0 }
-    );
-
-    const observed: HTMLElement[] = [];
-    headings.forEach(h => {
-      const el = document.getElementById(h.id);
-      if (el) {
-        observer.observe(el);
-        observed.push(el);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, [headings]);
+export const ArticleToc: React.FC<ArticleTocProps> = ({ headings, active, label = 'Dans cet article', progress, minutes }) => {
+  const noArticle = useRef<HTMLElement>(null);
+  const own = useReadingState(noArticle, active === undefined ? headings : []);
+  const current = active ?? own.active;
 
   if (headings.length < 2) return null;
 
-  const scrollTo = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 24;
-    window.scrollTo({ top, behavior: 'smooth' });
-  };
+  const minutesLeft = progress !== undefined && minutes ? Math.ceil(minutes * (1 - progress)) : null;
 
   return (
     <nav aria-label="Sommaire" className="sticky top-16">
       <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-text-muted mb-5">
-        Dans cet article
+        {label}
       </p>
       <ul className="space-y-1">
         {headings.map(h => {
-          const isActive = active === h.id;
+          const isActive = current === h.id;
           return (
             <li key={h.id}>
               <a
                 href={`#${h.id}`}
-                onClick={(e) => scrollTo(e, h.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToHeading(h.id);
+                }}
+                aria-current={isActive ? 'location' : undefined}
                 className={`group flex items-center gap-3 py-1.5 ${h.level === 3 ? 'pl-4' : ''}`}
               >
                 <span
@@ -74,6 +57,24 @@ export const ArticleToc: React.FC<ArticleTocProps> = ({ headings }) => {
           );
         })}
       </ul>
+
+      {progress !== undefined && (
+        <div className="mt-6 pt-5 border-t border-border">
+          <div className="h-[2px] rounded-full bg-border overflow-hidden">
+            <div
+              className="h-full bg-accent-primary origin-left transition-transform duration-150"
+              style={{ transform: `scaleX(${progress})` }}
+            />
+          </div>
+          <p className="mt-2.5 text-[11px] font-medium text-text-muted tabular-nums">
+            {progress >= 1
+              ? 'Lecture terminée'
+              : minutesLeft !== null && progress > 0
+                ? `Encore ${minutesLeft} min · ${Math.round(progress * 100)} %`
+                : `${minutes} min de lecture`}
+          </p>
+        </div>
+      )}
     </nav>
   );
 };

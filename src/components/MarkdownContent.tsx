@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
+import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import { Check, Copy } from 'lucide-react';
 import { Lightbox } from './Lightbox.tsx';
@@ -12,6 +13,8 @@ export interface Heading {
   id: string;
   text: string;
   level: 2 | 3;
+  /** Ligne dans le texte normalisé : relie le titre rendu à son entrée du sommaire. */
+  line: number;
 }
 
 /** Slug stable et lisible, identique côté sommaire et côté titre rendu. */
@@ -25,26 +28,119 @@ export function slugify(text: string): string {
     .slice(0, 60);
 }
 
+const LEADING_EMOJI = /^[\p{Extended_Pictographic}️‍]+\s*/u;
+const SENTENCE_END = /[.!?…,;]$/;
+const MARKDOWN_BLOCK = /^(#{1,6}\s|>|\||[-*+]\s|\d+[.)]\s|```|!\[)/;
+
+/**
+ * Typographie française : l'espace avant « ? ! : ; » et après « « » devient
+ * insécable, pour qu'un point d'interrogation ne parte jamais seul à la ligne.
+ */
+export function frenchSpacing(text: string): string {
+  return text.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ');
+}
+
+/** Une ligne courte, sans ponctuation finale : un élément de liste écrit sans tiret. */
+function isBareItem(line: string): boolean {
+  const t = line.trim();
+  return t.length > 0 && t.length <= 100 && !SENTENCE_END.test(t) && !MARKDOWN_BLOCK.test(t);
+}
+
+/** « 📌 Le déclic » : ligne courte ouverte par un emoji, utilisée comme sous-titre. */
+function isEmojiHeading(line: string): boolean {
+  const t = line.trim();
+  if (!LEADING_EMOJI.test(t) || t.startsWith('👉')) return false;
+  const text = t.replace(LEADING_EMOJI, '');
+  return text.length > 0 && text.length <= 80 && !SENTENCE_END.test(text);
+}
+
+/**
+ * Les textes saisis dans l'admin sont souvent écrits « comme un post » :
+ * sous-titres annoncés par un emoji, listes sans tiret après un deux-points.
+ * On les traduit en vrai Markdown pour que le sommaire, la numérotation et
+ * les listes fonctionnent, sans toucher à un mot du texte.
+ */
+export function normalizeContent(markdown: string): string {
+  const lines = markdown.replace(/\r\n?/g, '\n').split('\n');
+  const out: string[] = [];
+  let inFence = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const t = line.trim();
+
+    if (t.startsWith('```')) inFence = !inFence;
+    if (inFence || t.startsWith('```')) {
+      out.push(line);
+      continue;
+    }
+
+    const heading = isEmojiHeading(t);
+    const standalone = (i === 0 || lines[i - 1].trim() === '') && (i === lines.length - 1 || lines[i + 1].trim() === '');
+    if (heading) {
+      out.push('', `## ${frenchSpacing(t.replace(LEADING_EMOJI, ''))}`, '');
+    } else if (standalone && t.startsWith('👉')) {
+      // « 👉 Ce n'est pas le budget… » : la phrase que l'auteur veut faire
+      // ressortir devient une citation mise en avant.
+      out.push(`> ${frenchSpacing(t.replace(/^👉\s*/, ''))}`);
+    } else {
+      out.push(t.startsWith('|') ? line : frenchSpacing(line));
+    }
+
+    // Une liste suit un deux-points (une ligne vide tolérée) ou directement
+    // un sous-titre. Il faut au moins deux éléments pour y croire.
+    const opensList = heading || (t.endsWith(':') && !MARKDOWN_BLOCK.test(t));
+    if (!opensList) continue;
+
+    let j = i + 1;
+    if (!heading && j < lines.length && lines[j].trim() === '') j++;
+    const items: string[] = [];
+    while (j < lines.length && isBareItem(lines[j]) && !isEmojiHeading(lines[j])) {
+      items.push(lines[j].trim().replace(/^👉\s*/, ''));
+      j++;
+    }
+    if (items.length < 2) continue;
+
+    // « GitHub / Gestion du code… / Vercel / Déploiement… » : des paires
+    // nom court + description deviennent « **GitHub** — Gestion du code… ».
+    const isPairs =
+      items.length >= 4 &&
+      items.length % 2 === 0 &&
+      items.every((item, k) => (k % 2 === 0 ? item.split(/\s+/).length <= 3 : item.split(/\s+/).length > 3));
+
+    out.push('');
+    if (isPairs) {
+      for (let k = 0; k < items.length; k += 2) out.push(`- **${items[k]}** — ${items[k + 1]}`);
+    } else {
+      items.forEach(item => out.push(`- ${item}`));
+    }
+    out.push('');
+    i = j - 1;
+  }
+
+  return out.join('\n');
+}
+
 /** Extrait les titres H2/H3 du Markdown pour construire le sommaire. */
 export function extractHeadings(markdown: string): Heading[] {
   const headings: Heading[] = [];
   const seen = new Set<string>();
-  const lines = markdown.split('\n');
+  const lines = normalizeContent(markdown).split('\n');
   let inFence = false;
 
-  for (const line of lines) {
+  lines.forEach((line, index) => {
     if (line.trimStart().startsWith('```')) {
       inFence = !inFence;
-      continue;
+      return;
     }
-    if (inFence) continue;
+    if (inFence) return;
 
     const match = /^(#{2,3})\s+(.*)$/.exec(line.trim());
-    if (!match) continue;
+    if (!match) return;
 
     const level = match[1].length as 2 | 3;
     const text = match[2].replace(/[*_`]/g, '').trim();
-    if (!text) continue;
+    if (!text) return;
 
     let id = slugify(text);
     let suffix = 2;
@@ -52,10 +148,21 @@ export function extractHeadings(markdown: string): Heading[] {
       id = `${slugify(text)}-${suffix++}`;
     }
     seen.add(id);
-    headings.push({ id, text, level });
-  }
+    headings.push({ id, text, level, line: index + 1 });
+  });
 
   return headings;
+}
+
+/** Numéro de section affiché : seuls les H2 en portent un, et seulement s'il y en a au moins deux. */
+export function sectionNumbers(headings: Heading[]): Map<string, string> {
+  const numbers = new Map<string, string>();
+  if (headings.filter(h => h.level === 2).length < 2) return numbers;
+  let n = 0;
+  headings.forEach(h => {
+    if (h.level === 2) numbers.set(h.id, String(++n).padStart(2, '0'));
+  });
+  return numbers;
 }
 
 function childrenToText(children: React.ReactNode): string {
@@ -135,37 +242,47 @@ const CodeBlock: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
-  const headingIds = useRef<Map<string, number>>(new Map());
-  headingIds.current = new Map();
+  const source = useMemo(() => normalizeContent(content), [content]);
+  // Identifiant et numéro de chaque titre, retrouvés par sa ligne dans le
+  // texte : le rendu reste stable même si React rend un titre deux fois.
+  const headings = useMemo(() => extractHeadings(content), [content]);
+  const headingAt = useMemo(() => new Map(headings.map(h => [h.line, h])), [headings]);
+  const numbers = useMemo(() => sectionNumbers(headings), [headings]);
   // Une image du récit s'ouvre en grand dans la même visionneuse que les
   // galeries : la vignette reste contenue, le détail se regarde en plein écran.
   const [zoom, setZoom] = useState<TimelinePhoto | null>(null);
 
-  const makeId = (children: React.ReactNode) => {
-    const base = slugify(childrenToText(children));
-    const count = headingIds.current.get(base) ?? 0;
-    headingIds.current.set(base, count + 1);
-    return count === 0 ? base : `${base}-${count + 1}`;
+  const headingId = (node: { position?: { start: { line: number } } } | undefined, children: React.ReactNode) => {
+    const line = node?.position?.start.line;
+    return (line !== undefined && headingAt.get(line)?.id) || slugify(childrenToText(children));
   };
 
   return (
     <div className="markdown-content text-[16px] sm:text-[17px] text-text-secondary leading-[1.75]">
       <Markdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkBreaks]}
         rehypePlugins={[rehypeHighlight]}
         components={{
-          h1: ({ children }) => (
-            <h2 id={makeId(children)} className="scroll-mt-28 text-[26px] sm:text-[28px] font-bold text-text-primary tracking-tight mt-12 mb-4 leading-snug">
+          h1: ({ node, children }) => (
+            <h2 id={headingId(node, children)} className="scroll-mt-28 text-[26px] sm:text-[28px] font-bold text-text-primary tracking-tight mt-12 mb-4 leading-snug">
               {children}
             </h2>
           ),
-          h2: ({ children }) => (
-            <h2 id={makeId(children)} className="scroll-mt-28 text-[24px] sm:text-[26px] font-bold text-text-primary tracking-tight mt-12 mb-4 leading-snug">
-              {children}
-            </h2>
-          ),
-          h3: ({ children }) => (
-            <h3 id={makeId(children)} className="scroll-mt-28 text-[19px] sm:text-[20px] font-semibold text-text-primary mt-9 mb-3 leading-snug">
+          h2: ({ node, children }) => {
+            const id = headingId(node, children);
+            return (
+              <h2 id={id} className="scroll-mt-28 text-[24px] sm:text-[26px] font-bold text-text-primary tracking-tight mt-14 mb-4 leading-snug">
+                {numbers.has(id) && (
+                  <span aria-hidden="true" className="block mb-2 text-[12px] font-semibold tracking-[0.2em] text-accent-primary tabular-nums">
+                    {numbers.get(id)}
+                  </span>
+                )}
+                {children}
+              </h2>
+            );
+          },
+          h3: ({ node, children }) => (
+            <h3 id={headingId(node, children)} className="scroll-mt-28 text-[19px] sm:text-[20px] font-semibold text-text-primary mt-9 mb-3 leading-snug">
               {children}
             </h3>
           ),
@@ -188,7 +305,9 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
           ol: ({ children }) => <ol className="my-5 space-y-2 list-decimal pl-5 marker:text-text-muted">{children}</ol>,
           li: ({ children }) => <li className="pl-1">{children}</li>,
           blockquote: ({ children }) => (
-            <blockquote className="my-7 border-l-2 border-accent-primary pl-5 text-text-primary italic">
+            <blockquote className="my-10 border-l-2 border-accent-primary pl-6 text-[19px] sm:text-[21px] font-medium text-text-primary leading-snug tracking-tight [&_p]:my-0">
+              {/* Une phrase mise en avant, pas un pavé en italique : elle se lit
+                  d'un coup d'œil en parcourant la page. */}
               {children}
             </blockquote>
           ),
@@ -244,7 +363,7 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
           },
         }}
       >
-        {content}
+        {source}
       </Markdown>
 
       {zoom && (

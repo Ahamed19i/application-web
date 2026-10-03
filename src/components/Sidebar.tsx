@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle.tsx';
+import { MobileMenu } from './MobileMenu.tsx';
 
 const InstagramIcon = ({ size = 24 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -15,6 +16,30 @@ const FacebookIcon = ({ size = 24 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
   </svg>
+);
+
+/** Réseaux, mail et CV : la même rangée dans la colonne de gauche et dans le menu mobile. */
+const SocialLinks: React.FC<{ size: number }> = ({ size }) => (
+  <>
+    <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-text-muted hover:text-accent-primary transition-colors">
+      <Github size={size} />
+    </a>
+    <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-text-muted hover:text-accent-primary transition-colors">
+      <Linkedin size={size} />
+    </a>
+    <a href="https://instagram.com/Ahamed19i" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-text-muted hover:text-accent-primary transition-colors">
+      <InstagramIcon size={size} />
+    </a>
+    <a href="https://facebook.com/TON_PSEUDO" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-text-muted hover:text-accent-primary transition-colors">
+      <FacebookIcon size={size} />
+    </a>
+    <a href="mailto:ahassanimhoma20@gmail.com" aria-label="Email" className="text-text-muted hover:text-accent-primary transition-colors">
+      <Mail size={size} />
+    </a>
+    <a href="/images/CV-AhamedHassani.pdf" download aria-label="Télécharger le CV" className="text-text-muted hover:text-accent-primary transition-colors">
+      <Download size={size} />
+    </a>
+  </>
 );
 
 const NAV_ITEMS = [
@@ -54,8 +79,7 @@ export const Sidebar: React.FC = () => {
     return () => observer.disconnect();
   }, [isHome]);
 
-  const scrollToId = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
+  const goTo = (id: string) => {
     if (!isHome) {
       navigate('/#' + id);
       return;
@@ -67,8 +91,15 @@ export const Sidebar: React.FC = () => {
     }
   };
 
+  const scrollToId = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    goTo(id);
+  };
+
   return (
     <header className="sidebar-shell lg:sticky lg:top-0 lg:h-screen lg:max-h-screen flex flex-col justify-between px-6 sm:px-10 lg:px-12 xl:px-16">
+      <MobileMenu items={NAV_ITEMS} onNavigate={goTo} social={<SocialLinks size={20} />} />
+
       <div>
         <Link to="/" className="inline-block">
           <h1 className="sidebar-name font-bold tracking-tight text-text-primary leading-none whitespace-nowrap">
@@ -130,24 +161,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <div className="sidebar-icons flex items-center gap-5">
-        <a href="https://github.com/ahamed19i" target="_blank" rel="noreferrer" aria-label="GitHub" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Github size={24} />
-        </a>
-        <a href="https://linkedin.com/in/ahamed19i" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Linkedin size={24} />
-        </a>
-        <a href="https://instagram.com/Ahamed19i" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-text-muted hover:text-accent-primary transition-colors">
-          <InstagramIcon size={24} />
-        </a>
-        <a href="https://facebook.com/TON_PSEUDO" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-text-muted hover:text-accent-primary transition-colors">
-          <FacebookIcon size={24} />
-        </a>
-        <a href="mailto:ahassanimhoma20@gmail.com" aria-label="Email" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Mail size={24} />
-        </a>
-        <a href="/images/CV-AhamedHassani.pdf" download aria-label="Télécharger le CV" className="text-text-muted hover:text-accent-primary transition-colors">
-          <Download size={24} />
-        </a>
+        <SocialLinks size={24} />
         <ThemeToggle variant="bare" size={24} />
       </div>
     </header>

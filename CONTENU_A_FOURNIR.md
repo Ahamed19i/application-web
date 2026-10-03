@@ -13,6 +13,9 @@ Dans Supabase → SQL Editor → New query → Run, dans cet ordre :
 2. `migrations/003_experiences.sql` — table des expériences, leur galerie,
    règles d'accès, et le stage Tunisie Télécom déjà affiché. Elle réutilise le
    bucket `parcours` créé par la 002.
+3. `migrations/004_projects_subtitles.sql` — ajoute des sous-titres (`## …`)
+   aux récits des 3 projets, sans changer un mot du texte. Ils alimentent le
+   sommaire « Dans ce projet », comme sur les articles du journal.
 
 Les deux sont idempotentes : les relancer ne casse rien. Tant qu'elles ne sont
 pas exécutées, les sections Parcours et Expérience de l'accueil continuent de

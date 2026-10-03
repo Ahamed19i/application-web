@@ -37,6 +37,7 @@
     "react-router-dom": "^7.13.1",
     "recharts": "^2.15.0",
     "rehype-highlight": "^7.0.2",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.5.0",
     "tsx": "^4.21.0",

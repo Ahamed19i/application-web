@@ -168,7 +168,7 @@ select:focus-visible,
    contenu : les deux colonnes s'empilent, il n'y a plus d'alignement à
    tenir, on rend la respiration. */
 @media (max-width: 1023px) {
-  .sidebar-shell { padding-top: 56px; padding-bottom: 32px; }
+  .sidebar-shell { padding-top: 72px; padding-bottom: 32px; }
   .sidebar-name { font-size: 40px; }
   .main-column { padding-top: 24px; }
 }
