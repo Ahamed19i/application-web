@@ -22,7 +22,7 @@ export const About: React.FC = () => {
         <p>
           Salut ! Je m'appelle Ahamed Hassani, et j'aime construire et transmettre. Je suis{" "}
           <Strong>formateur et spécialiste en intelligence artificielle appliquée</Strong>, avec un socle d'
-          <Strong>ingénieur systèmes et réseaux</Strong> : infrastructures, cloud, DevOps et développement web et mobile.
+          ingénieur systèmes et réseaux : infrastructures, cloud, DevOps et développement web et mobile.
           J'aime comprendre comment les choses fonctionnent, transformer des idées en solutions concrètes, et aider les
           autres à en faire autant.
         </p>
@@ -32,8 +32,8 @@ export const About: React.FC = () => {
           IA. En parallèle, je développe mes propres projets, avec l'IA intégrée à chaque étape du développement.
         </p>
         <p>
-          En fin de <Strong>Master 2 en Systèmes, Réseaux et Télécommunications</Strong> à Dakar, je consacre mon mémoire à
-          la conception d'une <Strong>infrastructure hybride résiliente</Strong>, pensée pour assurer la{" "}
+          En fin de Master 2 en Systèmes, Réseaux et Télécommunications à Dakar, je consacre mon mémoire à
+          la conception d'une infrastructure hybride résiliente, pensée pour assurer la{" "}
           <Strong>haute disponibilité des services critiques</Strong>.
         </p>
         <p>
