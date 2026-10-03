@@ -30,7 +30,7 @@ const SocialLinks: React.FC<{ size: number }> = ({ size }) => (
     <a href="https://instagram.com/Ahamed19i" target="_blank" rel="noreferrer" aria-label="Instagram" className="text-text-muted hover:text-accent-primary transition-colors">
       <InstagramIcon size={size} />
     </a>
-    <a href="https://facebook.com/TON_PSEUDO" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-text-muted hover:text-accent-primary transition-colors">
+    <a href="https://facebook.com/Ahamed19i" target="_blank" rel="noreferrer" aria-label="Facebook" className="text-text-muted hover:text-accent-primary transition-colors">
       <FacebookIcon size={size} />
     </a>
     <a href="mailto:ahassanimhoma20@gmail.com" aria-label="Email" className="text-text-muted hover:text-accent-primary transition-colors">
@@ -125,7 +125,7 @@ export const Sidebar: React.FC = () => {
               <span className="absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-60 animate-ping"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-primary"></span>
             </span>
-            Disponible — stage / alternance 2026
+            Disponible — freelance uniquement
           </p>
         </div>
 

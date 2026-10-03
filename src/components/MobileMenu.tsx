@@ -201,7 +201,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ items, onNavigate, socia
                     <span className="absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-60 animate-ping"></span>
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-primary"></span>
                   </span>
-                  Disponible — stage / alternance 2026
+                  Disponible — freelance uniquement
                 </p>
                 <div className="mt-6 flex items-center justify-between gap-4 border-t border-border pt-6">
                   <div className="flex items-center gap-5">{social}</div>

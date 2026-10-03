@@ -20,14 +20,14 @@ export const About: React.FC = () => {
 
       <div className="space-y-5 text-[16px] text-text-secondary leading-[1.75] max-w-[640px]">
         <p>
-          Salut ! Je m'appelle Ahamed Hassani, et j'aime construire et transmettre. Je suis{" "}
+          Salut ! Je m'appelle Ahamed HASSANI MHOMA, et j'aime construire et transmettre. Je suis{" "}
           <Strong>formateur et spécialiste en intelligence artificielle appliquée</Strong>, avec un socle d'
           ingénieur systèmes et réseaux : infrastructures, cloud, DevOps et développement web et mobile.
           J'aime comprendre comment les choses fonctionnent, transformer des idées en solutions concrètes, et aider les
           autres à en faire autant.
         </p>
         <p>
-          Je forme des professionnels et des étudiants à l'<Strong>informatique et à l'IA</Strong>, et j'accompagne des
+          Je forme et accompagne des professionnels au sein des
           entreprises dans l'<Strong>intégration concrète de l'IA</Strong> : création de contenu, automatisation, assistants
           IA. En parallèle, je développe mes propres projets, avec l'IA intégrée à chaque étape du développement.
         </p>
@@ -37,8 +37,7 @@ export const About: React.FC = () => {
           <Strong>haute disponibilité des services critiques</Strong>.
         </p>
         <p>
-          En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse aussi à la
-          politique et à la géopolitique, et j'aime voyager, découvrir de nouvelles cultures et des parcours différents.
+          En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse à la veille technologique, j'aime voyager, découvrir de nouvelles cultures et des parcours différents.
         </p>
         <p>
           Ce site rassemble un peu de tout cela : ce que je construis, ce que je transmets et les expériences qui façonnent
