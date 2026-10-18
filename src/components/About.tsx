@@ -1,10 +1,12 @@
 
 import React from 'react';
+import { motion } from 'motion/react';
 
-const SKILLS = [
-  'Linux (Ubuntu/Debian)', 'Windows Server', 'Virtualisation',
-  'Cisco IOS', 'pfSense', 'EVE-NG', 'VPN/VLAN',
-  'Docker', 'Kubernetes', 'Ansible', 'AWS', 'CI/CD',
+const SKILL_GROUPS = [
+  { label: 'Systèmes', skills: ['Linux (Ubuntu/Debian)', 'Windows Server', 'Virtualisation', 'Haute disponibilité'] },
+  { label: 'Réseaux', skills: ['Cisco IOS', 'pfSense', 'VPN', 'MPLS', 'SD-WAN'] },
+  { label: 'Développement web & mobile', skills: ['React Native', 'Flutter', 'Node.js', 'API', 'PostgreSQL'] },
+  { label: 'Automatisation avancée', skills: ['AWS', 'Docker', 'Kubernetes', 'Ansible', 'CI/CD'] },
 ];
 
 const Strong: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -46,12 +48,25 @@ export const About: React.FC = () => {
       </div>
 
       <div className="mt-8 max-w-[640px]">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-3">Compétences</p>
-        <div className="flex flex-wrap gap-2">
-          {SKILLS.map((s) => (
-            <span key={s} className="px-3 py-1.5 rounded-full bg-bg-secondary border border-border text-text-secondary text-[12px] font-medium">
-              {s}
-            </span>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-5">Compétences</p>
+        <div className="space-y-7">
+          {SKILL_GROUPS.map((group, i) => (
+            <motion.div
+              key={group.label}
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+              transition={{ duration: 0.4, delay: i * 0.06, ease: 'easeOut' }}
+            >
+              <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted mb-2.5">{group.label}</p>
+              <div className="flex flex-wrap gap-2">
+                {group.skills.map((s) => (
+                  <span key={s} className="px-3 py-1.5 rounded-full bg-bg-secondary border border-border text-text-secondary text-[12px] font-medium">
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
