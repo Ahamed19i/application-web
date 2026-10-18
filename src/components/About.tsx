@@ -21,8 +21,8 @@ export const About: React.FC = () => {
       <div className="space-y-5 text-[16px] text-text-secondary leading-[1.75] max-w-[640px]">
         <p>
           Salut ! Je m'appelle Ahamed HASSANI MHOMA, et j'aime construire et transmettre. Je suis{" "}
-          <Strong>formateur et spécialiste en intelligence artificielle appliquée</Strong>, avec un socle d'
-          ingénieur systèmes et réseaux : infrastructures, cloud, DevOps et développement web et mobile.
+          <Strong>formateur et spécialiste en intelligence artificielle appliquée</Strong>, avec un socle
+          d'ingénieur systèmes et réseaux : infrastructures, cloud, DevOps et développement web et mobile.
           J'aime comprendre comment les choses fonctionnent, transformer des idées en solutions concrètes, et aider les
           autres à en faire autant.
         </p>
