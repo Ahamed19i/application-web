@@ -39,7 +39,7 @@ export const About: React.FC = () => {
           <Strong>haute disponibilité des services critiques</Strong>.
         </p>
         <p>
-          En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse à la veille technologique, j'aime voyager, découvrir de nouvelles cultures et des parcours différents.
+          En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse à la veille technologique, j'aime découvrir de nouvelles cultures et des parcours différents.
         </p>
         <p>
           Ce site rassemble un peu de tout cela : ce que je construis, ce que je transmets et les expériences qui façonnent
