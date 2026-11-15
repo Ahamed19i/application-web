@@ -22,16 +22,16 @@ export const About: React.FC = () => {
 
       <div className="space-y-5 text-[16px] text-text-secondary leading-[1.75] max-w-[640px]">
         <p>
-          Salut ! Je m'appelle Ahamed HASSANI MHOMA, et j'aime construire et transmettre. Je suis{" "}
-          <Strong>formateur et spécialiste en intelligence artificielle appliquée</Strong>, avec un socle
+          Salut ! Je m'appelle Ahamed HASSANI MHOMA, et j'aime construire et transmettre. Je suis
+          formateur et spécialiste en intelligence artificielle appliquée, avec un socle
           d'ingénieur systèmes et réseaux : infrastructures, cloud, DevOps et développement web et mobile.
           J'aime comprendre comment les choses fonctionnent, transformer des idées en solutions concrètes, et aider les
           autres à en faire autant.
         </p>
         <p>
           Je forme et accompagne des professionnels au sein des
-          entreprises dans l'<Strong>intégration concrète de l'IA</Strong> : création de contenu, automatisation, assistants
-          IA. En parallèle, je développe mes propres projets, avec l'IA intégrée à chaque étape du développement.
+          entreprises dans l'intégration concrète de l'IA : création des agents IA, automatisation, assistants
+          IA. En parallèle, Je développe des projets numériques pour mes clients et à titre personnel, en intégrant l’IA à leur conception.
         </p>
         <p>
           En fin de Master 2 en Systèmes, Réseaux et Télécommunications à Dakar, je consacre mon mémoire à
@@ -39,7 +39,7 @@ export const About: React.FC = () => {
           <Strong>haute disponibilité des services critiques</Strong>.
         </p>
         <p>
-          En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse à la veille technologique, j'aime découvrir de nouvelles cultures et des parcours différents.
+          En dehors de l'informatique, je suis passionné par le football et les documentaires. Je m'intéresse à la veille technologique, à travers mes écrans je découvre au quotidien de nouvelles cultures et des parcours différents.
         </p>
         <p>
           Ce site rassemble un peu de tout cela : ce que je construis, ce que je transmets et les expériences qui façonnent
